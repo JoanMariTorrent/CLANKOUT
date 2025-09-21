@@ -2323,7 +2323,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _minPlayers: 2
+  _minPlayers: 1
 --- !u!4 &1626096718
 Transform:
   m_ObjectHideFlags: 0
@@ -2702,6 +2702,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1906733320}
   - component: {fileID: 1906733319}
+  - component: {fileID: 1906733324}
   - component: {fileID: 1906733318}
   - component: {fileID: 1906733321}
   - component: {fileID: 1906733322}
@@ -2747,7 +2748,7 @@ MonoBehaviour:
   _startClientFlags: 0
   _cookieScope: 1
   _dontDestroyOnLoad: 0
-  _transport: {fileID: 1906733321}
+  _transport: {fileID: 1906733324}
   _networkPrefabs: {fileID: 11400000, guid: 38de688ec1e275b408d94648e6972280, type: 2}
   _networkAssets: {fileID: 0}
   _networkRules: {fileID: 11400000, guid: d8799083b96579a42b8b2d03e4ceae98, type: 2}
@@ -2816,6 +2817,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5c476fd9733ed148b4631bd99c76108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: PurrNetLobbySetup::PurrLobby.ConnectionStarter
+--- !u!114 &1906733324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1906733317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ccc454d6a19ac140b15f8d619d0fb5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PurrNet.Steam.Runtime::PurrNet.Steam.SteamTransport
+  _serverPort: 5003
+  _dedicatedServer: 0
+  _peerToPeer: 1
+  _address: 127.0.0.1
 --- !u!1 &1929476453
 GameObject:
   m_ObjectHideFlags: 0
