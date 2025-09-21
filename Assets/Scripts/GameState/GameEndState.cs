@@ -38,7 +38,7 @@ public class GameEndState : StateNode
             return;
         }
 
-
+        //asdasd
         endGameView.SetWinner(winner);
         gameViewManager.ShowView<EndGameView>();
         Debug.Log($"Game has now ended with {winner} as our champion!");
