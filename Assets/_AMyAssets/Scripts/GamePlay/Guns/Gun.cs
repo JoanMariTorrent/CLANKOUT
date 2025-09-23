@@ -82,9 +82,13 @@ public class Gun : StateNode
     {
         base.StateUpdate(asServer);
 
-        if (!isOwner) return;
+        // si este script no lo ejecuta el owner, no se hace la funcion entera
+        if (!isOwner) return; 
 
+        // Si es automatica y no mantiene el click o no es automatica y no pulsa el click, se sale de la funcion
         if (_automatic && !Input.GetKey(KeyCode.Mouse0) || !_automatic && !Input.GetKeyDown(KeyCode.Mouse0)) return;
+
+        // si el ultimo disparo mas el cooldown de disparo sumado, es mas grande que el tiempo que llevas sin disparar antes de darle al click se sale de la funcion
         if (_lastFireTime + _fireRate > Time.unscaledTime) return;
 
 
@@ -92,24 +96,40 @@ public class Gun : StateNode
         _lastFireTime = Time.unscaledTime;
 
 
-        if (!Physics.Raycast(_cameraTransform.position, _cameraTransform.forward, out var hit, _range, _hitLayer)) return;
+        // Hace un raycast, si este no cumple los requisitos dentro de los parentesis, sale de al funcion
+        if (!Physics.Raycast(_cameraTransform.position, _cameraTransform.forward, out var hit, _range, _hitLayer, QueryTriggerInteraction.Ignore)) return;
+
+        // Si el objetivo que le da al raycast, no es un jugador, ejecuta el void para el enviroment hit y se sale
         if (!hit.transform.TryGetComponent(out PlayerHealth _playerHealth)) 
         {
             EnviormentHit(hit.point, hit.normal);
             return;
         }
 
+        // Ya con todos los pasos anteriores, esto es 100% un jugador, entonces se ejecuta el void con los VFX
         PlayerHit(_playerHealth, _playerHealth.transform.InverseTransformPoint(hit.point), hit.normal);
 
+        //Se le quita daño al jugador
         _playerHealth.ChangeHealth(-_gunDamage);
+
+        //Busca un instance del scoreManager
         if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
         {
+            //Si extiste el scoreManager, intante pillar el script de PlayerHealth (el principal del jugador)
             if (hit.transform.TryGetComponent(out PlayerHealth victim))
             {
+                // Pide al servidor que aumente el daño en el Scoreboard del jugador afectado (no modifica el score directamente desde el cliente)
                 scoreManager.AddDamageServerRpc(victim.PlayerID, _gunDamage);
             }
         }
     }
+
+
+
+
+
+
+
 
     [ObserversRpc(runLocally: true)]
     private void PlayerHit(PlayerHealth player, Vector3 localposition, Vector3 normal)
