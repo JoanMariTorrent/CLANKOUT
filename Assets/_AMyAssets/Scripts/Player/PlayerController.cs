@@ -28,6 +28,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private List<Renderer> renderers = new ();
     [SerializeField] private StateMachine _stateMachine;
     [SerializeField] private List<StateNode> _weaponStates = new();
+    [SerializeField] private WeaponManager _weaponManager;
 
 
     private CharacterController characterController;
@@ -130,12 +131,16 @@ public class PlayerController : NetworkBehaviour
     private void HandleWeaponSwitching()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
-        { 
-            _stateMachine.SetState(_weaponStates[0]);
+        {
+            _weaponManager.SwitchWeapon(0);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
-        { 
-            _stateMachine.SetState(_weaponStates[1]);   
+        {
+            _weaponManager.SwitchWeapon(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            _weaponManager.SwitchWeapon(3);
         }
     }
 

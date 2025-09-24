@@ -6,13 +6,14 @@ using PurrNet.StateMachine;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class Gun : StateNode
+public class Gun : NetworkBehaviour
 {
     [Header("Stats")]
     [SerializeField] private float _range = 20f;
     [SerializeField] private int _gunDamage = 10;
     [SerializeField] private float _fireRate = 0.5f;
     [SerializeField] private bool _automatic;
+    [SerializeField] private bool _knife;
 
     [Header("Recoil")]
     [SerializeField] private float _recoilStrenght = 1f;
@@ -36,22 +37,7 @@ public class Gun : StateNode
 
     private PlayerID _ownerID;
 
-    private void Awake()
-    {
-        ToggleVisuals(false);
-    }
 
-    public override void Enter(bool asServer)
-    {
-        base.Enter(asServer);
-            ToggleVisuals(true);
-    }
-
-    public override void Exit(bool asServer)
-    {
-        base.Exit(asServer);
-        ToggleVisuals(false);
-    }
 
 
     private void Start()
@@ -60,71 +46,85 @@ public class Gun : StateNode
         _originalRotation = transform.localRotation;
     }
 
-    private void ToggleVisuals(bool toggle)
-    {
-        foreach (var renderer in _renderers)
-        { 
-            renderer.enabled = toggle;
-        }
-    }
-
     protected override void OnSpawned()
     { 
         base.OnSpawned();
-
         enabled = isOwner;
     }
 
 
 
 
-    public override void StateUpdate(bool asServer)
+    public void Update()
     {
-        base.StateUpdate(asServer);
-
         // si este script no lo ejecuta el owner, no se hace la funcion entera
-        if (!isOwner) return; 
+        if (!isOwner) return;
 
-        // Si es automatica y no mantiene el click o no es automatica y no pulsa el click, se sale de la funcion
-        if (_automatic && !Input.GetKey(KeyCode.Mouse0) || !_automatic && !Input.GetKeyDown(KeyCode.Mouse0)) return;
-
-        // si el ultimo disparo mas el cooldown de disparo sumado, es mas grande que el tiempo que llevas sin disparar antes de darle al click se sale de la funcion
-        if (_lastFireTime + _fireRate > Time.unscaledTime) return;
-
-
-        PlayShotEffect();
-        _lastFireTime = Time.unscaledTime;
-
-
-        // Hace un raycast, si este no cumple los requisitos dentro de los parentesis, sale de al funcion
-        if (!Physics.Raycast(_cameraTransform.position, _cameraTransform.forward, out var hit, _range, _hitLayer, QueryTriggerInteraction.Ignore)) return;
-
-        // Si el objetivo que le da al raycast, no es un jugador, ejecuta el void para el enviroment hit y se sale
-        if (!hit.transform.TryGetComponent(out PlayerHealth _playerHealth)) 
-        {
-            EnviormentHit(hit.point, hit.normal);
-            return;
-        }
-
-        // Ya con todos los pasos anteriores, esto es 100% un jugador, entonces se ejecuta el void con los VFX
-        PlayerHit(_playerHealth, _playerHealth.transform.InverseTransformPoint(hit.point), hit.normal);
-
-        //Se le quita daño al jugador
-        _playerHealth.ChangeHealth(-_gunDamage);
-
-        //Busca un instance del scoreManager
-        if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
-        {
-            //Si extiste el scoreManager, intante pillar el script de PlayerHealth (el principal del jugador)
-            if (hit.transform.TryGetComponent(out PlayerHealth victim))
-            {
-                // Pide al servidor que aumente el daño en el Scoreboard del jugador afectado (no modifica el score directamente desde el cliente)
-                scoreManager.AddDamageServerRpc(victim.PlayerID, _gunDamage);
-            }
-        }
+        HandleShooting();
+        
     }
 
 
+    public void Setup(Transform cameraTransform, LayerMask hitLayer)
+    {
+        _cameraTransform = cameraTransform;
+        _hitLayer = hitLayer;
+    }
+
+
+
+    private void HandleShooting()
+    {
+        if (_knife)
+        {
+
+        }
+        else
+        {
+            // Si es automatica y no mantiene el click o no es automatica y no pulsa el click, se sale de la funcion
+            if (_automatic && !Input.GetKey(KeyCode.Mouse0) || !_automatic && !Input.GetKeyDown(KeyCode.Mouse0)) return;
+
+            // si el ultimo disparo mas el cooldown de disparo sumado, es mas grande que el tiempo que llevas sin disparar antes de darle al click se sale de la funcion
+            if (_lastFireTime + _fireRate > Time.unscaledTime) return;
+
+            _lastFireTime = Time.unscaledTime;
+
+            ShootServerRpc(_cameraTransform.position, _cameraTransform.forward);
+        }
+    }
+
+    [ServerRpc]
+    private void ShootServerRpc(Vector3 origin, Vector3 direction)
+    {
+        //Lanza un raycast, si no le da a nada, return
+
+        if (!Physics.Raycast(origin, direction, out var hit, _range, _hitLayer, QueryTriggerInteraction.Ignore))
+        {
+            PlayShotEffectObserversRpc();
+            return;
+        }
+
+        //Mira si la colision que ha tocado el raycast contiene un PlayerHealth, si lo tiene hace todo el sistema de quitarle vida, VFX, añadirle daño al ScoreManager...
+
+        if (hit.transform.TryGetComponent(out PlayerHealth victim))
+        {
+            victim.ChangeHealth(-_gunDamage);
+            PlayShotEffectObserversRpc();
+            PlayerHitObserversRpc(victim, victim.transform.InverseTransformPoint(hit.point), hit.normal);
+            if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
+            {
+                scoreManager.AddDamageServerRpc(victim.PlayerID, _gunDamage);
+            }
+        }
+
+        // Si no tiene el script HealthManager, se hace el VFX de mapa
+        else
+        {
+            PlayShotEffectObserversRpc();
+            EnviormentHitObserversRpc(hit.point, hit.normal);
+
+        }
+    }
 
 
 
@@ -132,7 +132,7 @@ public class Gun : StateNode
 
 
     [ObserversRpc(runLocally: true)]
-    private void PlayerHit(PlayerHealth player, Vector3 localposition, Vector3 normal)
+    private void PlayerHitObserversRpc(PlayerHealth player, Vector3 localposition, Vector3 normal)
     {
         if (_playerHitEffect && player && player.transform)
         {
@@ -143,7 +143,7 @@ public class Gun : StateNode
 
 
     [ObserversRpc(runLocally: true)]
-    private void EnviormentHit(Vector3 position, Vector3 normal)
+    private void EnviormentHitObserversRpc(Vector3 position, Vector3 normal)
     {
         if (_enviormentHit)
         {
@@ -155,7 +155,7 @@ public class Gun : StateNode
     
 
     [ObserversRpc(runLocally:true)]
-    private void PlayShotEffect()
+    private void PlayShotEffectObserversRpc()
     {
         if(_muzzleFlash)
             _muzzleFlash.Play();

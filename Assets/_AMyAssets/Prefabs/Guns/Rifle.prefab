@@ -138,6 +138,7 @@ MonoBehaviour:
   _gunDamage: 8
   _fireRate: 0.2
   _automatic: 1
+  _knife: 0
   _recoilStrenght: 0.05
   _recoilDuration: 0.2
   _recoilCurve:
@@ -214,6 +215,8 @@ MonoBehaviour:
   _muzzleFlash: {fileID: 6800752134163572191}
   _renderers:
   - {fileID: 5567006457493690018}
+  _enviormentHit: {fileID: 2542180830717017700, guid: c23edada67e2ef946b2764574583bfaa, type: 3}
+  _playerHitEffect: {fileID: 2446692518619174518, guid: bc337677c0f15bc45832afc868cb0229, type: 3}
 --- !u!1001 &5049384834388052961
 PrefabInstance:
   m_ObjectHideFlags: 0
