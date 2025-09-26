@@ -11,7 +11,6 @@ public class RoundEndState : StateNode<List<PlayerID>>
     [SerializeField] StateNode _spawningState;
     [SerializeField] SyncDictionary<PlayerID, int> _playersWins = new();
 
-    private int _roundCount = 0;
     private WaitForSeconds _delay = new(3);
 
 
@@ -28,7 +27,6 @@ public class RoundEndState : StateNode<List<PlayerID>>
 
     private void CheckForGameEnd(PlayerID winners)
     {
-        _roundCount++;
         if (!InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
             return;
 
@@ -46,7 +44,7 @@ public class RoundEndState : StateNode<List<PlayerID>>
             PlayerID playerID = kvp.Key;
             int wins = kvp.Value;
 
-            if (wins > _amountOfRound)
+            if (wins >= _amountOfRound)
             {
                 machine.Next();
                 return;

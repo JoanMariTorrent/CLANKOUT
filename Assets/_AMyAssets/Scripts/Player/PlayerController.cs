@@ -27,8 +27,9 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private CinemachineCamera playerCamera;
     [SerializeField] private List<Renderer> renderers = new ();
     [SerializeField] private StateMachine _stateMachine;
-    [SerializeField] private List<StateNode> _weaponStates = new();
     [SerializeField] private WeaponManager _weaponManager;
+    [SerializeField] private Transform _checkGround;
+    [SerializeField] private LayerMask _groundLayer;
 
 
     private CharacterController characterController;
@@ -124,7 +125,7 @@ public class PlayerController : NetworkBehaviour
 
     private bool IsGrounded()
     {
-        return Physics.Raycast(transform.position + Vector3.up * 0.03f, Vector3.down, groundCheckDistance);
+        return Physics.Raycast(_checkGround.position, Vector3.down, groundCheckDistance, _groundLayer);
     }
 
 

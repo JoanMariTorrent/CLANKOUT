@@ -2519,7 +2519,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _minPlayers: 2
+  _minPlayers: 1
 --- !u!4 &1626096718
 Transform:
   m_ObjectHideFlags: 0
@@ -3119,7 +3119,15 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   _amountOfRound: 5
   _spawningState: {fileID: 1626096717}
-  _players: []
+  _playersWins:
+    _ownerAuth: 0
+    _serializedDict:
+      keys: []
+      values: 
+      stringKeys: []
+      stringValues: []
+    _sendIntervalInSeconds: 0
+    _useForceSend: 0
 --- !u!1 &1933624557
 GameObject:
   m_ObjectHideFlags: 0
@@ -3617,7 +3625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3401170514864938971, guid: 9a5bf13fb6120574388a5d81ac542062, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 3401170514864938971, guid: 9a5bf13fb6120574388a5d81ac542062, type: 3}
       propertyPath: m_LocalRotation.w
