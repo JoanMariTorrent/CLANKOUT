@@ -45,6 +45,5 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
                 Debug.Log($"{player.PlayerID} and {weaponManager.name}");
             }
         }
-
     }
 }

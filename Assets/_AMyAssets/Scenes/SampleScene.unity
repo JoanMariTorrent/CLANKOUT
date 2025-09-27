@@ -435,7 +435,7 @@ Transform:
   m_GameObject: {fileID: 201362513}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.65, y: 0, z: -2.56}
+  m_LocalPosition: {x: 0.65, y: 0, z: -2.38}
   m_LocalScale: {x: 35.084812, y: 0.27, z: 33.181442}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3117,17 +3117,8 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _amountOfRound: 5
   _spawningState: {fileID: 1626096717}
-  _playersWins:
-    _ownerAuth: 0
-    _serializedDict:
-      keys: []
-      values: 
-      stringKeys: []
-      stringValues: []
-    _sendIntervalInSeconds: 0
-    _useForceSend: 0
+  _amountOfRound: 5
 --- !u!1 &1933624557
 GameObject:
   m_ObjectHideFlags: 0
