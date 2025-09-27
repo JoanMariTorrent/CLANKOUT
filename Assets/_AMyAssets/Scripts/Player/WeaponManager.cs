@@ -13,7 +13,10 @@ public class WeaponManager : NetworkBehaviour
     private Gun _currentGun;
     [SerializeField] private SyncList<GameObject> _ownedWeapons = new();
 
-    
+    private void Awake()
+    {
+        enabled = isOwner;
+    }
     public void EquipWeapon(GameObject weaponPrefab)
     {
         if (_currentGun != null)
