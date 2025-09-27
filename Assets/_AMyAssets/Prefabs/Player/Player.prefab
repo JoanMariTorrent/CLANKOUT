@@ -452,7 +452,7 @@ MonoBehaviour:
   moveSpeed: 8
   sprintSpeed: 12
   jumpForce: 2
-  gravity: -9.81
+  gravity: -17.81
   groundCheckDistance: 0.2
   lookSensitivity: 2
   maxLookAngle: 80

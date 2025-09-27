@@ -7,9 +7,8 @@ using PurrNet;
 
 public class RoundEndState : StateNode<List<PlayerID>>
 {
-    [SerializeField] private int _amountOfRound = 3;
     [SerializeField] StateNode _spawningState;
-    [SerializeField] SyncDictionary<PlayerID, int> _playersWins = new();
+    [SerializeField] private int _amountOfRound = 5;
 
     private WaitForSeconds _delay = new(3);
 
@@ -30,16 +29,10 @@ public class RoundEndState : StateNode<List<PlayerID>>
         if (!InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
             return;
 
-        if (!_playersWins.ContainsKey(winners))
-        {
-            _playersWins[winners] = 0; // Inicializa la clave si no existía
-        }
-
-        _playersWins[winners] += 1;
-        Debug.Log($"{winners} won this round, and he has {_playersWins[winners]}!");
+        scoreManager.AddWins(winners, 1);
 
 
-        foreach (var kvp in _playersWins)
+        foreach (var kvp in scoreManager._playersWins)
         {
             PlayerID playerID = kvp.Key;
             int wins = kvp.Value;

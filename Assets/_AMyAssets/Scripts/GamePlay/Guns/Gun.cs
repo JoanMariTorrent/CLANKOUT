@@ -75,6 +75,7 @@ public class Gun : NetworkBehaviour
 
     private void HandleShooting()
     {
+        if(!isOwner) return;
         if (_knife)
         {
 
@@ -97,7 +98,6 @@ public class Gun : NetworkBehaviour
     private void ShootServerRpc(Vector3 origin, Vector3 direction)
     {
         //Lanza un raycast, si no le da a nada, return
-
         if (!Physics.Raycast(origin, direction, out var hit, _range, _hitLayer, QueryTriggerInteraction.Ignore))
         {
             PlayShotEffectObserversRpc();

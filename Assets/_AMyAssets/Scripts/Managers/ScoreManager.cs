@@ -6,8 +6,8 @@ using UnityEngine;
 public class ScoreManager : NetworkBehaviour
 {
     [SerializeField] private SyncDictionary<PlayerID, ScoreData> _scores = new();
-    [SerializeField] SyncDictionary<PlayerID, int> _playersWins;
-
+    public SyncDictionary<PlayerID, int> _playersWins = new SyncDictionary<PlayerID, int>();
+    
 
     private void Awake()
     {
@@ -47,6 +47,24 @@ public class ScoreManager : NetworkBehaviour
         var _scoreData = _scores[_playerID];
         _scoreData._deaths++;
         _scores[_playerID] = _scoreData;
+    }
+
+
+
+
+    [ServerRpc]
+    public void AddWins(PlayerID playerID, int wins)
+    {
+        if (!_playersWins.ContainsKey(playerID))
+        {
+            _playersWins.Add(playerID, wins);
+        }
+        else if (_playersWins.ContainsKey(playerID))
+        {
+            _playersWins[playerID] += wins;
+        }
+
+        Debug.Log($"{playerID} won this round, now he have {_playersWins[playerID]} wins!");
     }
 
 

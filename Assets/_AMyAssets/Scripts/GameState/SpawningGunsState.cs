@@ -39,8 +39,10 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
 
 
                 weaponManager.EquipWeapon(_primary[0]);
-                weaponManager.SwitchWeapon(0);
                 weaponManager.EquipWeapon(_secondary[0]);
+                weaponManager.SwitchWeapon(0);
+
+                Debug.Log($"{player.PlayerID} and {weaponManager.name}");
             }
         }
 

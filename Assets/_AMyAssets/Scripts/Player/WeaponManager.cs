@@ -11,9 +11,9 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private LayerMask _hitLayer;
 
     private Gun _currentGun;
-    [SerializeField] private List<GameObject> _ownedWeapons = new();
+    [SerializeField] private SyncList<GameObject> _ownedWeapons = new();
 
-    [ServerRpc]
+    
     public void EquipWeapon(GameObject weaponPrefab)
     {
         if (_currentGun != null)
@@ -37,7 +37,6 @@ public class WeaponManager : NetworkBehaviour
 
 
 
-    [ServerRpc]
     public void SwitchWeapon(int index)
     {
         if (index >= 0 && index < _ownedWeapons.Count)
