@@ -153,13 +153,17 @@ public class Gun : NetworkBehaviour
 
             _lastFireTime = Time.unscaledTime;
 
-            ShootServerRpc(_cameraTransform.position, _cameraTransform.forward);
+            ShootServerRpc();
         }
     }
 
-    
-    private void ShootServerRpc(Vector3 origin, Vector3 direction)
+    [ServerRpc]
+    private void ShootServerRpc()
     {
+        Vector3 origin = _cameraTransform.position;
+        Vector3 direction = _cameraTransform.forward;
+
+
         if (recoilCamera != null)
         {
             recoilCamera.RecoilFire();

@@ -4,7 +4,7 @@ using PurrNet.StateMachine;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawningGunsState : StateNode<List<PlayerHealth>>
+public class SpawningGunsState : StateNode<List<PlayerHealth>> 
 {
     private List<PlayerID> _players = new();
 
@@ -31,12 +31,11 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             foreach (var player in data)
             {
                 var weaponManager = player.GetComponent<WeaponManager>();
-                if (!weaponManager) return;
+                if (!weaponManager) continue;
 
 
                 GameObject[] _primary = _weaponDataManager.GetRandomWeapons(1, true);
                 GameObject[] _secondary = _weaponDataManager.GetRandomWeapons(1, false);
-
 
                 weaponManager.EquipWeapon(_primary[0]);
                 weaponManager.EquipWeapon(_secondary[0]);
