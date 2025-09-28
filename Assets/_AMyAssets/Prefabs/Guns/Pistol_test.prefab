@@ -234,7 +234,7 @@ MonoBehaviour:
   returnSpeed: 6
   snappiness: 2
   scopeEquiped: 1
-  scopeMesh: {fileID: 0}
+  scopeMesh: {fileID: 8873447187783223356}
   _inspectPositionOffset: {x: 0.021, y: 0.082, z: 0.04}
   _inspectRotationEuler: {x: -5.529, y: -52.521, z: -1.666}
 --- !u!1 &7521094356888337489
