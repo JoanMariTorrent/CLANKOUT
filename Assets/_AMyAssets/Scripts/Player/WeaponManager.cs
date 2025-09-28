@@ -9,8 +9,9 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private Transform _handTransform;
     [SerializeField] private CinemachineCamera _playerCamera;
     [SerializeField] private LayerMask _hitLayer;
+    [SerializeField] private RecoilCamera recoil;
 
-    private Gun _currentGun;
+    public Gun _currentGun;
     [SerializeField] private SyncList<GameObject> _ownedWeapons = new();
 
     private void Awake()
@@ -31,7 +32,7 @@ public class WeaponManager : NetworkBehaviour
         _currentGun = weaponInstance.GetComponent<Gun>();
         if (_currentGun != null)
         {
-            _currentGun.Setup(_playerCamera.transform, _hitLayer);
+            _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil);
         }
 
         if (!_ownedWeapons.Contains(weaponPrefab))

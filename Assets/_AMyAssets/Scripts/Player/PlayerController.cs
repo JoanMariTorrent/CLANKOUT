@@ -22,6 +22,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Look Settings")]
     [SerializeField] private float lookSensitivity = 2f;
     [SerializeField] private float maxLookAngle = 80f;
+    public bool _isAiming;
 
     [Header("References")]
     [SerializeField] private CinemachineCamera playerCamera;

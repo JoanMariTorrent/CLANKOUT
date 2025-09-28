@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
-using NUnit.Framework;
 using PurrNet;
-using PurrNet.StateMachine;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -14,6 +11,7 @@ public class Gun : NetworkBehaviour
     [SerializeField] private float _fireRate = 0.5f;
     [SerializeField] private bool _automatic;
     [SerializeField] private bool _knife;
+    [SerializeField] private bool _modificable;
 
     [Header("Recoil")]
     [SerializeField] private float _recoilStrenght = 1f;
@@ -28,19 +26,42 @@ public class Gun : NetworkBehaviour
     [SerializeField] private ParticleSystem _muzzleFlash;
     [SerializeField] private List<Renderer> _renderers = new();
     [SerializeField] private ParticleSystem _enviormentHit, _playerHitEffect;
+    [SerializeField] private RecoilCamera recoilCamera;
+
+    [Header("GunRecoil")]
+    [Header("normal recoil")]
+    public float recoilX;
+    public float recoilY;
+    public float recoilZ;
+    [Space(0.2f)]
+    [Header("aiming recoil")]
+    public float aimRecoilX;
+    public float aimRecoilY;
+    public float aimRecoilZ;
+    [Space(0.2f)]
+    [Header("speed recoil")]
+    public float returnSpeed;
+    public float snappiness;
+    [Space(1f)]
 
 
-    private float _lastFireTime;
+
+    [Header("Inspect")]
+    [SerializeField] private bool scopeEquiped;
+    [SerializeField] private MeshRenderer scopeMesh;
     private Vector3 _originalPosition;
     private Quaternion _originalRotation;
-    private Coroutine _recoilCoroutine;
 
+    private Coroutine _recoilCoroutine;
+    private float _lastFireTime;
     private PlayerID _ownerID;
 
 
 
-
-
+    private bool _inspecting = false;
+    private float _inspectSpeed = 5f; // Ajusta la velocidad
+    [SerializeField] private Vector3 _inspectPositionOffset = new Vector3();
+    [SerializeField] private Vector3 _inspectRotationEuler = new Vector3();
 
 
     private void Start()
@@ -63,15 +84,55 @@ public class Gun : NetworkBehaviour
         if (!isOwner) return;
 
         HandleShooting();
+        HandleMods();
         
     }
 
 
-    public void Setup(Transform cameraTransform, LayerMask hitLayer)
+    public void Setup(Transform cameraTransform, LayerMask hitLayer, RecoilCamera recoil)
     {
         _cameraTransform = cameraTransform;
         _hitLayer = hitLayer;
+        recoilCamera = recoil;
     }
+
+    private void HandleMods()
+    {
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            _inspecting = !_inspecting;
+        }
+
+        if (_inspecting)
+        {
+            // Interpola suavemente a la pose de inspección
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(_inspectRotationEuler), Time.deltaTime * _inspectSpeed);
+
+            transform.localPosition = Vector3.Lerp(transform.localPosition, _originalPosition + _inspectPositionOffset, Time.deltaTime * _inspectSpeed);
+
+            
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                scopeEquiped = !scopeEquiped;
+                scopeMesh.enabled = scopeEquiped;
+                
+            }
+        }
+        else
+        {
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, _originalRotation, Time.deltaTime * _inspectSpeed);
+
+            transform.localPosition = Vector3.Lerp( transform.localPosition, _originalPosition, Time.deltaTime * _inspectSpeed);
+        }
+    }
+
+
+
+
+
+
+
+
 
 
 
@@ -99,7 +160,10 @@ public class Gun : NetworkBehaviour
     [ServerRpc]
     private void ShootServerRpc(Vector3 origin, Vector3 direction)
     {
-
+        if (recoilCamera != null)
+        {
+            recoilCamera.RecoilFire();
+        }
         //Lanza un raycast, si no le da a nada, return
         if (!Physics.Raycast(origin, direction, out var hit, _range, _hitLayer, QueryTriggerInteraction.Ignore))
         {
