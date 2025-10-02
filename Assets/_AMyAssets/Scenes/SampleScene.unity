@@ -2979,7 +2979,7 @@ MonoBehaviour:
   _startClientFlags: 0
   _cookieScope: 1
   _dontDestroyOnLoad: 0
-  _transport: {fileID: 1906733324}
+  _transport: {fileID: 1906733318}
   _networkPrefabs: {fileID: 11400000, guid: 38de688ec1e275b408d94648e6972280, type: 2}
   _networkAssets: {fileID: 0}
   _networkRules: {fileID: 11400000, guid: d8799083b96579a42b8b2d03e4ceae98, type: 2}
@@ -3659,10 +3659,10 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1906733320}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 201362517}
-  - {fileID: 1906733320}
   - {fileID: 1110568200713456992}
   - {fileID: 209221665}
   - {fileID: 510901696}
