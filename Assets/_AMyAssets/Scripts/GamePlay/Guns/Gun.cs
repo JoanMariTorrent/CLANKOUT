@@ -66,7 +66,6 @@ public class Gun : NetworkBehaviour
 
     private void Start()
     {
-        Debug.Log(isOwner);
         _originalPosition = transform.localPosition;
         _originalRotation = transform.localRotation;
         enabled = isOwner;

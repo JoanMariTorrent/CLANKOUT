@@ -147,7 +147,7 @@ public class PlayerController : NetworkBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            _weaponManager.SwitchWeapon(1);
+            _weaponManager.SwitchWeapon(2);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {

@@ -44,19 +44,21 @@ public class WeaponManager : NetworkBehaviour
         else if (!deleteWeapon)
         {
             if(_currentGun != null) 
-                _currentGun.enabled = false;
-            
-            if(primaryWeapon)
+                _currentGun.gameObject.SetActive(false);
+
+            if (primaryWeapon)
             {
                 int indexWeapon = GetWeaponIndex(weaponPrefab, true);
                 _ownedWeapons[indexWeapon] = weaponPrefab;
                 Debug.Log($"{_ownedWeapons[indexWeapon].name} {indexWeapon}");
+                InstantiateGun(weaponPrefab);
             }
             else if (!primaryWeapon)
             {
                 int indexWeapon = GetWeaponIndex(weaponPrefab, false);
                 _ownedWeapons[indexWeapon] = weaponPrefab;
                 Debug.Log($"{_ownedWeapons[indexWeapon].name} {indexWeapon}");
+                InstantiateGun(weaponPrefab);
             }
 
 
@@ -66,7 +68,10 @@ public class WeaponManager : NetworkBehaviour
     [ServerRpc]
     public void NewWeapon(GameObject weaponPrefab, bool primary)
     {
-        if(primary && _currentGun != null)
+        EnsureWeaponSlots();
+        bool havePrimary = _ownedWeapons[0] || _ownedWeapons[1];
+
+        if (primary && _currentGun != null)
         {
             if (_ownedWeapons[0] != null && _ownedWeapons[1] != null) // Si tiene 2 principales
             {
@@ -95,7 +100,7 @@ public class WeaponManager : NetworkBehaviour
             {
                 EquipWeapon(weaponPrefab, true, false); // como tiene 2 armas ya, tendra que destruirla 100%
             }
-            
+
             if (_ownedWeapons[2] == null || _ownedWeapons[3] == null) // tiene un hueco libre en la arma secundaria
             {
                 if (_ownedWeapons.Contains(weaponPrefab)) // si la arma que esta pillando ya la tiene
@@ -106,35 +111,68 @@ public class WeaponManager : NetworkBehaviour
 
                 else if (!_ownedWeapons.Contains(weaponPrefab)) // si el arma que esta pillando no la tiene en general
                 {
-                    EquipWeapon(weaponPrefab, false, false);
+                    EquipWeapon(weaponPrefab, true, false);
                 }
             }
         }
 
-        if(_currentGun == null)
+        if (_currentGun == null)
         {
             EquipWeapon(weaponPrefab, false, primary);
+            Debug.Log($"weapon manager: {primary}");
         }
 
     }
+
+
+    private void EnsureWeaponSlots()
+{
+    while (_ownedWeapons.Count < 4)
+        _ownedWeapons.Add(null);
+}
 
 
     private void InstantiateGun(GameObject weaponPrefab)
     {
+        if (_currentGun != null)
+            _currentGun.gameObject.SetActive(false);
+        
         var weaponInstance = Instantiate(weaponPrefab, _handTransform);
         weaponInstance.transform.localPosition = Vector3.zero;
         weaponInstance.transform.localRotation = Quaternion.identity;
 
+
         _currentGun = weaponInstance.GetComponent<Gun>();
         _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil);
     }
+    
+    
 
     public void SwitchWeapon(int index)
     {
-        if (index >= 0 && index < _ownedWeapons.Count)
-        {
-           // EquipWeapon(_ownedWeapons[index]);
-        }
+        if (index < 0 || index >= _ownedWeapons.Count)
+            return;
+
+        GameObject weaponToSwitch = _ownedWeapons[index];
+
+        if (weaponToSwitch == null)
+            return;
+
+
+        
+        // ocultar arma actual
+        if (_currentGun.gameObject != null)
+            _currentGun.gameObject.SetActive(false);
+
+        // Activar el arma
+        _currentGun = weaponToSwitch.GetComponent<Gun>();
+        _currentGun.gameObject.SetActive(true);
+
+        // reconfigurar camara y recoil
+        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil);
+
+        Debug.LogWarning(_currentGun.gameObject);
+        //Debug.Log($"Cambio de arma a {_currentGun.name} en el slot {index}");
     }
 
     private int GetWeaponIndex(GameObject weaponPrefab, bool primaryWeapon)
