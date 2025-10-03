@@ -69,14 +69,17 @@ public class Gun : NetworkBehaviour
         _originalPosition = transform.localPosition;
         _originalRotation = transform.localRotation;
         //enabled = isOwner;
+        
 
         if (!isOwner)
         {
             enabled = false;
+            gameObject.layer = 10;
         }
         else
         {
             enabled = true;
+            gameObject.layer = 9;
         }
         
     }
@@ -99,6 +102,10 @@ public class Gun : NetworkBehaviour
         _cameraTransform = cameraTransform;
         _hitLayer = hitLayer;
         recoilCamera = recoil;
+        if (isOwner)
+            gameObject.layer = 9;
+        else
+            gameObject.layer = 10;
     }
 
     private void HandleMods()
@@ -196,7 +203,7 @@ public class Gun : NetworkBehaviour
 
 
 
-    [ObserversRpc(runLocally: false)]
+    [ObserversRpc(runLocally: true)]
     private void PlayerHitObserversRpc(PlayerHealth player, Vector3 localposition, Vector3 normal)
     {
         if (_playerHitEffect && player && player.transform)
@@ -207,7 +214,7 @@ public class Gun : NetworkBehaviour
     }
 
 
-    [ObserversRpc(runLocally: false)]
+    [ObserversRpc(runLocally: true)]
     private void EnviormentHitObserversRpc(Vector3 position, Vector3 normal)
     {
         if (_enviormentHit)
@@ -219,7 +226,7 @@ public class Gun : NetworkBehaviour
 
     
 
-    [ObserversRpc(runLocally:false)]
+    [ObserversRpc(runLocally:true)]
     private void PlayShotEffectObserversRpc()
     {
         if(_muzzleFlash)

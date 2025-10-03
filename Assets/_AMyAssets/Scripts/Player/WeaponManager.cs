@@ -35,7 +35,6 @@ public class WeaponManager : NetworkBehaviour
             if (currentIndex >= 0) // Si el indice "existe" se guarda la nueva arma en el array de armas obtenidas
             {
                 _ownedWeapons[currentIndex] = weaponPrefab;
-                Debug.Log($"Arma reemplazada en el slot {currentIndex}");
             }
             else // Si el indice "no existe" 
             {
@@ -66,8 +65,6 @@ public class WeaponManager : NetworkBehaviour
                 // Se instancia la nueva arma
                 InstantiateGun(weaponPrefab);
             }
-
-
         }
     }
     
