@@ -156,7 +156,6 @@ public class Gun : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
     private void ShootServerRpc()
     {
         Vector3 origin = _cameraTransform.position;
