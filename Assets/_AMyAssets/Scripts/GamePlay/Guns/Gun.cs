@@ -161,11 +161,7 @@ public class Gun : NetworkBehaviour
 
     private void ShootServerRpc(Vector3 origin, Vector3 direction)
     {
-        Debug.Log("ShootServerRpcBefore");
-        if (!isServer) return;
-
-        Debug.Log("ShootServerRpcAFTER");
-
+        Debug.Log("ShootServerRpc");
         if (recoilCamera != null)
             recoilCamera.RecoilFire();
 
@@ -199,7 +195,7 @@ public class Gun : NetworkBehaviour
 
     [ServerRpc]
     private void ApplyDamageServerRpc(PlayerHealth victim, int gunDamage)
-    {
+    { 
         Debug.Log("ApplyDamageServerRpc");
         victim.ChangeHealth(-gunDamage); 
         if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
@@ -221,7 +217,7 @@ public class Gun : NetworkBehaviour
         return null;
     }
 
-    [ObserversRpc(runLocally: true)]
+    [ObserversRpc(runLocally: false)]
     private void PlayerHitObserversRpc(PlayerHealth player, Vector3 localposition, Vector3 normal)
     {
         if (_playerHitEffect && player && player.transform)
@@ -232,7 +228,7 @@ public class Gun : NetworkBehaviour
     }
 
 
-    [ObserversRpc(runLocally: true)]
+    [ObserversRpc(runLocally: false)]
     private void EnviormentHitObserversRpc(Vector3 position, Vector3 normal)
     {
         if (_enviormentHit)
@@ -244,7 +240,7 @@ public class Gun : NetworkBehaviour
 
     
 
-    [ObserversRpc(runLocally:true)]
+    [ObserversRpc(runLocally:false)]
     private void PlayShotEffectObserversRpc()
     {
         if(_muzzleFlash)
