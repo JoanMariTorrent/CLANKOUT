@@ -35,8 +35,10 @@ public class PlayerSpawningState : StateNode
         foreach (var _player in networkManager.players)
         {
             var _spawnPoint = _spawnPoints[_currentSpawnIndex];
+
             var _newPlayer = Instantiate(_playerPrefab, _spawnPoint.position, _spawnPoint.rotation);
             _newPlayer.GiveOwnership(_player);
+            
             _spawnedPlayers.Add(_newPlayer);
             _currentSpawnIndex++;
 

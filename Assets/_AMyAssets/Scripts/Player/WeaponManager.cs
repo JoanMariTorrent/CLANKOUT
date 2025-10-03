@@ -190,12 +190,16 @@ public class WeaponManager : NetworkBehaviour
         weaponToSwitch.SetActive(true);
         _currentGun = weaponToSwitch.GetComponent<Gun>();
 
+        // Asignar el ownership al jugador que posee esta arma
+        _currentGun.GiveOwnership(owner.Value);
+
         // Setea la posicion y rotacion de la nueva arma
         weaponToSwitch.transform.localPosition = Vector3.zero;
         weaponToSwitch.transform.localRotation = Quaternion.identity;
 
         // reconfigurar camara y recoil
         _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil);
+
 
         Debug.Log($"Cambio de arma a {_currentGun.name} en el slot {index}");
     }

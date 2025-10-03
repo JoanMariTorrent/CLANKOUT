@@ -68,21 +68,29 @@ public class Gun : NetworkBehaviour
     {
         _originalPosition = transform.localPosition;
         _originalRotation = transform.localRotation;
-        enabled = isOwner;
+        //enabled = isOwner;
+
+        if (!isOwner)
+        {
+            enabled = false;
+        }
+        else
+        {
+            enabled = true;
+        }
         
     }
-
-    
 
 
 
 
     public void Update()
     {
+        if (!isOwner) return;
 
         HandleShooting();
         HandleMods();
-        
+
     }
 
 
@@ -124,15 +132,6 @@ public class Gun : NetworkBehaviour
     }
 
 
-
-
-
-
-
-
-
-
-
     private void HandleShooting()
     {
         if (_knife)
@@ -149,24 +148,20 @@ public class Gun : NetworkBehaviour
 
             _lastFireTime = Time.unscaledTime;
 
-            ShootServerRpc();
+            ShootServerRpc(_cameraTransform.position, _cameraTransform.forward);
         }
     }
 
 
-    [ObserversRpc]
-    private void ShootServerRpc()
+    [ServerRpc]
+    private void ShootServerRpc(Vector3 origin, Vector3 direction)
     {
         if (!isServer) return;
 
-        Vector3 origin = _cameraTransform.position;
-        Vector3 direction = _cameraTransform.forward;
-
 
         if (recoilCamera != null)
-        {
             recoilCamera.RecoilFire();
-        }
+
         //Lanza un raycast, si no le da a nada, return
         if (!Physics.Raycast(origin, direction, out var hit, _range, _hitLayer, QueryTriggerInteraction.Ignore))
         {
