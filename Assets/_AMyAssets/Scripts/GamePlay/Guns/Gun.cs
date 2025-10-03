@@ -159,12 +159,12 @@ public class Gun : NetworkBehaviour
         }
     }
 
-
-    [ServerRpc]
     private void ShootServerRpc(Vector3 origin, Vector3 direction)
     {
+        Debug.Log("ShootServerRpcBefore");
         if (!isServer) return;
 
+        Debug.Log("ShootServerRpcAFTER");
 
         if (recoilCamera != null)
             recoilCamera.RecoilFire();
@@ -180,13 +180,9 @@ public class Gun : NetworkBehaviour
 
         if (hit.transform.TryGetComponent(out PlayerHealth victim))
         {
-            victim.ChangeHealth(-_gunDamage);
+            ApplyDamageServerRpc(victim, _gunDamage);
             PlayShotEffectObserversRpc();
             PlayerHitObserversRpc(victim, victim.transform.InverseTransformPoint(hit.point), hit.normal);
-            if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
-            {
-                scoreManager.AddDamageServerRpc(victim.PlayerID, _gunDamage);
-            }
         }
 
         // Si no tiene el script HealthManager, se hace el VFX de mapa
@@ -201,9 +197,29 @@ public class Gun : NetworkBehaviour
     }
 
 
+    [ServerRpc]
+    private void ApplyDamageServerRpc(PlayerHealth victim, int gunDamage)
+    {
+        Debug.Log("ApplyDamageServerRpc");
+        victim.ChangeHealth(-gunDamage); 
+        if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
+        {
+            scoreManager.AddDamageServerRpc(victim.PlayerID, gunDamage);
+        }
+
+    }
 
 
-
+    private PlayerHealth FindPlayerByID(PlayerID id)
+    {
+        Debug.Log("FindPlayerByID");
+        foreach (var player in FindObjectsOfType<PlayerHealth>())
+        {
+            if (player.PlayerID == id)
+                return player;
+        }
+        return null;
+    }
 
     [ObserversRpc(runLocally: true)]
     private void PlayerHitObserversRpc(PlayerHealth player, Vector3 localposition, Vector3 normal)
