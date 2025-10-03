@@ -251,6 +251,7 @@ public class Gun : NetworkBehaviour
 
         if (gameObject.layer == otherPlayerGunTag)
             return;
+            
         _recoilCoroutine = StartCoroutine(PlayRecoil());
     }
 
