@@ -161,7 +161,7 @@ public class WeaponManager : NetworkBehaviour
         if (index >= 0)
             _ownedWeapons[index] = weaponInstance;
 
-        SwitchWeapon(index);
+        
     }
     
     [ObserversRpc]

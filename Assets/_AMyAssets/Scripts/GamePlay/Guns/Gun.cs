@@ -93,8 +93,6 @@ public class Gun : NetworkBehaviour
         if (!isOwner) return;
 
         HandleShooting();
-        HandleMods();
-
     }
 
 
@@ -109,35 +107,6 @@ public class Gun : NetworkBehaviour
             gameObject.layer = 10;
     }
 
-    private void HandleMods()
-    {
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            _inspecting = !_inspecting;
-        }
-
-        if (_inspecting)
-        {
-            // Interpola suavemente a la pose de inspecci�n
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(_inspectRotationEuler), Time.deltaTime * _inspectSpeed);
-
-            transform.localPosition = Vector3.Lerp(transform.localPosition, _originalPosition + _inspectPositionOffset, Time.deltaTime * _inspectSpeed);
-
-            
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                scopeEquiped = !scopeEquiped;
-                scopeMesh.enabled = scopeEquiped;
-                
-            }
-        }
-        else
-        {
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, _originalRotation, Time.deltaTime * _inspectSpeed);
-
-            transform.localPosition = Vector3.Lerp( transform.localPosition, _originalPosition, Time.deltaTime * _inspectSpeed);
-        }
-    }
 
 
     private void HandleShooting()
