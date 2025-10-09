@@ -2,16 +2,22 @@ using System.Collections;
 using PurrNet;
 using UnityEngine;
 using System.Collections.Generic;
+using NUnit.Framework.Internal.Commands;
 
 public class Gun : NetworkBehaviour
 {
+    [Header("GunType")]
+    [SerializeField] private bool _normalGun;
+    [SerializeField] private bool _knife;
+    [SerializeField] private bool _grenade;
+    [SerializeField] private bool _automatic;
+    [SerializeField] private bool _modificable;
+    
     [Header("Stats")]
     [SerializeField] private float _range = 20f;
     [SerializeField] private int _gunDamage = 10;
     [SerializeField] private float _fireRate = 0.5f;
-    [SerializeField] private bool _automatic;
-    [SerializeField] private bool _knife;
-    [SerializeField] private bool _modificable;
+    
 
     [Header("Recoil")]
     [SerializeField] private float _recoilStrenght = 1f;
@@ -19,6 +25,14 @@ public class Gun : NetworkBehaviour
     [SerializeField] private AnimationCurve _recoilCurve;
     [SerializeField] private AnimationCurve _rotationCurve;
     [SerializeField] private float _rotationAmount = 25f;
+
+    [Header("Grenades")]
+    [SerializeField] private float _timeCharged;
+    [SerializeField] private float _timeToCharge;
+    [SerializeField] private float _maxTimeCharge;
+    [SerializeField] private float _grenadeForce;
+    bool grenadeCharged = false;
+    public bool grenadeThrowed = false;
 
     [Header("References")]
     [SerializeField] private Transform _cameraTransform;
@@ -115,7 +129,7 @@ public class Gun : NetworkBehaviour
         {
 
         }
-        else
+        else if (_normalGun)
         {
             // Si es automatica y no mantiene el click o no es automatica y no pulsa el click, se sale de la funcion
             if (_automatic && !Input.GetKey(KeyCode.Mouse0) || !_automatic && !Input.GetKeyDown(KeyCode.Mouse0)) return;
@@ -127,6 +141,43 @@ public class Gun : NetworkBehaviour
 
             ShootServerRpc(_cameraTransform.position, _cameraTransform.forward);
         }
+
+        else if (_grenade)
+        {
+            if (Input.GetKey(KeyCode.Mouse0) && !grenadeThrowed)
+            {
+                Debug.Log("Cargando granada");
+                _timeCharged += Time.deltaTime;
+
+                if (_timeCharged >= _timeToCharge && _timeCharged < _maxTimeCharge)
+                {
+                    grenadeCharged = true;
+                }
+                if (_timeCharged >= _maxTimeCharge)
+                {
+                    Debug.Log("BOOM!");
+                    _timeCharged = 0;
+                    grenadeCharged = false;
+                    return;
+                }
+
+            }
+            if (Input.GetKeyUp(KeyCode.Mouse0) && grenadeCharged && !grenadeThrowed)
+            {
+                grenadeCharged = false;
+                Debug.Log("Throwing grenade");
+
+                Rigidbody rbGrenade = GetComponent<Rigidbody>();
+                if (rbGrenade == null)
+                {
+                    Debug.LogError("rbGrenade is null!");
+                    return;
+                }
+                StartCoroutine(GrenadeCoroutine(rbGrenade));
+
+            }
+        }
+
     }
 
     private void ShootServerRpc(Vector3 origin, Vector3 direction)
@@ -232,7 +283,7 @@ public class Gun : NetworkBehaviour
         float elapsed = 0f;
 
         while (elapsed < _recoilDuration)
-        { 
+        {
             elapsed += Time.deltaTime;
             float curveTime = elapsed / _recoilDuration;
 
@@ -251,5 +302,24 @@ public class Gun : NetworkBehaviour
 
         transform.localPosition = _originalPosition;
         transform.localRotation = _originalRotation;
+    }
+
+   
+    private IEnumerator GrenadeCoroutine(Rigidbody rbGrenade)
+    {
+        WeaponManager wm = GetComponentInParent<WeaponManager>();
+        wm.UtilityThrowed();
+
+        grenadeThrowed = true;
+        gameObject.transform.parent = null;
+        rbGrenade.isKinematic = false;
+        rbGrenade.AddForce(Vector3.up * 20);
+        rbGrenade.AddForce(_cameraTransform.forward * _grenadeForce);
+        yield return new WaitForSeconds(0.8f);
+
+        rbGrenade.isKinematic = true;
+        Debug.Log("BOOM!!!!!");
+        yield return new WaitForSeconds(3);
+        Destroy(gameObject);
     }
 }

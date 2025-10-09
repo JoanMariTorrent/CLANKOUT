@@ -169,7 +169,7 @@ public class PlayerController : NetworkBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            _weaponManager.SwitchWeapon(3);
+            _weaponManager.SwitchWeapon(4);
         }
     }
 

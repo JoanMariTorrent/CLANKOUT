@@ -67,9 +67,15 @@ public class WeaponManager : NetworkBehaviour
             }
         }
     }
+
+    private void EquipUtility(GameObject utilityPrefab)
+    {
+        _ownedWeapons[4] = utilityPrefab;
+        InstantiateGun(utilityPrefab);
+    }
     
 
-    public void NewWeapon(GameObject weaponPrefab, bool primary)
+    public void NewWeapon(GameObject weaponPrefab, bool primary, bool utility)
     {
         // Se generan los todos los espacios del array
         EnsureWeaponSlots();
@@ -77,8 +83,9 @@ public class WeaponManager : NetworkBehaviour
         // Dos bools para ver si es arma principal o secundaria la que se intenta agregar
         bool havePrimary = _ownedWeapons[0] || _ownedWeapons[1];
         bool haveSecondary = _ownedWeapons[2] || _ownedWeapons[3];
+        bool haveUtility = _ownedWeapons[4];
 
-        if (primary && havePrimary)
+        if (primary && havePrimary && !utility)
         {
             if (_ownedWeapons[0] != null && _ownedWeapons[1] != null) // Si tiene 2 principales
             {
@@ -99,7 +106,7 @@ public class WeaponManager : NetworkBehaviour
                 }
             }
         }
-        else if (!primary && haveSecondary)
+        else if (!primary && haveSecondary && !utility)
         {
 
             if (_ownedWeapons[2] != null && _ownedWeapons[3] != null) // si tiene 2 secundarias
@@ -122,6 +129,11 @@ public class WeaponManager : NetworkBehaviour
             }
         }
 
+        else if (utility)
+        {
+            EquipUtility(weaponPrefab);
+        }
+
         if (!havePrimary || !haveSecondary) // Si no tiene ningun arma, tanto principal como secundaria, se le pasa false en destruir y asi instancia una nueva
         {
             EquipWeapon(weaponPrefab, false, primary);
@@ -132,7 +144,7 @@ public class WeaponManager : NetworkBehaviour
 
     private void EnsureWeaponSlots() // Genera todos los slots y los pone en null, para tenerlos creados
     {
-        while (_ownedWeapons.Count < 4)
+        while (_ownedWeapons.Count < 5)
             _ownedWeapons.Add(null);
     }
 
@@ -224,5 +236,10 @@ public class WeaponManager : NetworkBehaviour
         return -1;
     }
 
+    public void UtilityThrowed()
+    {
+        _ownedWeapons.RemoveAt(4);
+        SwitchWeapon(0);
+    }
    
 }

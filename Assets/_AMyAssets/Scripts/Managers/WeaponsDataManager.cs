@@ -7,6 +7,7 @@ public class WeaponsDataManager : NetworkBehaviour
 {
     public GameObject[] _primaryWeaponData;
     public GameObject[] _secondaryWeaponData;
+    public GameObject[] _utilityData;
 
     private void Awake()
     {
@@ -21,21 +22,26 @@ public class WeaponsDataManager : NetworkBehaviour
 
 
 
-    public GameObject[] GetRandomWeapons(int loop, bool primaryWeapon)
+    public GameObject[] GetRandomWeapons(int loop, int Type)
     {
         GameObject[] weapons = new GameObject[loop];
 
         for (int i = 0; i < loop; i++)
         {
-            if (primaryWeapon)
+            if (Type == 1)
             {
                 int index = Random.Range(0, _primaryWeaponData.Length);
                 weapons[i] = _primaryWeaponData[index];
             }
-            else
+            else if (Type == 2)
             {
                 int index = Random.Range(0, _secondaryWeaponData.Length);
                 weapons[i] = _secondaryWeaponData[index];
+            }
+            else if (Type == 3)
+            {
+                int index = Random.Range(0, _utilityData.Length);
+                weapons[i] = _utilityData[index];
             }
         }
 

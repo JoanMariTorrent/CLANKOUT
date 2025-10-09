@@ -195,12 +195,14 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  _normalGun: 1
+  _knife: 0
+  _grenade: 0
+  _automatic: 0
+  _modificable: 1
   _range: 20
   _gunDamage: 10
   _fireRate: 0.27
-  _automatic: 0
-  _knife: 0
-  _modificable: 1
   _recoilStrenght: 0.1
   _recoilDuration: 0.35
   _recoilCurve:
@@ -270,6 +272,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _rotationAmount: -25
+  _timeCharged: 0
+  _maxTimeCharge: 0
   _cameraTransform: {fileID: 0}
   _hitLayer:
     serializedVersion: 2

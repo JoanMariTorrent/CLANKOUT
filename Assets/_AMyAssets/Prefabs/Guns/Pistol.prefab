@@ -131,12 +131,14 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  _normalGun: 1
+  _knife: 0
+  _grenade: 0
+  _automatic: 0
+  _modificable: 0
   _range: 20
   _gunDamage: 10
   _fireRate: 0.5
-  _automatic: 0
-  _knife: 0
-  _modificable: 0
   _recoilStrenght: 0.1
   _recoilDuration: 0.35
   _recoilCurve:
@@ -206,6 +208,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _rotationAmount: -25
+  _timeCharged: 0
+  _maxTimeCharge: 0
   _cameraTransform: {fileID: 0}
   _hitLayer:
     serializedVersion: 2
@@ -216,6 +220,8 @@ MonoBehaviour:
   _enviormentHit: {fileID: 2542180830717017700, guid: c23edada67e2ef946b2764574583bfaa, type: 3}
   _playerHitEffect: {fileID: 2446692518619174518, guid: bc337677c0f15bc45832afc868cb0229, type: 3}
   recoilCamera: {fileID: 0}
+  ownerGunTag: 0
+  otherPlayerGunTag: 0
   recoilX: 0
   recoilY: 0
   recoilZ: 0
