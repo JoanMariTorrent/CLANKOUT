@@ -2613,7 +2613,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _minPlayers: 1
+  _minPlayers: 2
 --- !u!4 &1626096718
 Transform:
   m_ObjectHideFlags: 0
@@ -2797,9 +2797,11 @@ MonoBehaviour:
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
   _primaryWeaponData:
-  - {fileID: 9099921293467336502, guid: e5985975352801240a2881a78dbade0b, type: 3}
+  - {fileID: 1383448258628988601, guid: 47e46472208dc3e4ba0a1f9b94a96aaf, type: 3}
   _secondaryWeaponData:
   - {fileID: 6827815557315732681, guid: 93686cd7cd37abb4d981d7f18cd0ed2e, type: 3}
+  _utilityData:
+  - {fileID: 9099921293467336502, guid: e5985975352801240a2881a78dbade0b, type: 3}
 --- !u!1 &1803448727
 GameObject:
   m_ObjectHideFlags: 0
