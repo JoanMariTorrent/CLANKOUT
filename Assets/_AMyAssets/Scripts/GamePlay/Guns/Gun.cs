@@ -303,8 +303,7 @@ public class Gun : NetworkBehaviour
     }
 
    
-   [ObserversRpc(runLocally:false)]
-    private IEnumerator GrenadeCoroutine(Rigidbody rbGrenade)
+    private IEnumerator GrenadeCoroutine(Rigidbody rbGrenade) //No se puede poner ObserverRpc en una coroutina y el cliente no lo ve
     {
         WeaponManager wm = GetComponentInParent<WeaponManager>();
         wm.UtilityThrowed();
