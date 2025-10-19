@@ -2317,7 +2317,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _NetworkManager: {fileID: 0}
+  _NetworkManager: {fileID: 1906733319}
   _allViews:
   - {fileID: 1077257841}
   - {fileID: 1294077458}
@@ -2613,7 +2613,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _minPlayers: 2
+  _minPlayers: 1
 --- !u!4 &1626096718
 Transform:
   m_ObjectHideFlags: 0

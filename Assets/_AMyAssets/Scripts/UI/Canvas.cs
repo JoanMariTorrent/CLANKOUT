@@ -1,6 +1,9 @@
+using System;
 using UnityEngine;
 using PurrNet;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine.SceneManagement;
 
 public class Canvas : NetworkBehaviour
 {
@@ -80,6 +83,14 @@ public class Canvas : NetworkBehaviour
         _NetworkManager.StartClient();
         Debug.Log("Cliente iniciado");
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            SceneManager.LoadScene(0);
+        }
+    }
 }
 
 public abstract class View : MonoBehaviour
@@ -89,3 +100,4 @@ public abstract class View : MonoBehaviour
     public abstract void OnShow();
     public abstract void OnHide();
 }
+

@@ -119,6 +119,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3657439584890083235}
+  - {fileID: 999619703423802680}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4403167930056468718
@@ -273,12 +274,15 @@ MonoBehaviour:
     m_RotationOrder: 4
   _rotationAmount: -25
   _timeCharged: 0
+  _timeToCharge: 0
   _maxTimeCharge: 0
+  _grenadeForce: 0
+  grenadeThrowed: 0
   _cameraTransform: {fileID: 0}
   _hitLayer:
     serializedVersion: 2
     m_Bits: 1783
-  _muzzleFlash: {fileID: 3333162927624991419, guid: 9786e1a0450ef5d4da7d1fdd4e0fd5a8, type: 3}
+  _muzzleFlash: {fileID: 1294303179788400516}
   _renderers:
   - {fileID: 8771229046220871736, guid: 9786e1a0450ef5d4da7d1fdd4e0fd5a8, type: 3}
   _enviormentHit: {fileID: 2542180830717017700, guid: c23edada67e2ef946b2764574583bfaa, type: 3}
@@ -298,6 +302,73 @@ MonoBehaviour:
   scopeMesh: {fileID: 8873447187783223356}
   _inspectPositionOffset: {x: 0.021, y: 0.082, z: 0.04}
   _inspectRotationEuler: {x: -5.529, y: -52.521, z: -1.666}
+--- !u!1001 &685793078464698810
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6671666344515431204}
+    m_Modifications:
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.0098
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0239
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6147969912270984702, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+      propertyPath: m_Name
+      value: ShotEffect
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+--- !u!4 &999619703423802680 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 313899545257952386, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+  m_PrefabInstance: {fileID: 685793078464698810}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &1294303179788400516 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1761510852944293438, guid: f2be673f42549ac41b9e2ac5cdb7d2c2, type: 3}
+  m_PrefabInstance: {fileID: 685793078464698810}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3840282480819974216
 PrefabInstance:
   m_ObjectHideFlags: 0

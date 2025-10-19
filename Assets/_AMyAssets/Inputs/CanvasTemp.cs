@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CanvasTemp : MonoBehaviour
 {
@@ -9,5 +10,10 @@ public class CanvasTemp : MonoBehaviour
     void Update()
     {
         velocityText.text = playerCharacter._state.Velocity.ToString();
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }
