@@ -137,7 +137,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 
     public void UpdateInput(CharacterInput input)
     {
-        if (!isOwner) return;
 
         _requestedRotation = input.Rotation;
         // Pilla el input 2D y crea el movimiento 3D en el vector xz
@@ -309,7 +308,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
-        if (!isOwner) return;
         // actualiza la rotacion del character hacia la misma direccion de la rotacion requerida (camera rotation)
 
         var forward = Vector3.ProjectOnPlane
@@ -324,7 +322,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
-        if (!isOwner) return;
         _state.Acceleration = Vector3.zero;
         // if on the ground...
         if (motor.GroundingStatus.IsStableOnGround)
