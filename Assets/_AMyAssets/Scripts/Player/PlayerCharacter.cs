@@ -137,6 +137,7 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 
     public void UpdateInput(CharacterInput input)
     {
+        if (!isOwner) return;
 
         _requestedRotation = input.Rotation;
         // Pilla el input 2D y crea el movimiento 3D en el vector xz
