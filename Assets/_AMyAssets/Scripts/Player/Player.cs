@@ -46,10 +46,6 @@ public class Player : NetworkBehaviour
         {
             HandleInputs();
         }
-
-        playerCharacter.UpdateBody(Time.deltaTime);
-
-        
     }
 
     private void LateUpdate()
@@ -58,6 +54,7 @@ public class Player : NetworkBehaviour
         var cameraTarget = playerCharacter.GetCameraTarget();
         var state = playerCharacter.GetState();
         
+        playerCharacter.UpdateBody(deltaTime);
         playerCamera.UpdatePosition(cameraTarget);
         cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
         cameraLean.UpdateLean

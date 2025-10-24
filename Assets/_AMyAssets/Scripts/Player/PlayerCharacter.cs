@@ -106,6 +106,10 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     public bool _requestedAim;
     private Collider[] _unCrouchOverlapResults;
 
+    //Netcode
+    private Vector3 networkedPosition;
+    private Quaternion networkedRotation;
+
 
 
     protected override void OnSpawned()
@@ -194,9 +198,25 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 
     }
 
-    [ObserversRpc]
+    void Update()
+    {
+        if (isOwner)
+        {
+            networkedPosition = transform.position;
+            networkedRotation = transform.rotation;
+        }
+        else
+        {
+            // Los demás solo ven el personaje
+            transform.position = networkedPosition;
+            transform.rotation = networkedRotation;
+        }
+
+    }
+
     public void UpdateBody(float deltaTime)
     {
+        
         var currentHeight = motor.Capsule.height;
         var normalizeHeight = currentHeight / standheight;
 

@@ -154,7 +154,7 @@ namespace KinematicCharacterController
     /// Component that manages character collisions and movement solving
     /// </summary>
     [RequireComponent(typeof(CapsuleCollider))]
-    public class KinematicCharacterMotor : NetworkBehaviour
+    public class KinematicCharacterMotor : Behaviour
     {
 #pragma warning disable 0414
         [Header("Components")]
