@@ -106,6 +106,11 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     public bool _requestedAim;
     private Collider[] _unCrouchOverlapResults;
 
+    // Pruebas networking
+    private Vector3 lasKnownPosition;
+    private Quaternion lastKnownRotation;
+    private Stance lasKnownStance;
+
 
     
     protected override void OnSpawned()
@@ -631,5 +636,22 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
         }
         normal = Vector3.zero;
         return false;
+    }
+
+
+    public void SyncStateToNetwork()
+    {
+        if (!isOwner) return;
+        lasKnownPosition = motor.TransientPosition;
+        lastKnownRotation = transform.rotation;
+        lasKnownStance = _state.Stance;
+    }
+
+    public void ApplyNetworkState(float deltaTime)
+    {
+        if (isOwner) return;
+        transform.position = Vector3.Lerp(transform.position, lasKnownPosition, 10f * deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lastKnownRotation, 10f * deltaTime);
+        _state.Stance = lasKnownStance;
     }
 }

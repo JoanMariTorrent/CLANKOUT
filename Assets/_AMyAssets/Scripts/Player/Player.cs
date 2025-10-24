@@ -16,14 +16,18 @@ public class Player : NetworkBehaviour
     {
         base.OnSpawned();
         playerCamera.gameObject.SetActive(isOwner);
+
+        if (isOwner)
+        {
+            _inputActions = new PlayerInputsAction();
+            _inputActions.Enable();
+        }
     }
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        _inputActions = new PlayerInputsAction();
-        _inputActions.Enable();
 
 
         playerCharacter.Intialize();
@@ -35,13 +39,61 @@ public class Player : NetworkBehaviour
 
     private void OnDisable()
     {
-        _inputActions.Dispose();
+        if (_inputActions != null)
+            _inputActions.Dispose();
     }
     void Update()
     {
-        if (!isOwner) return;
+        if (isOwner)
+        {
+            HandleInput();
+            playerCharacter.SyncStateToNetwork();
+        }
+        else
+        {
+            playerCharacter.ApplyNetworkState(Time.deltaTime);
+        }
+
+        playerCharacter.UpdateBody(Time.deltaTime);        
+    }
+
+    private void LateUpdate()
+    {
+        var deltaTime = Time.deltaTime;
+        var cameraTarget = playerCharacter.GetCameraTarget();
+        var state = playerCharacter.GetState();
+
+        if (isOwner)
+        {
+            playerCamera.UpdatePosition(cameraTarget);
+            cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
+            cameraLean.UpdateLean
+            (
+                deltaTime,
+                state.Stance is Stance.Slide,
+                state.Acceleration,
+                cameraTarget.up
+            );
+        }
+    }
+
+
+
+
+
+    public void Teleport(Vector3 position)
+    {
+        playerCharacter.SetPosition(position);
+    }
+
+
+
+
+
+
+    private void HandleInput()
+    {
         var input = _inputActions.GamePlay;
-        float deltaTime = Time.deltaTime;
 
         // Pilla camera input y actualiza su rotacion
         var cameraInput = new CameraInput { Look = input.Look.ReadValue<Vector2>() };
@@ -52,7 +104,7 @@ public class Player : NetworkBehaviour
         if (input.ChangeGun.triggered)
         {
             var controlName = input.ChangeGun.activeControl?.displayName; // 1, 2, 3...
-            if (int.TryParse(controlName, out int parsed)) 
+            if (int.TryParse(controlName, out int parsed))
             {
                 requestedGun = parsed;
             }
@@ -87,29 +139,6 @@ public class Player : NetworkBehaviour
             }
         }
 #endif
-    }
-
-    private void LateUpdate()
-    {
-        var deltaTime = Time.deltaTime;
-        var cameraTarget = playerCharacter.GetCameraTarget();
-        var state = playerCharacter.GetState();
-
-        playerCharacter.UpdateBody(deltaTime);
-        playerCamera.UpdatePosition(cameraTarget);
-        cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
-        cameraLean.UpdateLean
-        (
-            deltaTime,
-            state.Stance is Stance.Slide,
-            state.Acceleration,
-            cameraTarget.up
-        );
-    }
-
-    public void Teleport(Vector3 position)
-    {
-        playerCharacter.SetPosition(position);
     }
 
 
