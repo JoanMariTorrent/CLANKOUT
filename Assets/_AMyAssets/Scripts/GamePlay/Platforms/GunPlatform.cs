@@ -64,7 +64,7 @@ public class GunPlatform : NetworkBehaviour
 
     private void SpawnGun()
     {
-        typeGun = Random.Range(1, 2);
+        typeGun = Random.Range(1, 3);
         Debug.Log(typeGun);
         spawnGun = _weaponsData.GetRandomWeapons(1, typeGun);
         var gunScript = spawnGun[0].GetComponent<Gun>();
