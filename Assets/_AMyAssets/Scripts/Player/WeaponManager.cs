@@ -27,32 +27,28 @@ public class WeaponManager : NetworkBehaviour
     {
         if (deleteWeapon) // Si el arma hay que borrarla
         {
-            // Busca el indice del arma que hay que borrar y lo elimina
             Gun gunScript = weaponPrefab.GetComponent<Gun>();
             int currentIndex = IndexHasWeaponOfType(gunScript.weaponType);
-            
-            
-
-            if (currentIndex >= 0 && _ownedWeapons[currentIndex] != null) // Si encuentro un arma del mismo tipo, la destruye
+            if (currentIndex >= 0 && _ownedWeapons[currentIndex] != null)
             {
                 Destroy(_ownedWeapons[currentIndex]);
                 _ownedWeapons[currentIndex] = null;
             }
-            
+
             // Instancia la nueva arma
             InstantiateGun(weaponPrefab);
 
-            if (currentIndex >= 0) // Si el indice "existe" se guarda la nueva arma en el array de armas obtenidas
-            {
+            // Si reemplazamos la actual, usamos el mismo índice
+            if (currentIndex >= 0)
                 _ownedWeapons[currentIndex] = weaponInstance;
-            }
             
-            else // Si el indice "no existe" 
+            else
             {
                 int indexWeapon = GetWeaponIndex(primaryWeapon);
                 _ownedWeapons[indexWeapon] = weaponInstance;
             }
         }
+
 
         else if (!deleteWeapon) // Si no hay que borrar el arma
         {
@@ -84,7 +80,7 @@ public class WeaponManager : NetworkBehaviour
         _ownedWeapons[4] = utilityPrefab;
         InstantiateGun(utilityPrefab);
     }
-    
+
 
     public void NewWeapon(GameObject weaponPrefab, bool primary, bool utility)
     {
@@ -134,7 +130,6 @@ public class WeaponManager : NetworkBehaviour
                 if (HasWeaponOfType(newWeaponID)) // si la arma que esta pillando ya la tiene
                 {
                     EquipWeapon(weaponPrefab, true, false);
-
                 }
 
                 else if (!HasWeaponOfType(newWeaponID)) // si el arma que esta pillando no la tiene en general
@@ -149,7 +144,8 @@ public class WeaponManager : NetworkBehaviour
             EquipUtility(weaponPrefab);
         }
 
-        if (!havePrimary || !haveSecondary) // Si no tiene ningun arma, tanto principal como secundaria, se le pasa false en destruir y asi instancia una nueva
+        if (!havePrimary ||
+            !haveSecondary) // Si no tiene ningun arma, tanto principal como secundaria, se le pasa false en destruir y asi instancia una nueva
         {
             EquipWeapon(weaponPrefab, false, primary);
         }
@@ -160,11 +156,14 @@ public class WeaponManager : NetworkBehaviour
     {
         foreach (var weapon in _ownedWeapons)
         {
-            if(weapon == null) continue;
+            if (weapon == null) continue;
             Gun g = weapon.GetComponent<Gun>();
-            if (g != null && g.weaponType == id)
+            if (g != null && g.weaponType == id) 
                 return true;
+
+            
         }
+
         return false;
     }
 
@@ -173,13 +172,13 @@ public class WeaponManager : NetworkBehaviour
         for (int i = 0; i < _ownedWeapons.Count; i++)
         {
             var weapon = _ownedWeapons[i];
-            if(weapon == null) continue;
+            if (weapon == null) continue;
 
             Gun g = weapon.GetComponent<Gun>();
-            if(g != null && g.weaponType == id)
+            if (g != null && g.weaponType == id)
                 return i;
         }
-        
+
         return -1;
     }
 
@@ -215,9 +214,9 @@ public class WeaponManager : NetworkBehaviour
         if (index >= 0)
             _ownedWeapons[index] = weaponInstance;
 
-        
+
     }
-    
+
     [ObserversRpc]
     public void SwitchWeapon(int index) // FALTA ARREGLAR QUE AL CAMBIAR EL ARMA, SE OCULTE LA ANTERIOR Y SE ACTIVE LA NUEVA
     {
@@ -234,7 +233,7 @@ public class WeaponManager : NetworkBehaviour
         {
             if (_ownedWeapons[i] != null)
             {
-                _ownedWeapons[i].SetActive(false); 
+                _ownedWeapons[i].SetActive(false);
             }
         }
 
@@ -283,5 +282,62 @@ public class WeaponManager : NetworkBehaviour
         _ownedWeapons.RemoveAt(4);
         SwitchWeapon(0);
     }
-   
+
+    [ObserversRpc]
+    public void DropGun()
+    {
+        _currentGun.rb.isKinematic = false;
+        _currentGun.rb.useGravity = true;
+
+        _currentGun.rb.AddForce(_handTransform.transform.forward * 5f, ForceMode.Impulse);
+        _currentGun.equipedGun = false;
+        int currentIndex = _ownedWeapons.IndexOf(_currentGun.gameObject);
+        _ownedWeapons[currentIndex] = null;
+        _currentGun.SetDown();
+        _currentGun = null;
+        
+
+        int _case = -1;
+
+
+        if (playerChar._lastGunEquiped == LastGunEquiped.Primary && _case == -1)
+        {
+            if (_ownedWeapons[0] != null || _ownedWeapons[1] != null)
+            {
+                _case = _ownedWeapons[0] != null ? 0 : 1;
+                playerChar._lastGunEquiped = LastGunEquiped.Primary;
+            }
+            else if ((_ownedWeapons[2] != null || _ownedWeapons[3] != null) && _case == -1)
+            {
+                _case = _ownedWeapons[2] != null ? 2 : 3;
+                playerChar._lastGunEquiped = LastGunEquiped.Secondary;
+            }
+            else
+                Debug.Log("Cambiar a cuchillo (principal)");
+        }
+        else if (playerChar._lastGunEquiped == LastGunEquiped.Secondary && _case == -1)
+        {
+            if (_ownedWeapons[2] != null || _ownedWeapons[3] != null)
+            {
+                _case = _ownedWeapons[2] != null ? 2 : 3;
+                playerChar._lastGunEquiped = LastGunEquiped.Secondary;
+            }
+            else if ((_ownedWeapons[0] != null || _ownedWeapons[1] != null) && _case == -1)
+            {
+                _case = _ownedWeapons[0] != null ? 0 : 1;
+                playerChar._lastGunEquiped = LastGunEquiped.Primary;
+            }
+            else
+                Debug.Log("Cambiar a cuchillo (secundaria)");
+        }
+
+        if (_case != -1)
+        {
+            SwitchWeapon(_case);
+            Debug.Log(_case);
+        }
+        else if (_case == -1)
+            Debug.LogWarning("_case es -1");
+        
+    }
 }

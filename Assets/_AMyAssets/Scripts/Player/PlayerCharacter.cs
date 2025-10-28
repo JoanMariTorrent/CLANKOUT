@@ -120,6 +120,8 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     public bool _requestedRun;
     public bool _requestedInteract;
     public bool _requestedReload;
+    public bool _requestedDropGun;
+    
     private Collider[] _unCrouchOverlapResults;
 
     public bool primaryIndex = false;
@@ -189,6 +191,8 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 
         _requestedReload = input.Reload;
 
+        _requestedDropGun = input.DropGun;
+
         var wasRequestedJump = _requestedJump;
         _requestedJump = _requestedJump || input.Jump;
         if (_requestedJump && !wasRequestedJump)
@@ -208,74 +212,99 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
             _requestedCrouchInAir = !_state.Grounded;
         else if (!_requestedCrouch && wasRequestingCrouch)
             _requestedCrouchInAir = false;
-
-
-        if (input.ChangeGun && input.RequestedGunIndex > 0)
-        {
-            currentGunIndex = input.RequestedGunIndex;
-            Debug.Log(currentGunIndex);
-            switch (currentGunIndex)
-            {
-                case 1:
-                    if (weaponManager._ownedWeapons[0] != null && weaponManager._ownedWeapons[1] != null)
-                    {
-                        if (_lastGunEquiped == LastGunEquiped.Primary)
-                        {
-                            _lastGunEquiped = LastGunEquiped.Primary;
-                            primaryIndex = !primaryIndex;
-                        }
-                        else
-                        {
-                            _lastGunEquiped = LastGunEquiped.Primary;
-                        }
-                        int gunToSwitchIndex = primaryIndex ? 0 : 1;
-                        Debug.LogWarning(gunToSwitchIndex);
-                        weaponManager.SwitchWeapon(gunToSwitchIndex);
-                    }
-                    else
-                    {
-                        weaponManager.SwitchWeapon(0);
-                        _lastGunEquiped = LastGunEquiped.Primary;
-                    }
-                    Debug.LogWarning($" Arma Principal: {_lastGunEquiped}");
-                    break;
-
-                case 2:
-                    if (weaponManager._ownedWeapons[2] != null && weaponManager._ownedWeapons[3] != null)
-                    {
-                        if (_lastGunEquiped == LastGunEquiped.Secondary)
-                        {
-                            _lastGunEquiped = LastGunEquiped.Secondary;
-                            secondaryIndex = !secondaryIndex;
-                        }
-                        else
-                        {
-                            _lastGunEquiped = LastGunEquiped.Secondary;
-                        }
-                        int gunToSwitchIndex = secondaryIndex ? 0 : 1;
-                        weaponManager.SwitchWeapon(gunToSwitchIndex);
-                    }
-                    else
-                    {
-                        weaponManager.SwitchWeapon(2);
-                        _lastGunEquiped = LastGunEquiped.Secondary;
-                    }
-                    Debug.LogWarning($" Arma Secundaria: {_lastGunEquiped}");
-                    break;
-                case 3:
-                    weaponManager.SwitchWeapon(4);
-                    break;
-                case 4:
-                    //weaponManager.SwitchWeapon(5);
-                    break;
-            }
-        }
-
+        
         if (_requestedReload && weaponManager != null)
         {
             weaponManager._currentGun.Reload();
         }
 
+        if (_requestedDropGun)
+        {
+            weaponManager.DropGun();
+        }
+
+        if (input.ChangeGun && input.RequestedGunIndex > 0)
+        {
+            currentGunIndex = input.RequestedGunIndex;
+            Debug.Log(currentGunIndex);
+            ChangeGun(currentGunIndex);
+        }
+    }
+
+    public void ChangeGun(int currentGunIndex)
+    {
+        switch (currentGunIndex)
+        {
+            case 1:
+                if (weaponManager._ownedWeapons[0] != null && weaponManager._ownedWeapons[1] != null)
+                {
+                    if (_lastGunEquiped == LastGunEquiped.Primary)
+                    {
+                        _lastGunEquiped = LastGunEquiped.Primary;
+                        primaryIndex = !primaryIndex;
+                    }
+                    else
+                    {
+                        _lastGunEquiped = LastGunEquiped.Primary;
+                    }
+                    int gunToSwitchIndex = primaryIndex ? 0 : 1;
+                    Debug.LogWarning(gunToSwitchIndex);
+                    weaponManager.SwitchWeapon(gunToSwitchIndex);
+                }
+                else if(weaponManager._ownedWeapons[0] != null && weaponManager._ownedWeapons[1] == null)
+                {
+                    weaponManager.SwitchWeapon(0);
+                    _lastGunEquiped = LastGunEquiped.Primary;
+                }
+                else if (weaponManager._ownedWeapons[0] == null && weaponManager._ownedWeapons[1] != null)
+                {
+                    weaponManager.SwitchWeapon(1);
+                    _lastGunEquiped = LastGunEquiped.Primary;
+                }
+                else
+                {
+                    Debug.Log("No tienes ninguna arma principal");
+                }
+                Debug.LogWarning($" Arma Principal: {_lastGunEquiped}");
+                break;
+            case 2:
+                if (weaponManager._ownedWeapons[2] != null && weaponManager._ownedWeapons[3] != null)
+                {
+                    if (_lastGunEquiped == LastGunEquiped.Secondary)
+                    {
+                        _lastGunEquiped = LastGunEquiped.Secondary;
+                        secondaryIndex = !secondaryIndex;
+                    }
+                    else
+                    {
+                        _lastGunEquiped = LastGunEquiped.Secondary;
+                    }
+                    int gunToSwitchIndex = secondaryIndex ? 0 : 1;
+                    weaponManager.SwitchWeapon(gunToSwitchIndex);
+                }
+                else if(weaponManager._ownedWeapons[2] != null && weaponManager._ownedWeapons[3] == null)
+                {
+                    weaponManager.SwitchWeapon(2);
+                    _lastGunEquiped = LastGunEquiped.Secondary;
+                }
+                else if (weaponManager._ownedWeapons[2] == null && weaponManager._ownedWeapons[3] != null)
+                {
+                    weaponManager.SwitchWeapon(3);
+                    _lastGunEquiped = LastGunEquiped.Secondary;
+                }
+                else
+                {
+                    Debug.Log("No tienes ninguna arma secundaria");
+                }
+                Debug.LogWarning($" Arma Secundaria: {_lastGunEquiped}");
+                break;
+            case 3:
+                weaponManager.SwitchWeapon(4);
+                break;
+            case 4:
+                //weaponManager.SwitchWeapon(5);
+                break;
+        }
     }
 
     public void UpdateBody(float deltaTime)

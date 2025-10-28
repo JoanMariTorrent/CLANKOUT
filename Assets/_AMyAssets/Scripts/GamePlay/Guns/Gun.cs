@@ -55,7 +55,7 @@ public class Gun : NetworkBehaviour
     public bool grenadeThrowed = false;
 
     [Header("References")]
-    [SerializeField] private Rigidbody rb;
+    public Rigidbody rb;
     [SerializeField] private PlayerCharacter playerCharacter;
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private LayerMask _hitLayer;
@@ -177,6 +177,17 @@ public class Gun : NetworkBehaviour
             }
             
         }
+    }
+
+    public void SetDown()
+    {
+        equipedGun = false;
+        _cameraTransform = null;
+        recoilCamera = null;
+        playerCharacter = null;
+        reloading = false;
+        gameObject.layer = 0;
+        gameObject.transform.SetParent(null);
     }
 
 
@@ -441,5 +452,5 @@ public class Gun : NetworkBehaviour
         reloading = false;
     }
 
-    
+
 }
