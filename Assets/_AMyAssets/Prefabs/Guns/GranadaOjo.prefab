@@ -112,6 +112,7 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   weaponID: 3
   weaponType: 0
+  weapon: 3
   displayName: 
   childMeshes: []
   _normalGun: 0
@@ -120,6 +121,8 @@ MonoBehaviour:
   _automatic: 0
   _modificable: 0
   ammo: -1
+  maxAmmo: 0
+  reloadsAmmo: 0
   timeToReload: 3
   _range: 20
   _gunDamage: 10

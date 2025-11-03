@@ -7,14 +7,22 @@ using System.Security;
 using UnityEngine.Rendering;
 using Interfaces;
 using UnityEditor.Callbacks;
+using System.Runtime.CompilerServices;
 
 public enum WeaponID
 {
     None,
-    Pistol,
-    Rifle,
+    PistolaSimple,
     RifleMalPorro,
-    Grenade,
+    Ojo,
+}
+
+public enum Weapon
+{
+    None,
+    Normal,
+    Cuchillo,
+    Granada,
 }
 
 public enum WeaponType
@@ -29,6 +37,7 @@ public class Gun : NetworkBehaviour, ITakeGun
     [Header("Weapon Info")]
     public WeaponID weaponID;
     public WeaponType weaponType;
+    public Weapon weapon;
     public string displayName;
     [Space]
     [Header("Child meshes")]
@@ -224,11 +233,11 @@ public class Gun : NetworkBehaviour, ITakeGun
         if (!isOwner) return;
         if (reloading) return;
 
-        if (_knife)
+        if (weapon is Weapon.Cuchillo)
         {
 
         }
-        else if (_normalGun)
+        else if (weapon is Weapon.Normal)
         {
             // Si es automatica y no mantiene el click o no es automatica y no pulsa el click, se sale de la funcion
             if (_automatic && !playerCharacter._requestedShoot || !_automatic && !playerCharacter._requestedShootThisFrame) return;
@@ -250,7 +259,7 @@ public class Gun : NetworkBehaviour, ITakeGun
             ShootServerRpc(_cameraTransform.position, _cameraTransform.forward);
         }
 
-        else if (_grenade)
+        else if (weapon is Weapon.Granada)
         {
             if (playerCharacter._requestedShoot && !grenadeThrowed)
             {

@@ -296,6 +296,7 @@ GameObject:
   - component: {fileID: 3728205283233136871}
   - component: {fileID: 6592323882771729509}
   - component: {fileID: 1656825130629811245}
+  - component: {fileID: 2662652551195715526}
   - component: {fileID: 1291896412816306905}
   - component: {fileID: 6714405065655426304}
   - component: {fileID: 2954006001013608528}
@@ -558,6 +559,28 @@ MonoBehaviour:
     _list: []
   weaponInstance: {fileID: 0}
   playerChar: {fileID: 8159890137296869839}
+--- !u!114 &2662652551195715526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161192856471410433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc7b472dc5162d4d8b780a373851cfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  isGodMode: 0
 --- !u!114 &1291896412816306905
 MonoBehaviour:
   m_ObjectHideFlags: 0

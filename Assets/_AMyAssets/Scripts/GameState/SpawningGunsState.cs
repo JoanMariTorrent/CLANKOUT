@@ -2,6 +2,7 @@ using NUnit.Framework;
 using PurrNet;
 using PurrNet.StateMachine;
 using System.Collections.Generic;
+using System.Net.Security;
 using UnityEngine;
 
 public class SpawningGunsState : StateNode<List<PlayerHealth>>
@@ -22,8 +23,6 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         GetGuns(data);
         machine.Next(data);
     }
-
-
     private void GetGuns(List<PlayerHealth> data)
     {
         if (InstanceHandler.TryGetInstance(out WeaponsDataManager _weaponDataManager))
@@ -37,7 +36,6 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
                 GameObject[] _primary = _weaponDataManager.GetRandomWeapons(1, 1);
                 GameObject[] _secondary = _weaponDataManager.GetRandomWeapons(1, 2);
                 GameObject[] _utility = _weaponDataManager.GetRandomWeapons(1, 3);
-
                 weaponManager.NewWeapon(_primary[0].gameObject, true, false, false);
                 weaponManager.NewWeapon(_secondary[0].gameObject, false, false, false);
                 weaponManager.NewWeapon(_utility[0].gameObject, false, true, false);

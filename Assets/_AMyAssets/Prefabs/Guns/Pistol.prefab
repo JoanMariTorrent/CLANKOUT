@@ -134,6 +134,7 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   weaponID: 2
   weaponType: 2
+  weapon: 1
   displayName: 
   childMeshes: []
   _normalGun: 1
@@ -142,6 +143,8 @@ MonoBehaviour:
   _automatic: 0
   _modificable: 0
   ammo: 17
+  maxAmmo: 0
+  reloadsAmmo: 0
   timeToReload: 3
   _range: 20
   _gunDamage: 10
@@ -221,6 +224,7 @@ MonoBehaviour:
   _grenadeForce: 0
   grenadeThrowed: 0
   rb: {fileID: 1945814955477785345}
+  gameMainView: {fileID: 0}
   playerCharacter: {fileID: 0}
   _cameraTransform: {fileID: 0}
   _hitLayer:
