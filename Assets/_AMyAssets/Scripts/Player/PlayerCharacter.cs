@@ -138,6 +138,7 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     // GODMODE
     private float initGravity;
     private float initAirAcceleration;
+    public bool GodMode;
 
     
 
@@ -834,6 +835,7 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     // GODMODe
     public void ToggleGodMode(bool godMode)
     {
+        GodMode = godMode;
 
         if (godMode)
         {

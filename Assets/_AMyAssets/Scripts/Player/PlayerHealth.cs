@@ -8,6 +8,7 @@ public class PlayerHealth : NetworkBehaviour
 {
     [SerializeField] private SyncVar<int> _health = new(100);
     [SerializeField] private int _selfLayer, _otherLayer;
+    [SerializeField] private PlayerCharacter playerCharacter;
 
     public Action<PlayerID> OnDeath_Server;
     public PlayerID PlayerID => owner.Value;
@@ -56,7 +57,8 @@ public class PlayerHealth : NetworkBehaviour
 
     [ServerRpc(requireOwnership:false)]
     public void ChangeHealth(int _amount, RPCInfo _info = default)
-    { 
+    {
+        if (playerCharacter.GodMode) return;
         _health.value += _amount;
         Debug.Log(_amount);
 
