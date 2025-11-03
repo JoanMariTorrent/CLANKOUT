@@ -1,6 +1,8 @@
 using PurrNet;
 using UnityEngine;
 using Steamworks;
+using UnityEngine.Playables;
+using UnityEditor.Callbacks;
 
 public class GodMode : NetworkBehaviour
 {
@@ -8,6 +10,20 @@ public class GodMode : NetworkBehaviour
     private const ulong DEV_STEAM_ID = 76561198355953706;
 
     [SerializeField] private bool isGodMode = false;
+
+    private PlayerCharacter player;
+    private Rigidbody rb;
+
+    void Start()
+    {
+        if (isOwner)
+        {
+            player = GetComponent<PlayerCharacter>();
+            rb = GetComponent<Rigidbody>();
+            if (player == null)
+                Debug.LogWarning("GodMode: no se encontró PlayerCharacter en el mismo GameObject.");
+        }
+    }
 
     public void Update()
     {
@@ -17,7 +33,18 @@ public class GodMode : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.F10))
         {
-            Debug.Log("asdasdasd");
+            isGodMode = !isGodMode;
+            player.ToggleGodMode(isGodMode);
         }
+
+        if (isGodMode)
+        {
+            player.HandleFreeFly();
+        }
+
     }
+
+    
+    
+    
 }

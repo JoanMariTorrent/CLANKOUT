@@ -69,6 +69,8 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     [SerializeField] private WeaponManager weaponManager;
     [SerializeField] private List<Renderer> renderers = new();
     [SerializeField] private CinemachineCamera playerCamera;
+    [SerializeField] private Rigidbody rb;
+
     [Space]
     [SerializeField] private float walkSpeed = 12f;
     [SerializeField] private float runSpeed = 20f;
@@ -133,6 +135,11 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     public bool primaryIndex = false;
     private bool secondaryIndex = false;
 
+    // GODMODE
+    private float initGravity;
+    private float initAirAcceleration;
+
+    
 
     //Netcode
     private float syncTimer;
@@ -151,7 +158,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 
 
         playerCamera.gameObject.SetActive(isOwner);
-
         if (isOwner)
         {
             foreach (var rend in renderers)
@@ -163,6 +169,9 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
         {
             motor.enabled = false;
         }
+
+        initGravity = gravity;
+        initAirAcceleration = airAcceleration;
     }
 
     public void Intialize()
@@ -809,6 +818,68 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
         }
         normal = Vector3.zero;
         return false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // GODMODe
+    public void ToggleGodMode(bool godMode)
+    {
+
+        if (godMode)
+        {
+            motor.CollidableLayers = 0;
+            motor.SetPosition(transform.position, true);
+            motor.BaseVelocity = Vector3.zero;
+            rb.useGravity = false;
+            gravity = 0;
+            airAcceleration = 0;
+            jumps = 0;
+
+            Debug.Log("<color=yellow>GODMODE ACTIVADO ✅</color>");
+        }
+
+
+        else
+        {
+            motor.CollidableLayers = LayerMask.GetMask("Default", "Ground", "Wall");
+            motor.BaseVelocity = Vector3.zero;
+            rb.useGravity = true;
+            gravity = initGravity;
+            airAcceleration = initAirAcceleration;
+
+            Debug.Log("<color=orange>GODMODE DESACTIVADO ❌</color>");
+
+        }
+    }
+
+
+    public void HandleFreeFly()
+    {
+        float speed = 20f;
+        Vector3 move = Vector3.zero;
+
+        if (Input.GetKey(KeyCode.W)) move += transform.forward;
+        if (Input.GetKey(KeyCode.S)) move -= transform.forward;
+        if (Input.GetKey(KeyCode.A)) move -= transform.right;
+        if (Input.GetKey(KeyCode.D)) move += transform.right;
+        if (Input.GetKey(KeyCode.Space)) move += Vector3.up;
+        if (Input.GetKey(KeyCode.LeftControl)) move += Vector3.down;
+
+        if (move != Vector3.zero)
+        {
+            transform.position += move.normalized * speed * Time.deltaTime;
+            motor.SetPosition(transform.position, true);
+        }
     }
 
 

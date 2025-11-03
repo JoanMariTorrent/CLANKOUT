@@ -408,6 +408,7 @@ MonoBehaviour:
   - {fileID: 1507071999164197854}
   - {fileID: 5400225345847635257}
   playerCamera: {fileID: 7793214397378440027}
+  rb: {fileID: 6714405065655426304}
   walkSpeed: 12
   runSpeed: 20
   crouchSpeed: 7
