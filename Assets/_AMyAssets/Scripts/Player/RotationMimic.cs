@@ -18,5 +18,6 @@ public class RotationMimic : NetworkBehaviour
             return;
 
         transform.rotation = _mimicRotation.rotation;
+        transform.position = _mimicRotation.transform.position;
     }
 }

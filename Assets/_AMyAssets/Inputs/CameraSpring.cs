@@ -13,12 +13,6 @@ public class CameraSpring : NetworkBehaviour
     private Vector3 _springPosition;
     private Vector3 _springVelocity;
 
-    protected override void OnSpawned()
-    {
-        base.OnSpawned();
-
-        enabled = isOwner;
-    }
     
     public void Initialize()
     {
