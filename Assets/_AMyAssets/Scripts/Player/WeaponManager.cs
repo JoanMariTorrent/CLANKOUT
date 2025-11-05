@@ -291,7 +291,7 @@ public class WeaponManager : NetworkBehaviour
         SwitchWeapon(indexWeapon);
     }
     
-    [ObserversRpc]
+    [ObserversRpc(runLocally: false)]
     public void SwitchWeapon(int index) // FALTA ARREGLAR QUE AL CAMBIAR EL ARMA, SE OCULTE LA ANTERIOR Y SE ACTIVE LA NUEVA
     {
         if (index < 0 || index >= _ownedWeapons.Count)
@@ -365,12 +365,13 @@ public class WeaponManager : NetworkBehaviour
 
     public void DropGun()
     {
-        DropGunObserversRpc();
+        DoDropGunLogic();
     }
     
-
+    [ObserversRpc(runLocally: false)]
     private void DoDropGunLogic()
     {
+        Debug.Log("asdasdasdasdasdasdasdasdasdasd");
         _currentGun.rb.isKinematic = false;
         _currentGun.rb.useGravity = true;
 
