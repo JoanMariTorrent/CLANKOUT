@@ -375,6 +375,8 @@ public class WeaponManager : NetworkBehaviour
         _currentGun.rb.isKinematic = false;
         _currentGun.rb.useGravity = true;
 
+        _currentGun.GiveOwnership(null);
+
         _currentGun.rb.AddForce(_handTransform.transform.forward * 5f, ForceMode.Impulse);
         _currentGun.equipedGun = false;
         int currentIndex = _ownedWeapons.IndexOf(_currentGun.gameObject);
@@ -382,6 +384,8 @@ public class WeaponManager : NetworkBehaviour
         _ownedWeapons[currentIndex] = null;
         _currentGun.SetDown();
         _currentGun = null;
+
+        
 
 
         int _case = -1;
