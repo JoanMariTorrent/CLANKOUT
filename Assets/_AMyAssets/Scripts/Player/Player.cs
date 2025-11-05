@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
     [Space]
     [SerializeField] private CameraSpring cameraSpring;
     [SerializeField] private CameraLean cameraLean;
-    [SerializeField] PlayerInputsAction _inputActions;
+    [SerializeField] private PlayerInputsAction _inputActions;
 
     protected override void OnSpawned()
     {
