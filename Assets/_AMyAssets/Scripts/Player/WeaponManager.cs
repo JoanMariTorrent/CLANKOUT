@@ -384,6 +384,7 @@ public class WeaponManager : NetworkBehaviour
         _ownedWeapons[currentIndex] = null;
         _currentGun.SetDown();
         _currentGun = null;
+        _currentGun.enabled = false;
 
         
 

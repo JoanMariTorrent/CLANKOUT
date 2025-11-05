@@ -172,6 +172,7 @@ public class Gun : NetworkBehaviour, ITakeGun
 
     public void Setup(Transform cameraTransform, LayerMask hitLayer, RecoilCamera recoil, PlayerCharacter playerChar, WeaponManager wm)
     {
+        enabled = true;
         equipedGun = true;
         _cameraTransform = cameraTransform;
         _hitLayer = hitLayer;
