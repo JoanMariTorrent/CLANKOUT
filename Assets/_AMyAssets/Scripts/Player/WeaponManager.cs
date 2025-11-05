@@ -357,8 +357,19 @@ public class WeaponManager : NetworkBehaviour
     }
 
 
+    [ObserversRpc(runLocally: false)]
+    private void DropGunObserversRpc()
+    {
+        DoDropGunLogic();
+    }
 
     public void DropGun()
+    {
+        DropGunObserversRpc();
+    }
+    
+
+    private void DoDropGunLogic()
     {
         _currentGun.rb.isKinematic = false;
         _currentGun.rb.useGravity = true;
@@ -416,7 +427,6 @@ public class WeaponManager : NetworkBehaviour
 
 
         Debug.LogWarning(_ownedWeapons[_case]);
-
     }
 
     
