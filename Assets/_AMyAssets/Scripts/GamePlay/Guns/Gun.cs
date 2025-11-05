@@ -187,6 +187,7 @@ public class Gun : NetworkBehaviour, ITakeGun
         if (col != null) col.enabled = false;
         if (isOwner)
         {
+            enabled = true;
             gameObject.layer = 9;
             if (childMeshes != null)
             {
@@ -200,6 +201,7 @@ public class Gun : NetworkBehaviour, ITakeGun
 
         else
         {
+            enabled = false;
             gameObject.layer = 10;
             if (childMeshes != null)
             {
@@ -224,6 +226,8 @@ public class Gun : NetworkBehaviour, ITakeGun
 
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = true;
+
+        enabled = false;
     }
 
 

@@ -32,6 +32,11 @@ public class Player : NetworkBehaviour
         {
             _inputActions = new PlayerInputsAction();
             _inputActions.Enable();
+            if (_inputActions == null)
+            {
+                _inputActions = new PlayerInputsAction();
+                _inputActions.Enable();
+            }
         }
     }
 
