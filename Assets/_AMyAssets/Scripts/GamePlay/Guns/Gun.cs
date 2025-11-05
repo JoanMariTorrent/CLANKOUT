@@ -510,8 +510,9 @@ public class Gun : NetworkBehaviour, ITakeGun
     }
 
     [ObserversRpc(runLocally: false)]
-    public void TakeGun()
+    public void TakeGun(Player player)
     {
+        weaponManager = player.GetComponent<WeaponManager>(); 
         if (weaponManager == null)
         {
             Debug.LogAssertionFormat("Trying to take some gun, but the weaponManager is null!");

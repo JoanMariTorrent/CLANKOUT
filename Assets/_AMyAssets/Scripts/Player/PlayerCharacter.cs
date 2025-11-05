@@ -70,6 +70,7 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     [SerializeField] private List<Renderer> renderers = new();
     [SerializeField] private CinemachineCamera playerCamera;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private Player player;
 
     [Space]
     [SerializeField] private float walkSpeed = 12f;
@@ -156,11 +157,12 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     protected override void OnSpawned()
     {
         base.OnSpawned();
-
+        player.GetComponent<Player>();
 
         playerCamera.gameObject.SetActive(isOwner);
         if (isOwner)
         {
+            
             foreach (var rend in renderers)
             {
                 rend.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
@@ -173,6 +175,8 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 
         initGravity = gravity;
         initAirAcceleration = airAcceleration;
+
+        Debug.Log("<color=yellow>PlayerID: </color>" + owner.Value);
     }
 
     public void Intialize()
@@ -217,7 +221,7 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
                 Debug.LogWarning(hit.transform.name);
                 if (hit.collider.TryGetComponent(out ITakeGun takeGun))
                 {
-                    takeGun.TakeGun();
+                    takeGun.TakeGun(player);
                 }
             }
 
@@ -892,6 +896,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
 {
     public interface ITakeGun
     {
-        void TakeGun();
+        void TakeGun(Player player);
     }
 }
