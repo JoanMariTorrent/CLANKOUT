@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class VerticalSlotMachine : MonoBehaviour 
 {
@@ -30,11 +29,20 @@ public class VerticalSlotMachine : MonoBehaviour
         isSpinning = true;
 
         // Limpia items anteriores
-        foreach(Transform child in itemsContainer) {
+        foreach (Transform child in itemsContainer)
+        {
             Destroy(child.gameObject);
         }
+
+        for (int i = 0; i < totalIcons; i++)
+        {
+        }
+        
+
+
+
         yield return null;
-    }                                                                           
+    }
 
 
     

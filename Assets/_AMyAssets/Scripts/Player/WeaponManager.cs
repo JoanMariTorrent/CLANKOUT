@@ -32,37 +32,42 @@ public class WeaponManager : NetworkBehaviour
     {
         if (deleteWeapon) // Si el arma hay que borrarla
         {
-            // Busca el indice del arma que hay que borrar y lo elimina
+            // Busca el indice del arma que hay que borrar
             Gun gunScript = weaponPrefab.GetComponent<Gun>();
             int currentIndex = IndexHasWeaponOfType(gunScript.weaponID);
 
 
 
-
-            if (currentIndex >= 0 && _ownedWeapons[currentIndex] != null) // Si encuentro un arma del mismo tipo, la destruye
+            if (!groundGun)
             {
-                Destroy(_ownedWeapons[currentIndex]);
-                _ownedWeapons[currentIndex] = null;
-            }
-            else
-            {
-                if (primaryWeapon)
+                if (currentIndex >= 0 && _ownedWeapons[currentIndex] != null) // Si encuentro un arma del mismo tipo, la destruye
                 {
-                    if (_ownedWeapons[0] != null && _ownedWeapons[1] != null)
+                    SwitchWeapon(currentIndex);
+                    DropGun();
+                    //Destroy(_ownedWeapons[currentIndex]);
+                    //_ownedWeapons[currentIndex] = null;
+                }
+                else 
+                {
+                    if (primaryWeapon)
                     {
-                        Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
+                        if (_ownedWeapons[0] != null && _ownedWeapons[1] != null)
+                        {
+                            Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
+                            _ownedWeapons[playerChar.gunToSwitchIndex] = null;
+                        }
+                    }
+                    else if (!primaryWeapon)
+                    {
+                        if (_ownedWeapons[2] != null && _ownedWeapons[3] != null)
+                        {
+                            Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
+                            _ownedWeapons[playerChar.gunToSwitchIndex] = null;
+                        }
                     }
                 }
-                else if (!primaryWeapon)
-                {
-                    if (_ownedWeapons[2] != null && _ownedWeapons[3] != null)
-                    {
-                        Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
-                    }
-                }
             }
-
-            if (groundGun)
+            else if (groundGun)
             {
                 AddGunFromGround(weaponPrefab);
             }
@@ -134,7 +139,6 @@ public class WeaponManager : NetworkBehaviour
         // Dos bools para ver si es arma principal o secundaria la que se intenta agregar
         bool havePrimary = _ownedWeapons[0] || _ownedWeapons[1];
         bool haveSecondary = _ownedWeapons[2] || _ownedWeapons[3];
-        bool haveUtility = _ownedWeapons[4];
 
         if (primary && havePrimary && !utility)
         {
@@ -356,13 +360,6 @@ public class WeaponManager : NetworkBehaviour
         SwitchWeapon(0);
     }
 
-
-    [ObserversRpc(runLocally: false)]
-    private void DropGunObserversRpc()
-    {
-        DoDropGunLogic();
-    }
-
     public void DropGun()
     {
         DoDropGunLogic();
@@ -385,11 +382,8 @@ public class WeaponManager : NetworkBehaviour
         _currentGun.SetDown();
         _currentGun = null;
 
-        
-
 
         int _case = -1;
-
 
         if (playerChar._lastGunEquiped == LastGunEquiped.Primary && _case == -1)
         {
