@@ -12,7 +12,7 @@ public class CameraLean : NetworkBehaviour
     [SerializeField] private float walkStrenght = 0.075f;
     [SerializeField] private float slideStrenght = 0.2f;
     [SerializeField] private float strenghtResponse = 5f; // transición entre walk/slide
-    [SerializeField] private float maxLeanAngle = 10f;    // grados máximos de inclinación
+    [SerializeField] private float maxLeanAngle = 10f;    // grados máximos de inclinación    
 
     private Vector3 _dampedAcceleration;
     private Vector3 _dampedAccelerationVel;
