@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 28d426191db378741aacc2a76e188cc8, type: 3}
-  m_Name: RifleMalporro
+  m_Name: Pistola
   m_EditorClassIdentifier: 
-  weaponName: RifleMalPorro
-  icon: {fileID: 21300000, guid: f2827c1992b91b74dbc77608b3f585be, type: 3}
-  dropChance: 0.843
+  weaponName: pistola
+  icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  dropChance: 0.512
