@@ -2,6 +2,8 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using Unity.Mathematics;
+using System;
+using System.Collections;
 
 
 public class WeaponManager : NetworkBehaviour
@@ -16,6 +18,8 @@ public class WeaponManager : NetworkBehaviour
     public SyncList<GameObject> _ownedWeapons = new();
     [SerializeField] private GameObject weaponInstance = null;
     [SerializeField] private PlayerCharacter playerChar;
+
+
 
 
     protected override void OnSpawned()
@@ -42,17 +46,18 @@ public class WeaponManager : NetworkBehaviour
             {
                 if (currentIndex >= 0 && _ownedWeapons[currentIndex] != null) // Si encuentro un arma del mismo tipo, la destruye
                 {
-                    SwitchWeapon(currentIndex);
-                    DropGun();
-                    //Destroy(_ownedWeapons[currentIndex]);
-                    //_ownedWeapons[currentIndex] = null;
+                    //SwitchWeapon(currentIndex);
+                    //DropGun();
+                    Destroy(_ownedWeapons[currentIndex]);
+                    _ownedWeapons[currentIndex] = null;
                 }
-                else 
+                else
                 {
                     if (primaryWeapon)
                     {
                         if (_ownedWeapons[0] != null && _ownedWeapons[1] != null)
                         {
+                            Debug.LogAssertionFormat("asdasdasd");
                             Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
                             _ownedWeapons[playerChar.gunToSwitchIndex] = null;
                         }
@@ -71,17 +76,19 @@ public class WeaponManager : NetworkBehaviour
             {
                 AddGunFromGround(weaponPrefab);
             }
-            else
+
+            if (!groundGun)
             {
                 // Instancia la nueva arma
                 InstantiateGun(weaponPrefab);
-            }            
+                Debug.Log($"<color=orange>🧱 Instanciado objeto en escena: {weaponInstance.name}</color>");
+            }
 
             if (currentIndex >= 0) // Si el indice "existe" se guarda la nueva arma en el array de armas obtenidas
             {
                 _ownedWeapons[currentIndex] = weaponInstance;
             }
-            
+
             else // Si el indice "no existe" 
             {
                 int indexWeapon = GetWeaponIndex(primaryWeapon);
@@ -126,7 +133,7 @@ public class WeaponManager : NetworkBehaviour
         _ownedWeapons[4] = utilityPrefab;
         InstantiateGun(utilityPrefab);
     }
-    
+
 
     public void NewWeapon(GameObject weaponPrefab, bool primary, bool utility, bool groundGun)
     {
@@ -155,14 +162,14 @@ public class WeaponManager : NetworkBehaviour
                 {
                     if (groundGun) EquipWeapon(weaponPrefab, true, true, true);
                     else EquipWeapon(weaponPrefab, true, true, false);
-                     Debug.LogWarning("Borrar arma porque ya la tienes");
+                    Debug.LogWarning("Borrar arma porque ya la tienes");
                 }
 
                 else  // si el arma que esta pillando no la tiene en general
                 {
                     if (groundGun) EquipWeapon(weaponPrefab, false, true, true);
                     else EquipWeapon(weaponPrefab, false, true, false);
-                     Debug.LogWarning("Añadiendo arma nueva");
+                    Debug.LogWarning("Añadiendo arma nueva");
                 }
             }
         }
@@ -171,7 +178,7 @@ public class WeaponManager : NetworkBehaviour
 
             if (_ownedWeapons[2] != null && _ownedWeapons[3] != null) // si tiene 2 secundarias
             {
-                if(groundGun) EquipWeapon(weaponPrefab, true, false, true);
+                if (groundGun) EquipWeapon(weaponPrefab, true, false, true);
                 else EquipWeapon(weaponPrefab, true, false, false); // como tiene 2 armas ya, tendra que destruirla 100%
             }
 
@@ -179,13 +186,13 @@ public class WeaponManager : NetworkBehaviour
             {
                 if (HasWeaponOfType(newWeaponID)) // si la arma que esta pillando ya la tiene
                 {
-                    if(groundGun) EquipWeapon(weaponPrefab, true, false, true);
+                    if (groundGun) EquipWeapon(weaponPrefab, true, false, true);
                     else EquipWeapon(weaponPrefab, true, false, false);
                 }
 
                 else // si el arma que esta pillando no la tiene en general
                 {
-                    if(groundGun) EquipWeapon(weaponPrefab, false, false, true);
+                    if (groundGun) EquipWeapon(weaponPrefab, false, false, true);
                     else EquipWeapon(weaponPrefab, false, false, false);
                 }
             }
@@ -198,7 +205,7 @@ public class WeaponManager : NetworkBehaviour
 
         if ((primary && !havePrimary) || (!primary && !haveSecondary)) // Si no tiene ningun arma, tanto principal como secundaria, se le pasa false en destruir y asi instancia una nueva
         {
-            if(groundGun) EquipWeapon(weaponPrefab, false, primary, true);
+            if (groundGun) EquipWeapon(weaponPrefab, false, primary, true);
             else EquipWeapon(weaponPrefab, false, primary, false);
         }
 
@@ -208,7 +215,7 @@ public class WeaponManager : NetworkBehaviour
     {
         foreach (var weapon in _ownedWeapons)
         {
-            if(weapon == null) continue;
+            if (weapon == null) continue;
             Gun g = weapon.GetComponent<Gun>();
             if (g != null && g.weaponID == id)
                 return true;
@@ -221,13 +228,13 @@ public class WeaponManager : NetworkBehaviour
         for (int i = 0; i < _ownedWeapons.Count; i++)
         {
             var weapon = _ownedWeapons[i];
-            if(weapon == null) continue;
+            if (weapon == null) continue;
 
             Gun g = weapon.GetComponent<Gun>();
-            if(g != null && g.weaponID == id)
+            if (g != null && g.weaponID == id)
                 return i;
         }
-        
+
         return -1;
     }
 
@@ -239,32 +246,54 @@ public class WeaponManager : NetworkBehaviour
     }
 
 
-    private void InstantiateGun(GameObject weaponPrefab) // Instancia armas nuevas, tanto para cuando hay que eliminar una porque no hay hueco y para cuando no hay armas
+    private void InstantiateGun(GameObject weaponPrefab)
     {
         if (_currentGun != null)
             _currentGun.gameObject.SetActive(false);
 
-        // Instancia el arma y la setea en la posicion y rotacion correcta
+        // Instanciar el arma
         weaponInstance = Instantiate(weaponPrefab, _handTransform);
         weaponInstance.transform.localPosition = Vector3.zero;
         weaponInstance.transform.localRotation = Quaternion.identity;
+        weaponInstance.SetActive(true); // 🔥 asegúrate de que esté activa
 
-        // Guarda el script de la nueva arma como el script actual
+        // Obtener script
         _currentGun = weaponInstance.GetComponent<Gun>();
 
-        // Asignar el ownership al jugador que posee esta arma
-        _currentGun.GiveOwnership(owner.Value);
+        if (_currentGun == null)
+        {
+            Debug.LogError("❌ El prefab no tiene componente Gun!");
+            return;
+        }
 
-        // Setea la camara, la hitlayer y el recoil del arma en su script
+        // Configurar arma
+        _currentGun.GiveOwnership(owner.Value);
         _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, this);
 
-        // Actualiza el slot con la instancia en la escena
-        int index = _ownedWeapons.IndexOf(weaponPrefab);
-        if (index >= 0)
-            _ownedWeapons[index] = weaponInstance;
+        // Buscar índice correcto
+        Gun prefabGun = weaponPrefab.GetComponent<Gun>();
+        int index = IndexHasWeaponOfType(prefabGun.weaponID);
 
+        if (index < 0)
+        {
+            bool isPrimary = prefabGun.weaponType == WeaponType.Primary;
+            index = GetWeaponIndex(isPrimary);
+            if (index < 0)
+                index = isPrimary ? 0 : 2;
+        }
 
+        // Asegurar tamaño
+        while (_ownedWeapons.Count <= index)
+            _ownedWeapons.Add(null);
+
+        // Asignar
+        _ownedWeapons[index] = weaponInstance;
+        Debug.Log($"<color=blue>✅ Instanciada '{_currentGun.name}' en slot {index} y el arma actual es {_currentGun.name} </color>");
+
+        SwitchWeapon(index);
     }
+
+
 
     public void AddGunFromGround(GameObject weaponObject)
     {
@@ -294,7 +323,7 @@ public class WeaponManager : NetworkBehaviour
 
         SwitchWeapon(indexWeapon);
     }
-    
+
     [ObserversRpc]
     public void SwitchWeapon(int index) // FALTA ARREGLAR QUE AL CAMBIAR EL ARMA, SE OCULTE LA ANTERIOR Y SE ACTIVE LA NUEVA
     {
@@ -306,12 +335,18 @@ public class WeaponManager : NetworkBehaviour
         if (weaponToSwitch == null)
             return;
 
+        if (_currentGun != null && weaponToSwitch == _currentGun.gameObject)
+        {
+            Debug.Log("<color=yellow>⚠️ Ya tienes equipada esta arma, no se cambia.</color>");
+            return;
+        }
+
         // ocultar todas las armas
         for (int i = 0; i < _ownedWeapons.Count; i++)
         {
             if (_ownedWeapons[i] != null)
             {
-                _ownedWeapons[i].SetActive(false); 
+                _ownedWeapons[i].SetActive(false);
             }
         }
 
@@ -321,7 +356,7 @@ public class WeaponManager : NetworkBehaviour
         _currentGun = weaponToSwitch.GetComponent<Gun>();
         // Asignar el ownership al jugador que posee esta arma
         _currentGun.GiveOwnership(owner.Value);
-        
+
 
         // Setea la posicion y rotacion de la nueva arma
         weaponToSwitch.transform.localPosition = Vector3.zero;
@@ -329,6 +364,8 @@ public class WeaponManager : NetworkBehaviour
 
         // reconfigurar camara y recoil
         _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, this);
+
+        weaponToSwitch.SetActive(true);
 
         Debug.Log($"Cambio de arma a {_currentGun.name} en el slot {index}");
     }
@@ -364,22 +401,44 @@ public class WeaponManager : NetworkBehaviour
     {
         DoDropGunLogic();
     }
-    
+
     [ObserversRpc(runLocally: false)]
     private void DoDropGunLogic()
     {
-        Debug.Log("asdasdasdasdasdasdasdasdasdasd");
+        if (_currentGun == null)
+        {
+            Debug.LogWarning("<color=red>❌ No hay arma equipada para dropear.</color>");
+            return;
+        }
+
+        GameObject droppedGun = _currentGun.gameObject;
+
+        // Activar fisicas
         _currentGun.rb.isKinematic = false;
         _currentGun.rb.useGravity = true;
-
-        _currentGun.GiveOwnership(null);
-
         _currentGun.rb.AddForce(_handTransform.transform.forward * 5f, ForceMode.Impulse);
+
+        // Quitar Ownership
+        _currentGun.GiveOwnership(null);
         _currentGun.equipedGun = false;
+
+        // Quitarla del inventario
         int currentIndex = _ownedWeapons.IndexOf(_currentGun.gameObject);
-        Debug.LogWarning(currentIndex);
-        _ownedWeapons[currentIndex] = null;
+        if (currentIndex >= 0)
+        {
+            _ownedWeapons[currentIndex] = null;
+            Debug.Log($"<color=orange>🪂 Dropeada '{droppedGun.name}' del slot {currentIndex}</color>");
+        }
+        else
+        {
+            Debug.LogWarning("<color=red>⚠️ DropGun: No se encontró el arma en _ownedWeapons</color>");
+        }
+
+        // Estado del arma fisica en el suelo
         _currentGun.SetDown();
+
+        // No cambiamos de arma todavia, dejamos el _currentGun en null temporalmente
+        Gun prevGun = _currentGun;
         _currentGun = null;
 
 
@@ -420,14 +479,19 @@ public class WeaponManager : NetworkBehaviour
         {
             SwitchWeapon(_case);
             Debug.Log(_case);
+            Debug.LogWarning(_ownedWeapons[_case]);
         }
         else if (_case == -1)
             Debug.LogWarning("_case es -1");
 
 
-        Debug.LogWarning(_ownedWeapons[_case]);
+
     }
 
-    
-    
+
+
+
+
+
+
 }

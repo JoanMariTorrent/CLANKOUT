@@ -10,6 +10,7 @@ public class Canvas : NetworkBehaviour
     [SerializeField] private NetworkManager _NetworkManager;
     [SerializeField] private List<View> _allViews = new();
     [SerializeField] private View _defaulView;
+    public GameObject slotMachine;
     
 
     private void Awake()
@@ -23,6 +24,7 @@ public class Canvas : NetworkBehaviour
         }
 
         ShowViewInternal(_defaulView);
+        slotMachine.SetActive(false);
     }
 
     private void ShowViewInternal(View _view)
@@ -50,7 +52,7 @@ public class Canvas : NetworkBehaviour
             {
                 ShowViewInternal(view);
             }
-            else 
+            else
             {
                 if (hideOthers)
                 {

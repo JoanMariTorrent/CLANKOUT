@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using PurrNet;
-using UnityEngine.Rendering;
 
 public class GameMainView : View
 {

@@ -11,6 +11,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private CameraSpring cameraSpring;
     [SerializeField] private CameraLean cameraLean;
     [SerializeField] private PlayerInputsAction _inputActions;
+    public bool canMove;
 
     protected override void OnSpawned()
     {
@@ -75,9 +76,13 @@ public class Player : NetworkBehaviour
         var input = _inputActions.GamePlay;
         float deltaTime = Time.deltaTime;
 
+        if (!canMove) return;
+
         // Pilla camera input y actualiza su rotacion
         var cameraInput = new CameraInput { Look = input.Look.ReadValue<Vector2>() };
         playerCamera.UpdateRotation(cameraInput);
+
+        
 
         //Detectar cambio de arma
         int requestedGun = 0;

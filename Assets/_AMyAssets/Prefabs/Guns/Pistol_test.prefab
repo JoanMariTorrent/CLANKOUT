@@ -200,7 +200,7 @@ MonoBehaviour:
   weaponID: 1
   weaponType: 2
   weapon: 1
-  displayName: 
+  displayName: Pistola basica
   childMeshes: []
   _normalGun: 1
   _knife: 0

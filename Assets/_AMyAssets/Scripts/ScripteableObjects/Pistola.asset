@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: pistola
   icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
-  dropChance: 1
+  dropChance: 0
   weaponType: 1
+  gunPrefab: {fileID: 6827815557315732681, guid: 93686cd7cd37abb4d981d7f18cd0ed2e, type: 3}

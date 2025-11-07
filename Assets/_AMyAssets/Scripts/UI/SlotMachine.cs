@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using PurrNet;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,6 +45,7 @@ public class SlotMachine : MonoBehaviour
     private WeaponScripteableObject selectedWeapon;
     private List<RectTransform> slotList = new List<RectTransform>();
     private bool isSpinning = false;
+    public WeaponScripteableObject finalWeapon;
 
     private void Update()
     {
@@ -53,11 +53,11 @@ public class SlotMachine : MonoBehaviour
             Spin();
     }
 
-    public void Spin()
+    public IEnumerator Spin()
     {
-        if (isSpinning) return;
+        if (isSpinning) yield break;
         itemsContainer.anchoredPosition = Vector2.zero;
-        StartCoroutine(SpinRoutine());
+        yield return StartCoroutine(SpinRoutine());
     }
 
 
@@ -128,6 +128,7 @@ public class SlotMachine : MonoBehaviour
         Vector2 endPos = new Vector2(itemsContainer.anchoredPosition.x, desiredContainerY);
 
         // Animar el movimiento con la curva
+        yield return new WaitForSeconds(0.3f);
         float elapsed = 0f;
         while (elapsed < spinDuration)
         {
@@ -141,6 +142,7 @@ public class SlotMachine : MonoBehaviour
         // Asegurar que se qeuda exactamente donde debe
         itemsContainer.anchoredPosition = endPos;
 
+        finalWeapon = selectedWeapon;
         Debug.Log($"🎯 Ganador: {selectedWeapon.weaponName}(intex {winnerIndex})");
         isSpinning = false;
     }
@@ -164,6 +166,12 @@ public class SlotMachine : MonoBehaviour
 
         return weaponList[weaponList.Count - 1];
     }
+
+    public void Skip()
+    {
+        spinDuration = spinDuration / 5;
+    }
+    
 
 
 

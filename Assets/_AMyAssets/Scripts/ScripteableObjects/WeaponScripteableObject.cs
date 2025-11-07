@@ -8,6 +8,7 @@ public class WeaponScripteableObject : ScriptableObject
     public Sprite icon;
     [Range(0f, 1f)] public float dropChance;
     public WeaponScripteableType weaponType;
+    public GameObject gunPrefab;
 
 }
 

@@ -136,7 +136,7 @@ MonoBehaviour:
   weaponID: 0
   weaponType: 1
   weapon: 1
-  displayName: 
+  displayName: Rifle MalPorro
   childMeshes:
   - {fileID: 9093773589616848858}
   - {fileID: 1389950568450815574}

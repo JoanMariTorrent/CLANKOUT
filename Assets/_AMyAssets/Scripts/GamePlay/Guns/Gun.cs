@@ -220,11 +220,14 @@ public class Gun : NetworkBehaviour, ITakeGun
         recoilCamera = null;
         playerCharacter = null;
         reloading = false;
-        gameObject.layer = 12;
         gameObject.transform.SetParent(null);
-
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = true;
+
+
+        foreach (var i in childMeshes)
+            i.layer = 12;
+        gameObject.layer = 12;
 
         enabled = false;
     }
