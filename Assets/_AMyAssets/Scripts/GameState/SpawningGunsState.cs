@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using PurrNet;
 using PurrNet.StateMachine;
 using System.Collections;
@@ -25,6 +24,7 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             var getPlayer = player.GetComponent<Player>();
             if (getPlayer == null)
                 continue;
+                
 
             Debug.Log($"<color=purple>Enviando SlotMachine a jugador {getPlayer.owner.Value}</color>");
             RpcShowSlotMachine(getPlayer.owner.Value, getPlayer);
@@ -32,11 +32,12 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         machine.Next(data);
     }
 
-    [TargetRpc]
+    [TargetRpc(requireServer: true, runLocally: true)]
     private void RpcShowSlotMachine(PlayerID target, Player player)
     {
         Debug.Log($"<color=green>📺 Mostrando SlotMachine en cliente {target}</color>");
         Debug.Log($"<color=red> playerName: {player.gameObject.name} </color>");
+        StartCoroutine(GetGuns(player));
     }
 
 
