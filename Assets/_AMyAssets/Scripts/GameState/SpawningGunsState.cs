@@ -25,6 +25,20 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             return;
 
 
+        // Pruebas
+        if (InstanceHandler.TryGetInstance(out WeaponsDataManager _weaponDataManager))
+        {
+            foreach (var player in data)
+            {
+                var weaponManager = player.GetComponent<WeaponManager>();
+                if (!weaponManager) continue;
+
+                GameObject[] _primary = _weaponDataManager.GetRandomWeapons(1, 1);
+                weaponManager.NewWeapon(_primary[0].gameObject, true, false, false);
+            }
+        }
+
+
 
         foreach (var player in data)
         {
@@ -35,7 +49,10 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
 
             Debug.Log($"<color=purple>Enviando SlotMachine a jugador {getPlayer.owner.Value}</color>");
             RpcShowSlotMachine(getPlayer.owner.Value, getPlayer);
-            getPlayer.DeleteGround();
+
+
+            
+            
         }
         machine.Next(data);
     }
