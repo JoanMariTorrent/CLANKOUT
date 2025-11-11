@@ -486,12 +486,6 @@ public class WeaponManager : NetworkBehaviour
     }
 
 
-    public void ShowSlotMachineEffect(string playerName)
-    {
-        Destroy(_playerCamera.gameObject);
-    }
-
-
 
 
 

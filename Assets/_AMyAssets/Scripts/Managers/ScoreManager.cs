@@ -1,6 +1,4 @@
-using System;
 using PurrNet;
-using PurrNet.Modules;
 using UnityEngine;
 
 public class ScoreManager : NetworkBehaviour
@@ -73,8 +71,8 @@ public class ScoreManager : NetworkBehaviour
     [ServerRpc]
     public void AddDamageServerRpc(PlayerID victimID, int amount, RPCInfo info = default)
     {
-        // El atacante REAL es el que llamó al ServerRpc:
-        var attackerID = info.sender; // PlayerID del cliente que mandó el RPC
+        // El atacante REAL es el que llamï¿½ al ServerRpc:
+        var attackerID = info.sender; // PlayerID del cliente que mandï¿½ el RPC
 
         // Registrar al atacante
         CheckForDictionaryEntry(attackerID);
@@ -82,9 +80,9 @@ public class ScoreManager : NetworkBehaviour
         attackerScore._damage += amount;
         _scores[attackerID] = attackerScore;
 
-        // Registrar daño a la víctima
+        // Registrar daï¿½o a la vï¿½ctima
         CheckForDictionaryEntry(victimID);
-        // aquí podrías restarle vida también si quieres
+        // aquï¿½ podrï¿½as restarle vida tambiï¿½n si quieres
     }
 
 
