@@ -24,10 +24,6 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         if (data.Count <= 0)
             return;
 
-        NormalDebug();
-        ObserverDebug();
-        ServerDebug();
-
 
 
         foreach (var player in data)
@@ -43,24 +39,8 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         machine.Next(data);
     }
 
-    private void NormalDebug()
-    {
-        Debug.Log("Normal");
-    }
 
-    [ObserversRpc]
-    private void ObserverDebug()
-    {
-        Debug.Log("Observer");
-    }
 
-    [ServerRpc]
-    private void ServerDebug()
-    {
-        Debug.Log("Server");
-    }
-
-    [TargetRpc]
     public void RpcShowSlotMachine(PlayerID target, Player player)
     {
         Debug.Log($"<color=green>📺 Mostrando SlotMachine en cliente {target}</color>");
