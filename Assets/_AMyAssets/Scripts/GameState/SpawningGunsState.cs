@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class SpawningGunsState : StateNode<List<PlayerHealth>>
 {
+    void Awake()
+    {
+        InstanceHandler.RegisterInstance(this);
+    }
+
     private List<PlayerID> _players = new();
 
 
@@ -27,18 +32,13 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
                 
 
             Debug.Log($"<color=purple>Enviando SlotMachine a jugador {getPlayer.owner.Value}</color>");
-            RpcShowSlotMachine(getPlayer.owner.Value, getPlayer);
+            InstanceHandler.TryGetInstance(out GunSpawnerNetwork gunSpawnerNetwork);
+            gunSpawnerNetwork.RpcShowSlotMachine(getPlayer.owner.Value, getPlayer);
         }
         machine.Next(data);
     }
 
-    [TargetRpc(requireServer: true, runLocally: true)]
-    private void RpcShowSlotMachine(PlayerID target, Player player)
-    {
-        Debug.Log($"<color=green>📺 Mostrando SlotMachine en cliente {target}</color>");
-        Debug.Log($"<color=red> playerName: {player.gameObject.name} </color>");
-        StartCoroutine(GetGuns(player));
-    }
+    
 
 
     private IEnumerator GetGuns(Player player)
