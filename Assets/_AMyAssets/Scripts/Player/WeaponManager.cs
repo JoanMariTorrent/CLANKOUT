@@ -488,11 +488,7 @@ public class WeaponManager : NetworkBehaviour
 
     }
 
-
-
-
-
-    [ObserversRpc]
+    
     public void ShowSlotMachineEffect(string playerName)
     {
         Debug.Log($"📺 Mostrando SlotMachine para {playerName}");
