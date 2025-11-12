@@ -47,7 +47,10 @@ public class Player : NetworkBehaviour
         foreach (var canva in allCanvas)
         {
             if (canva != canvas)
+            {
                 canva.enabled = false;
+                canva.gameObject.SetActive(false);
+            }
         }
         
         
