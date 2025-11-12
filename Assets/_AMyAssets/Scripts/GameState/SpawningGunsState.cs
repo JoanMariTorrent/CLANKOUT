@@ -34,7 +34,7 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
                 if (!weaponManager) continue;
 
                 GameObject[] _primary = _weaponDataManager.GetRandomWeapons(1, 1);
-                weaponManager.ShowSlotMachineEffect(player.name);
+                //weaponManager.ShowSlotMachineEffect(player.name);
             }
         }
 

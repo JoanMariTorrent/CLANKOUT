@@ -375,6 +375,7 @@ MonoBehaviour:
   playerCamera: {fileID: 6742959374811469856}
   cameraSpring: {fileID: 5855341915361668786}
   cameraLean: {fileID: 8021116977053843990}
+  playerName: 
   canMove: 0
 --- !u!114 &8159890137296869839
 MonoBehaviour:
