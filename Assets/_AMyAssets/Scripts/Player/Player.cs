@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using PurrNet;
 using Steamworks;
-using Unity.VisualScripting;
+using Unity.Mathematics;
 
 public class Player : NetworkBehaviour
 {
@@ -38,46 +38,18 @@ public class Player : NetworkBehaviour
         if (canvasSpawned) return;
         if (isOwner)
         {
-            var canvasObject = Instantiate(canvasPrefab);
+            var canvasObject = Instantiate(canvasPrefab, playerCamera.transform);
+            canvasObject.transform.localPosition = Vector3.zero;
+            canvasObject.transform.localRotation = quaternion.identity;
             canvas = canvasObject.GetComponent<Canvas>();
-            canvas.gameObject.SetActive(isOwner);
-            canvas.enabled = isOwner;
+
+            canvas.gameObject.SetActive(true);
+            canvas.enabled = true;
+
             string steamName = SteamFriends.GetPersonaName();
             canvas.gameObject.name = $"Canvas of: {steamName}";
-
-
-            Canvas[] allCanvas = FindObjectsOfType<Canvas>();
-            foreach (var canva in allCanvas)
-            {
-                if (canva != canvas)
-                {
-                    canva.enabled = false;
-                    canva.gameObject.SetActive(false);
-                }
-            }
-
-        }
-        else if (!isOwner)
-        {
-            Canvas[] allCanvas = FindObjectsOfType<Canvas>();
-            foreach (var canva in allCanvas)
-            {
-                if (canva != canvas)
-                {
-                    canva.enabled = false;
-                    canva.gameObject.SetActive(false);
-                }
-                else if (canva == canvas)
-                {
-                    canva.enabled = true;
-                    canva.gameObject.SetActive(true);
-                }
-            }
         }
 
-        
-        
-        
         canvasSpawned = true;
     }
 
