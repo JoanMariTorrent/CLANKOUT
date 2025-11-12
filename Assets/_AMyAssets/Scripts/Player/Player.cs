@@ -35,15 +35,13 @@ public class Player : NetworkBehaviour
     public void SpawnCanvas()
     {
         if (canvasSpawned) return;
-        if (isOwner)
-        {
-            var canvasObject = Instantiate(canvasPrefab);
-            canvas = canvasObject.GetComponent<Canvas>();
-        }
-        
+        if (!isOwner) return;
 
-        canvas.gameObject.SetActive(isOwner);
-        canvas.enabled = isOwner;
+        var canvasObject = Instantiate(canvasPrefab);
+        canvas = canvasObject.GetComponent<Canvas>();
+
+        canvas.gameObject.SetActive(true);
+        canvas.enabled = true;
         
         canvasSpawned = true;
     }
@@ -65,10 +63,6 @@ public class Player : NetworkBehaviour
 
     void Start()
     {
-        if (isOwner)
-        {
-            
-        }
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
