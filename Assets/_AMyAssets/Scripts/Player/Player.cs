@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using PurrNet;
 using Steamworks;
-using Unity.VisualScripting;
 
 public class Player : NetworkBehaviour
 {
@@ -13,7 +12,11 @@ public class Player : NetworkBehaviour
     [SerializeField] private CameraLean cameraLean;
     [SerializeField] private PlayerInputsAction _inputActions;
     [SerializeField] private string playerName;
+    [SerializeField] private GameObject canvasPrefab;
+    public Canvas canvas;
+    private bool canvasSpawned = false;
     public bool canMove;
+
 
     protected override void OnSpawned()
     {
@@ -24,7 +27,20 @@ public class Player : NetworkBehaviour
         {
             string steamName = SteamFriends.GetPersonaName();
             CmdPlayerName(steamName);
+
+            SpawnCanvas();
         }
+    }
+
+    public void SpawnCanvas()
+    {
+        if (canvasSpawned) return;
+        if (!isOwner) return;
+
+
+        var canvasObject = Instantiate(canvasPrefab);
+        canvas = canvasObject.GetComponent<Canvas>();
+        canvasSpawned = true;
     }
 
     [ServerRpc]
@@ -44,6 +60,11 @@ public class Player : NetworkBehaviour
 
     void Start()
     {
+        if (isOwner)
+        {
+            
+        }
+        
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
@@ -90,12 +111,31 @@ public class Player : NetworkBehaviour
             state.Acceleration,
             cameraTarget.up
         );
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            var playerHealth = GetComponent<PlayerHealth>();
+            if (playerHealth == null)
+                Debug.LogAssertionFormat("playerHealth es null!");
+            playerHealth.ChangeHealth(-10);
+            Debug.Log($"Nueva vida del jugador: {playerHealth.health}");
+        }
     }
 
 
 
     private void HandleInputs()
     {
+        if (_inputActions == null)
+        {
+            _inputActions = new PlayerInputsAction();
+            _inputActions.Enable();
+            if (_inputActions == null)
+            {
+                _inputActions = new PlayerInputsAction();
+                _inputActions.Enable();
+            }
+        }
         var input = _inputActions.GamePlay;
         float deltaTime = Time.deltaTime;
 

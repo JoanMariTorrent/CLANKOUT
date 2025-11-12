@@ -376,6 +376,7 @@ MonoBehaviour:
   cameraSpring: {fileID: 5855341915361668786}
   cameraLean: {fileID: 8021116977053843990}
   playerName: 
+  canvasPrefab: {fileID: 6743392383370926023, guid: 76b40ca19986d9f4eae18a8d7ae2a932, type: 3}
   canMove: 0
 --- !u!114 &8159890137296869839
 MonoBehaviour:

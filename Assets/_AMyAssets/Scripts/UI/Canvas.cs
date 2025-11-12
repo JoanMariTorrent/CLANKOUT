@@ -1,16 +1,15 @@
-using System;
 using UnityEngine;
 using PurrNet;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
 
 public class Canvas : NetworkBehaviour
 {
     [SerializeField] private NetworkManager _NetworkManager;
-    [SerializeField] private List<View> _allViews = new();
+    public List<View> _allViews = new();
     [SerializeField] private View _defaulView;
     public GameObject slotMachine;
+    public GameMainView gameMainView;
     
 
     private void Awake()

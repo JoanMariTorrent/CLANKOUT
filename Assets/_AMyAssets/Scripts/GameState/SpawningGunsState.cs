@@ -30,11 +30,12 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         {
             foreach (var player in data)
             {
+                Debug.Log("asdjbasdbaskdbahjsdjbhasdbhadhasd");
                 var weaponManager = player.GetComponent<WeaponManager>();
                 if (!weaponManager) continue;
 
-                GameObject[] _primary = _weaponDataManager.GetRandomWeapons(1, 1);
-                //weaponManager.ShowSlotMachineEffect(player.name);
+                var weapon = _weaponDataManager.GetRandomWeapons(1, 1);
+                weaponManager.NewWeapon(weapon[0], true, false, false);
             }
         }
 

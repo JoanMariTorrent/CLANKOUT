@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using PurrNet;
 using UnityEngine;
-using static ScoreManager;
 
 public class ScoreboardView : View
 {

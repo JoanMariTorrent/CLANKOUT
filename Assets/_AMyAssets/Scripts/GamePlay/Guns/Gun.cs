@@ -2,12 +2,8 @@ using System.Collections;
 using PurrNet;
 using UnityEngine;
 using System.Collections.Generic;
-using Steamworks;
-using System.Security;
-using UnityEngine.Rendering;
 using Interfaces;
-using UnityEditor.Callbacks;
-using System.Runtime.CompilerServices;
+using System.Linq;
 
 public enum WeaponID
 {
@@ -79,6 +75,7 @@ public class Gun : NetworkBehaviour, ITakeGun
     public Rigidbody rb;
     [SerializeField] private GameMainView gameMainView;
     [SerializeField] private PlayerCharacter playerCharacter;
+    [SerializeField] private Player player;
     [SerializeField] private Transform _cameraTransform;
     [SerializeField] private LayerMask _hitLayer;
     [SerializeField] private ParticleSystem _muzzleFlash;
@@ -170,7 +167,7 @@ public class Gun : NetworkBehaviour, ITakeGun
     }
 
 
-    public void Setup(Transform cameraTransform, LayerMask hitLayer, RecoilCamera recoil, PlayerCharacter playerChar, WeaponManager wm)
+    public void Setup(Transform cameraTransform, LayerMask hitLayer, RecoilCamera recoil, PlayerCharacter playerChar, Player normalPlayer, WeaponManager wm)
     {
         this.enabled = true;
         equipedGun = true;
@@ -178,11 +175,34 @@ public class Gun : NetworkBehaviour, ITakeGun
         _hitLayer = hitLayer;
         recoilCamera = recoil;
         playerCharacter = playerChar;
+        player = normalPlayer;
         reloading = false;
         weaponManager = wm;
 
-        if (isOwner) gameMainView = InstanceHandler.GetInstance<GameMainView>();
-        if (gameMainView != null) gameMainView.UpdateAmmo(ammo, reloadsAmmo);
+        if (isOwner && player == null)
+        {
+            Debug.LogAssertionFormat("player es null en setup!");
+            player = playerChar.GetComponent<Player>();
+        }
+        if (player != null && player.canvas == null)
+        {
+            player.SpawnCanvas();
+        }
+
+        if (isOwner && player.canvas != null)
+        {
+            gameMainView = player.canvas._allViews.OfType<GameMainView>().FirstOrDefault();
+        }
+
+
+
+        if (gameMainView != null)
+        {
+            gameMainView.UpdateAmmo(ammo, reloadsAmmo);
+            Debug.Log("<color=green> Game main view existe</color>");
+        }
+        else if (gameMainView == null)
+            Debug.Log("<color=red> Game main view es null! </color>");
 
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;

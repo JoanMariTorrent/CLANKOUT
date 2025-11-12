@@ -15,8 +15,15 @@ public class WeaponManager : NetworkBehaviour
     public SyncList<GameObject> _ownedWeapons = new();
     [SerializeField] private GameObject weaponInstance = null;
     [SerializeField] private PlayerCharacter playerChar;
+    [SerializeField] private Player player;
 
-
+    void Start()
+    {
+        if (isOwner)
+        {
+            GetPlayerScript();
+        }
+    }
 
 
     protected override void OnSpawned()
@@ -265,7 +272,10 @@ public class WeaponManager : NetworkBehaviour
 
         // Configurar arma
         _currentGun.GiveOwnership(owner.Value);
-        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, this);
+        if (player == null)
+            GetPlayerScript();
+
+        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this);
 
         // Buscar índice correcto
         Gun prefabGun = weaponPrefab.GetComponent<Gun>();
@@ -310,7 +320,9 @@ public class WeaponManager : NetworkBehaviour
 
         _currentGun.GiveOwnership(owner.Value);
 
-        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, this);
+        if(player ==  null)
+            GetPlayerScript();
+        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this);
 
         int indexWeapon = GetWeaponIndex(_currentGun.weaponType == WeaponType.Primary);
         _ownedWeapons[indexWeapon] = weaponObject;
@@ -360,7 +372,9 @@ public class WeaponManager : NetworkBehaviour
         weaponToSwitch.transform.localRotation = Quaternion.identity;
 
         // reconfigurar camara y recoil
-        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, this);
+        if(player == null)
+            GetPlayerScript();
+        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this);
 
         weaponToSwitch.SetActive(true);
 
@@ -483,6 +497,11 @@ public class WeaponManager : NetworkBehaviour
 
 
 
+    }
+
+    private void GetPlayerScript()
+    {
+        player = GetComponent<Player>();
     }
 
 

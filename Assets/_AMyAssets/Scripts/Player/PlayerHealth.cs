@@ -1,8 +1,6 @@
 using System;
-using NUnit.Framework;
 using PurrNet;
 using UnityEngine;
-using System.Collections.Generic;
 
 public class PlayerHealth : NetworkBehaviour
 {
@@ -71,6 +69,8 @@ public class PlayerHealth : NetworkBehaviour
                     scoreManager.AddDeath(owner.Value);
             }
             OnDeath_Server?.Invoke(owner.Value);
+            var player = GetComponent<Player>();
+            Destroy(player.canvas.gameObject);
             Destroy(gameObject);
         }
 

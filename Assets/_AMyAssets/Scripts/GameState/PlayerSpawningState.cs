@@ -56,7 +56,9 @@ public class PlayerSpawningState : StateNode
         if (_allPlayers == null)
             return;
         foreach (var _player in _allPlayers)
-        { 
+        {
+            var player = _player.GetComponent<Player>();
+            Destroy(player.canvas.gameObject); 
             Destroy(_player.gameObject);
         }
     }
