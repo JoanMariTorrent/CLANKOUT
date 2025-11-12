@@ -26,36 +26,7 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
 
 
         // Pruebas
-        if (InstanceHandler.TryGetInstance(out WeaponsDataManager _weaponDataManager))
-        {
-            foreach (var player in data)
-            {
-                Debug.Log(player);
-                var normalPlayer = player.GetComponent<Player>();
-                var weaponManager = player.GetComponent<WeaponManager>();
-
-
-                if (!player)
-                {
-                    Debug.LogWarning("Player script missing on: " + player.name);
-                    continue;
-                }
-    
-                if (!weaponManager)
-                {
-                    Debug.LogWarning("WeaponManager missing on: " + player.name);
-                    continue;
-                }
-    
-
-                var weapon = _weaponDataManager.GetRandomWeapons(1, 1);
-                weaponManager.NewWeapon(weapon[0], true, false, false);
-
-
-                normalPlayer.canMove = true;
-                Debug.Log($"canMove activated for {player.name}");
-            }
-        }
+        StartCoroutine(GiveGunsCoroutine(data));
 
 
 
@@ -82,6 +53,35 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
     {
         Debug.Log($"<color=green>📺 Mostrando SlotMachine en cliente {target}</color>");
         Debug.Log($"<color=red> playerName: {player.gameObject.name} </color>");
+    }
+
+
+
+    // Sisteam provisional
+    private IEnumerator GiveGunsCoroutine(List<PlayerHealth> data)
+    {
+        if (InstanceHandler.TryGetInstance(out WeaponsDataManager _weaponDataManager))
+        {
+            foreach (var playerHealth in data)
+            {
+                var player = playerHealth.GetComponent<Player>();
+                var weaponManager = playerHealth.GetComponent<WeaponManager>();
+
+                if (!player || !weaponManager) continue;
+
+                var weapon = _weaponDataManager.GetRandomWeapons(1, 1);
+                weaponManager.NewWeapon(weapon[0], true, false, false);
+
+                // esperar un frame para asegurar que todo se inicializó
+                yield return null;
+
+                player.canMove = true;
+                Debug.Log($"canMove activated for {player.name}");
+
+                // opcional: repartir ejecución en varios frames
+                yield return null;
+            }
+        }
     }
 
 
