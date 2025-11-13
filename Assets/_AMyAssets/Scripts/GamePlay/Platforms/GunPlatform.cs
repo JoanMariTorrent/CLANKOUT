@@ -34,7 +34,6 @@ public class GunPlatform : NetworkBehaviour
 
     private void Update()
     {
-        if (!isServer) return;
         if (playerInCollision && gunSpawned)
         {
             if (player == null) return;
@@ -64,6 +63,7 @@ public class GunPlatform : NetworkBehaviour
 
     private void SpawnGun()
     {
+        if(!isServer) return;
         typeGun = 1; //Random.Range(1, 3);
         spawnGun = _weaponsData.GetRandomWeapons(1, typeGun);
         var gunScript = spawnGun[0].GetComponent<Gun>();
@@ -91,7 +91,6 @@ public class GunPlatform : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isServer) return;
         
         var playercoll = other.GetComponent<PlayerCharacter>();
         if (playercoll == null) return;
@@ -104,7 +103,6 @@ public class GunPlatform : NetworkBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (!isServer) return;
         var playercoll = other.GetComponent<PlayerCharacter>();
         if (playercoll == null) return;
         
@@ -114,6 +112,7 @@ public class GunPlatform : NetworkBehaviour
 
     private void RestartAll()
     {
+        if(!isServer) return;
         Destroy(spawnedGun);
         gunSpawned = false;
         typeGun = 0;

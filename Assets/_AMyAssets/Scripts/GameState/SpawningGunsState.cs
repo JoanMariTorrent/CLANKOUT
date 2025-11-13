@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class SpawningGunsState : StateNode<List<PlayerHealth>>
 {
-    public GameObject ground;
+    [SerializeField] private int playerCount;
+    [SerializeField] private int playerEndedSpinCount;
     void Awake()
     {
         InstanceHandler.RegisterInstance(this);
@@ -26,36 +27,19 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             return;
 
 
-        // Pruebas
-        if (InstanceHandler.TryGetInstance(out WeaponsDataManager _weaponDataManager))
-        {
-            foreach (var player in data)
-            {
-                var weaponManager = player.GetComponent<WeaponManager>();
-                if (!weaponManager) continue;
-
-                var weapon = _weaponDataManager.GetRandomWeapons(1, 1);
-                weaponManager.NewWeapon(weapon[0], true, false, false);
-            }
-        }
-
-
-
         foreach (var player in data)
         {
             var getPlayer = player.GetComponent<Player>();
             if (getPlayer == null)
                 continue;
+            playerCount++;
 
-
-            Debug.Log($"<color=purple>Enviando SlotMachine a jugador {getPlayer.owner.Value}</color>");
-            RpcShowSlotMachine(getPlayer.owner.Value, getPlayer);
-
-
-            
-            
+            //RpcShowSlotMachine(getPlayer.owner.Value, getPlayer);
+            StartCoroutine(GetGuns(getPlayer, data));
         }
-        machine.Next(data);
+
+        TryGoNextState(data);
+        
     }
 
 
@@ -66,13 +50,26 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         Debug.Log($"<color=red> playerName: {player.gameObject.name} </color>");
     }
 
-
-
-    private IEnumerator GetGuns(Player player)
+    private void TryGoNextState(List<PlayerHealth> data)
     {
-        var normalPlayer = player.GetComponent<Player>();
-        if (normalPlayer == null) yield break;
-        var slotMachine = normalPlayer.canvas._allViews.OfType<SlotMachine>().FirstOrDefault();
+        if(playerEndedSpinCount == playerCount)
+        {
+            Debug.Log($"<color=purple> All players have finished their spin!</color>");
+            machine.Next(data);
+        }
+        else if(playerEndedSpinCount != playerCount)
+        {
+            Debug.Log("<color=orange> Wait for other playes to finish his spins!</color>");
+        }
+    }
+
+
+
+    private IEnumerator GetGuns(Player player, List<PlayerHealth> data)
+    {
+        yield return null;
+        var slotMachine = player.canvas._allViews.OfType<SlotMachine>().FirstOrDefault();
+        Debug.Log($"<color=yellow> slot machine: {slotMachine} of player: {player} </color>");
         if (slotMachine == null) yield break;
 
 
@@ -91,7 +88,6 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         slotMachine.gameObject.SetActive(true);
 
         yield return slotMachine.Spin();
-        Debug.Log("<color=green>✅ Spin completado correctamente</color>");
         yield return new WaitForSeconds(1f);
         slotMachine.GetComponent<CanvasGroup>().alpha = 0f;
 
@@ -111,6 +107,11 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         weaponManager.SwitchWeapon(0);
         slotMachine.gameObject.SetActive(false);
         player.GetComponent<Player>().canMove = true;
+
+        Debug.Log($"<color=green>✅ Player {player.gameObject} has ended his spin!</color>");
+        playerEndedSpinCount++;
+
+        TryGoNextState(data);
 
     }
 }

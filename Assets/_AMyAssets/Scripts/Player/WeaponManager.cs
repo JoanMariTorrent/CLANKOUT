@@ -46,42 +46,42 @@ public class WeaponManager : NetworkBehaviour
 
 
 
-            if (!groundGun)
+            
+            if (currentIndex >= 0 && _ownedWeapons[currentIndex] != null) // Si encuentro un arma del mismo tipo, la destruye
             {
-                if (currentIndex >= 0 && _ownedWeapons[currentIndex] != null) // Si encuentro un arma del mismo tipo, la destruye
-                {
-                    //SwitchWeapon(currentIndex);
-                    //DropGun();
-                    Destroy(_ownedWeapons[currentIndex]);
-                    _ownedWeapons[currentIndex] = null;
-                }
-                else
-                {
-                    if (primaryWeapon)
-                    {
-                        if (_ownedWeapons[0] != null && _ownedWeapons[1] != null)
-                        {
-                            Debug.LogAssertionFormat("asdasdasd");
-                            Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
-                            _ownedWeapons[playerChar.gunToSwitchIndex] = null;
-                        }
-                    }
-                    else if (!primaryWeapon)
-                    {
-                        if (_ownedWeapons[2] != null && _ownedWeapons[3] != null)
-                        {
-                            Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
-                            _ownedWeapons[playerChar.gunToSwitchIndex] = null;
-                        }
-                    }
-                }
+                //SwitchWeapon(currentIndex);
+                //DropGun();
+                Destroy(_ownedWeapons[currentIndex]);
+                _ownedWeapons[currentIndex] = null;
+                    
             }
-            else if (groundGun)
+            else
+            {
+                if (primaryWeapon)
+                {
+                    if (_ownedWeapons[0] != null && _ownedWeapons[1] != null)
+                    {
+                        Debug.LogAssertionFormat("asdasdasd");
+                        Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
+                        _ownedWeapons[playerChar.gunToSwitchIndex] = null;
+                    }
+                }
+                else if (!primaryWeapon)
+                {
+                    if (_ownedWeapons[2] != null && _ownedWeapons[3] != null)
+                    {
+                        Destroy(_ownedWeapons[playerChar.gunToSwitchIndex]);
+                        _ownedWeapons[playerChar.gunToSwitchIndex] = null;
+                    }
+                 }
+            }
+            
+            if (groundGun)
             {
                 AddGunFromGround(weaponPrefab);
             }
 
-            if (!groundGun)
+            else if (!groundGun)
             {
                 // Instancia la nueva arma
                 InstantiateGun(weaponPrefab);
