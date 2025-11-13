@@ -4,7 +4,6 @@ using PurrNet;
 using Steamworks;
 using Unity.Mathematics;
 using System.Linq;
-using System.Collections;
 
 public class Player : NetworkBehaviour
 {
@@ -219,10 +218,10 @@ public class Player : NetworkBehaviour
 
 
 
-    [ObserversRpc]
+    [TargetRpc(requireServer:false)]
     public void TargetStartSpin(PlayerID target)
     {
-        if (target != owner.Value) return;
+        if (isServer) return;
         Spin();
     }
 

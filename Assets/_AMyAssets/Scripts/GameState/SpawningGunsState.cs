@@ -40,18 +40,22 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             if (getPlayer == null)
                 continue;
             normalPlayers.Add(getPlayer);
+            _players.Add(player.owner.Value);
             playerCount++;
 
             //getPlayer.Spin();
 
-            //RpcShowSlotMachine(getPlayer.owner.Value, getPlayer, data);
+            
             //StartCoroutine(GetGuns(getPlayer, data));
         }
 
         foreach (var player in normalPlayers)
         {
-            Debug.Log(player);
-            player.TargetStartSpin(player.owner.Value);
+            var playerIndex = normalPlayers.IndexOf(player);
+            var playerID = _players[playerIndex];
+            Debug.Log($"Player id = {playerID}");
+            player.TargetStartSpin(playerID);
+            RpcShowSlotMachine(playerID, player);
         }
 
         TryGoNextState(data);
@@ -59,8 +63,8 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
     }
 
 
-    [TargetRpc]
-    public void RpcShowSlotMachine(PlayerID target, Player player, List<PlayerHealth> data)
+    [TargetRpc(requireServer:false)]
+    public void RpcShowSlotMachine(PlayerID target, Player player)
     {
         Debug.Log($"<color=green>📺 Mostrando SlotMachine en cliente {target}</color>");
         Debug.Log($"<color=red> playerName: {player.gameObject.name} </color>");
