@@ -17,6 +17,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private string playerName;
     [SerializeField] private GameObject canvasPrefab;
     public Canvas canvas;
+    public SlotMachine slotMachine;
     private bool canvasSpawned = false;
     public bool canMove;
 
@@ -218,7 +219,11 @@ public class Player : NetworkBehaviour
 
     public void Spin()
     {
-        var slotMachine = canvas._allViews.OfType<SlotMachine>().FirstOrDefault();
+        if (canvas == null)
+        {
+            SpawnCanvas();
+        }
+        slotMachine = canvas._allViews.OfType<SlotMachine>().FirstOrDefault();
         if (slotMachine == null) return;
 
         var weaponManager = GetComponent<WeaponManager>();
