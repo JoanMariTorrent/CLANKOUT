@@ -45,6 +45,7 @@ public class Player : NetworkBehaviour
             canvasObject.transform.localPosition = Vector3.zero;
             canvasObject.transform.localRotation = quaternion.identity;
             canvas = canvasObject.GetComponent<Canvas>();
+            slotMachine = canvas._allViews.OfType<SlotMachine>().FirstOrDefault();
 
             canvas.gameObject.SetActive(true);
             canvas.enabled = true;
