@@ -27,10 +27,7 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
 
     public override void Enter(List<PlayerHealth> data, bool asServer)
     {
-        base.Enter(data, asServer);
-
-        if (!asServer)
-            return;
+        base.Enter(data);
         if (data.Count <= 0)
             return;
 
