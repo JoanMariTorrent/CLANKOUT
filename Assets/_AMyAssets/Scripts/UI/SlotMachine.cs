@@ -65,6 +65,11 @@ public class SlotMachine : View
             Spin();
     }
 
+    public void startSpin()
+    {
+        StartCoroutine(Spin());
+    }
+
     public IEnumerator Spin()
     {
         if (isSpinning) yield break;

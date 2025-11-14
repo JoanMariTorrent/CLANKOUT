@@ -184,10 +184,6 @@ public class Gun : NetworkBehaviour, ITakeGun
             Debug.LogAssertionFormat("player es null en setup!");
             player = playerChar.GetComponent<Player>();
         }
-        if (player != null && player.canvas == null)
-        {
-            player.SpawnCanvas();
-        }
 
         if (isOwner && player.canvas != null)
         {

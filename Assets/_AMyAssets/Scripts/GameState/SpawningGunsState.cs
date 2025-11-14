@@ -44,8 +44,6 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             playerCount++;
 
             //getPlayer.Spin();
-
-            
             //StartCoroutine(GetGuns(getPlayer, data));
         }
 
@@ -56,11 +54,14 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             Debug.Log($"Player id = {playerID}");
             player.TargetStartSpin(playerID);
             RpcShowSlotMachine(playerID, player);
+            
         }
 
         TryGoNextState(data);
 
     }
+
+    
 
 
     [TargetRpc(requireServer:false)]
@@ -68,6 +69,12 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
     {
         Debug.Log($"<color=green>📺 Mostrando SlotMachine en cliente {target}</color>");
         Debug.Log($"<color=red> playerName: {player.gameObject.name} </color>");
+        player.canvas.ShowView<SlotMachine>(true);
+
+        player.slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
+        player.slotMachine.gameObject.SetActive(true);
+        
+        player.slotMachine.startSpin();
     }
 
     private void TryGoNextState(List<PlayerHealth> data)

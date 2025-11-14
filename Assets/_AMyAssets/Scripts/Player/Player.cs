@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using PurrNet;
 using Steamworks;
-using Unity.Mathematics;
 using System.Linq;
 
 public class Player : NetworkBehaviour
@@ -18,8 +17,13 @@ public class Player : NetworkBehaviour
     [SerializeField] private GameObject canvasPrefab;
     public Canvas canvas;
     public SlotMachine slotMachine;
-    private bool canvasSpawned = false;
     public bool canMove;
+    public bool prueba = false;
+
+    void Awake()
+    {
+        InstanceHandler.RegisterInstance(this);
+    }
 
 
     protected override void OnSpawned()
@@ -29,32 +33,9 @@ public class Player : NetworkBehaviour
 
         if (isOwner)
         {
-            string steamName = SteamFriends.GetPersonaName();
-            CmdPlayerName(steamName);
-
-            SpawnCanvas();
+            //string steamName = SteamFriends.GetPersonaName();
+            //CmdPlayerName(steamName);
         }
-    }
-
-    public void SpawnCanvas()
-    {
-        if (canvasSpawned) return;
-        if (isOwner)
-        {
-            var canvasObject = Instantiate(canvasPrefab, playerCamera.transform);
-            canvasObject.transform.localPosition = Vector3.zero;
-            canvasObject.transform.localRotation = quaternion.identity;
-            canvas = canvasObject.GetComponent<Canvas>();
-            slotMachine = canvas._allViews.OfType<SlotMachine>().FirstOrDefault();
-
-            canvas.gameObject.SetActive(true);
-            canvas.enabled = true;
-
-            string steamName = SteamFriends.GetPersonaName();
-            canvas.gameObject.name = $"Canvas of: {steamName}";
-        }
-
-        canvasSpawned = true;
     }
 
     [ServerRpc]
@@ -238,9 +219,6 @@ public class Player : NetworkBehaviour
         slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
         slotMachine.gameObject.SetActive(true);
     }
-
-
-
 
 
 }
