@@ -60,7 +60,7 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
     {
         foreach (var player in normalPlayers)
         {
-            RpcShowSlotMachine(player.owner.Value, player);
+            RpcShowSlotMachine(player.owner.Value);
         }
     }
 
@@ -68,6 +68,21 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
 
 
     [TargetRpc]
+    public void RpcShowSlotMachine(PlayerID target, RPCInfo info = default)
+    {
+        Player player = PlayerRegistry.GetLocalPlayer(target);
+        if(player == null)
+        {
+            Debug.LogError($"No se ha encontrado ningun player local con la ID {target}");
+        }
+
+        player.slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
+        player.slotMachine.gameObject.SetActive(true);
+        
+        player.slotMachine.startSpin();
+    }
+
+    /*
     public void RpcShowSlotMachine(PlayerID target, Player player)
     {
         Debug.Log($"<color=green>📺 Mostrando SlotMachine en cliente {target}</color>");
@@ -79,6 +94,8 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         
         player.slotMachine.startSpin();
     }
+
+    */
 
     private void TryGoNextState(List<PlayerHealth> data)
     {

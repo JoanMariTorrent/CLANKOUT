@@ -24,6 +24,7 @@ public class Player : NetworkBehaviour
     void Awake()
     {
         InstanceHandler.RegisterInstance(this);
+        PlayerRegistry.AllPlayers.Add(this);
     }
 
 
@@ -85,6 +86,7 @@ public class Player : NetworkBehaviour
     private void OnDisable()
     {
         _inputActions.Dispose();
+        PlayerRegistry.AllPlayers.Remove(this);
     }
     void Update()
     {

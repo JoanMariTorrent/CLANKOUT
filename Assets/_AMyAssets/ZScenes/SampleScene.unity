@@ -1142,7 +1142,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  _minPlayers: 2
+  _minPlayers: 1
 --- !u!4 &1626096718
 Transform:
   m_ObjectHideFlags: 0
@@ -1169,6 +1169,8 @@ GameObject:
   - component: {fileID: 1700515021}
   - component: {fileID: 1700515020}
   - component: {fileID: 1700515022}
+  - component: {fileID: 1700515024}
+  - component: {fileID: 1700515023}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1259,6 +1261,30 @@ MonoBehaviour:
   _utilityData:
   - {fileID: 9099921293467336502, guid: e5985975352801240a2881a78dbade0b, type: 3}
   _allGuns: []
+--- !u!114 &1700515023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700515019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d75a1bd4b1ef8d34282e0fd1fd37159b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1700515024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700515019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d75a1bd4b1ef8d34282e0fd1fd37159b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1763864053
 GameObject:
   m_ObjectHideFlags: 0
@@ -1685,6 +1711,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  players: []
 --- !u!1001 &84064261827147580
 PrefabInstance:
   m_ObjectHideFlags: 0
