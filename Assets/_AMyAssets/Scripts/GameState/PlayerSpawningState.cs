@@ -15,6 +15,9 @@ public class PlayerSpawningState : StateNode
     {
         base.Enter(asServer);
 
+        if (!asServer)
+            return;
+
         DespawnPlayers();
 
         var _spawnedPlayers = SpawnPlayers();

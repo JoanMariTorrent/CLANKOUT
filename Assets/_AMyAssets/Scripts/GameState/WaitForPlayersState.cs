@@ -13,6 +13,9 @@ public class WaitForPlayersState : StateNode
     public override void Enter(bool asServer)
     {
         base.Enter(asServer);
+
+        if (!asServer)
+            return;
         StartCoroutine(WaitForPlayers());
     }
 
