@@ -60,14 +60,13 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
     {
         foreach (var player in normalPlayers)
         {
-            player.RpcShowSlotMachine(player.owner.Value);
+            player.RpcShowSlotMachine();
         }
     }
 
     
 
 
-    [TargetRpc]
     public void RpcShowSlotMachine(PlayerID target, RPCInfo info = default)
     {
         Player player = PlayerRegistry.GetLocalPlayer(target);

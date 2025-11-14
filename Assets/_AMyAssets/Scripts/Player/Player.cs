@@ -228,8 +228,7 @@ public class Player : NetworkBehaviour
     }
 
     // En Player.cs
-    [TargetRpc]
-    public void RpcShowSlotMachine(PlayerID target, RPCInfo info = default)
+    public void RpcShowSlotMachine()
     {
         slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
         slotMachine.gameObject.SetActive(true);
