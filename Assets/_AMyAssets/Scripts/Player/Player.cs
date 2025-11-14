@@ -15,6 +15,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerInputsAction _inputActions;
     [SerializeField] private string playerName;
     [SerializeField] private GameObject canvasPrefab;
+    [SerializeField] private bool isSpinning = false;
     public Canvas canvas;
     public SlotMachine slotMachine;
     public bool canMove;
@@ -230,6 +231,7 @@ public class Player : NetworkBehaviour
     // En Player.cs
     public void RpcShowSlotMachine()
     {
+        isSpinning = true;
         slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
         slotMachine.gameObject.SetActive(true);
         slotMachine.startSpin();
