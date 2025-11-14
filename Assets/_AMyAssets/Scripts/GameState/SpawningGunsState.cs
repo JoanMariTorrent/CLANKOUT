@@ -13,16 +13,20 @@ using UnityEngine;
 public class SpawningGunsState : StateNode<List<PlayerHealth>>
 {
     [SerializeField] private List<Player> normalPlayers = new();
+    [SerializeField] private List<SlotMachine> PlayersSlotMachines = new();
     [SerializeField] private int playerCount;
     [SerializeField] private int playerEndedSpinCount;
+    [SerializeField] private List<WeaponScripteableObject> weapons;
+    [SerializeField] private List<WeaponScripteableObject> filteredWeapons = new List<WeaponScripteableObject>();
+    [SerializeField] private WeaponScripteableObject selectedWeapon;
 
-    [SerializeField] private List<SlotMachine> PlayersSlotMachines = new();
     void Awake()
     {
         InstanceHandler.RegisterInstance(this);
     }
 
     private List<PlayerID> _players = new();
+    [SerializeField] private randomType randomType;
 
 
     public override void Enter(List<PlayerHealth> data, bool asServer)
@@ -44,14 +48,10 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             normalPlayers.Add(getPlayer);
             _players.Add(player.owner.Value);
             playerCount++;
-
-            //getPlayer.Spin();
-            //StartCoroutine(GetGuns(getPlayer, data));
         }
+        selectedWeapon = ChooseWeaponByChance(filteredWeapons);
 
         ServerShowSlot();
-        
-
         TryGoNextState(data);
 
     }
@@ -64,38 +64,6 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             player.TargetStartSpin(player.owner.Value);
         }
     }
-
-    
-
-
-    public void RpcShowSlotMachine(PlayerID target, RPCInfo info = default)
-    {
-        Player player = PlayerRegistry.GetLocalPlayer(target);
-        if(player == null)
-        {
-            Debug.LogError($"No se ha encontrado ningun player local con la ID {target}");
-        }
-
-        player.slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
-        player.slotMachine.gameObject.SetActive(true);
-        
-        player.slotMachine.startSpin();
-    }
-
-    /*
-    public void RpcShowSlotMachine(PlayerID target, Player player)
-    {
-        Debug.Log($"<color=green>📺 Mostrando SlotMachine en cliente {target}</color>");
-        Debug.Log($"<color=red> playerName: {player.gameObject.name} </color>");
-        player.canvas.ShowView<SlotMachine>(true);
-
-        player.slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
-        player.slotMachine.gameObject.SetActive(true);
-        
-        player.slotMachine.startSpin();
-    }
-
-    */
 
     private void TryGoNextState(List<PlayerHealth> data)
     {
@@ -158,7 +126,7 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
         slotMachine.gameObject.SetActive(true);
 
-        yield return slotMachine.Spin();
+        //yield return slotMachine.Spin();
         yield return new WaitForSeconds(1f);
         slotMachine.GetComponent<CanvasGroup>().alpha = 0f;
 
@@ -185,5 +153,56 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
         TryGoNextState(data);
 
     }
+
+
+
+    // Elegir un arma segun sus posibilidades
+    private WeaponScripteableObject ChooseWeaponByChance(List<WeaponScripteableObject> weaponList)
+    {
+        float totalChance = 0f;
+        foreach (var w in weaponList)
+            totalChance += w.dropChance;
+
+        float r = Random.Range(0f, totalChance);
+        float accum = 0f;
+
+        foreach (var w in weaponList)
+        {
+            accum += w.dropChance;
+            if (r <= accum)
+                return w;
+        }
+
+        return weaponList[weaponList.Count - 1];
+    }
+
+    private List<WeaponScripteableObject> filteredWeaponsList()
+    {
+        foreach (var w in weapons)
+        {
+            switch (randomType)
+            {
+                case randomType.Primary:
+                    if (w.weaponType == WeaponScripteableType.Primary)
+                        filteredWeapons.Add(w);
+                    break;
+                case randomType.Secondary:
+                    if (w.weaponType == WeaponScripteableType.Secondary)
+                        filteredWeapons.Add(w);
+                    break;
+                case randomType.Utility:
+                    if (w.weaponType == WeaponScripteableType.Utility)
+                        filteredWeapons.Add(w);
+                    break;
+            }
+        }
+
+        // Si no hay ninguna, usar todas
+        if (filteredWeapons.Count == 0)
+            filteredWeapons = new List<WeaponScripteableObject>(weapons);
+
+        return filteredWeapons;
+    }
+
 }
 

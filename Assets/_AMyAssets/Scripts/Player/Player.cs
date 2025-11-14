@@ -174,7 +174,6 @@ public class Player : NetworkBehaviour
             Interact = input.Interact.WasPressedThisFrame(),
             Reload = input.Reload.WasPressedThisFrame(),
             DropGun = input.DropGun.WasPressedThisFrame(),
-
         };
 
         playerCharacter.UpdateInput(characterInput);
@@ -225,7 +224,7 @@ public class Player : NetworkBehaviour
         isSpinning = true;
         slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
         slotMachine.gameObject.SetActive(true);
-        slotMachine.startSpin();
+        //slotMachine.startSpin();
     }
 
 

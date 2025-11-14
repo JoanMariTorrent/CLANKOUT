@@ -15,7 +15,6 @@ public class SlotMachine : View
 {
     [Space]
     [Header("Content")]
-    [SerializeField] private List<WeaponScripteableObject> weapons;
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private RectTransform itemsContainer;
     [SerializeField] private RectTransform maskArea;
@@ -41,8 +40,6 @@ public class SlotMachine : View
     [Tooltip("Decide de que tipo se hara el random.")]
 
     [SerializeField] private randomType randomType;
-
-    private WeaponScripteableObject selectedWeapon;
     private List<RectTransform> slotList = new List<RectTransform>();
     private bool isSpinning = false;
     public WeaponScripteableObject finalWeapon;
@@ -59,55 +56,23 @@ public class SlotMachine : View
     }
 
 
-    private void Update()
+    public void startSpin(WeaponScripteableObject selectedWeapon, List<WeaponScripteableObject> filteredWeapons)
     {
-        if (Input.GetKeyDown(KeyCode.K))
-            Spin();
+        StartCoroutine(Spin(selectedWeapon, filteredWeapons));
     }
 
-    public void startSpin()
-    {
-        StartCoroutine(Spin());
-    }
-
-    public IEnumerator Spin()
+    public IEnumerator Spin(WeaponScripteableObject selectedWeapon, List<WeaponScripteableObject> filteredWeapons)
     {
         if (isSpinning) yield break;
         itemsContainer.anchoredPosition = Vector2.zero;
-        yield return StartCoroutine(SpinRoutine());
+        yield return StartCoroutine(SpinRoutine(selectedWeapon, filteredWeapons));
     }
 
 
-    private IEnumerator SpinRoutine()
+    private IEnumerator SpinRoutine(WeaponScripteableObject selectedWeapon, List<WeaponScripteableObject> filteredWeapons)
     {
         isSpinning = true;
 
-        List<WeaponScripteableObject> filteredWeapons = new List<WeaponScripteableObject>();
-        foreach (var w in weapons)
-        {
-            switch (randomType)
-            {
-                case randomType.Primary:
-                    if (w.weaponType == WeaponScripteableType.Primary)
-                        filteredWeapons.Add(w);
-                    break;
-                case randomType.Secondary:
-                    if (w.weaponType == WeaponScripteableType.Secondary)
-                        filteredWeapons.Add(w);
-                    break;
-                case randomType.Utility:
-                    if (w.weaponType == WeaponScripteableType.Utility)
-                        filteredWeapons.Add(w);
-                    break;
-            }
-        }
-
-        // Si no hay ninguna, usar todas
-        if (filteredWeapons.Count == 0)
-            filteredWeapons = new List<WeaponScripteableObject>(weapons);
-
-        // Elegimos el arma ganadora
-        selectedWeapon = ChooseWeaponByChance(filteredWeapons);
 
         // Borramos todos los iconos anteriores
         foreach (Transform child in itemsContainer)
@@ -165,24 +130,24 @@ public class SlotMachine : View
     }
 
     // Elegir un arma segun sus posibilidades
-    private WeaponScripteableObject ChooseWeaponByChance(List<WeaponScripteableObject> weaponList)
-    {
-        float totalChance = 0f;
-        foreach (var w in weaponList)
-            totalChance += w.dropChance;
-
-        float r = Random.Range(0f, totalChance);
-        float accum = 0f;
-
-        foreach (var w in weaponList)
-        {
-            accum += w.dropChance;
-            if (r <= accum)
-                return w;
-        }
-
-        return weaponList[weaponList.Count - 1];
-    }
+    //private WeaponScripteableObject ChooseWeaponByChance(List<WeaponScripteableObject> weaponList)
+    //{
+    //    float totalChance = 0f;
+    //    foreach (var w in weaponList)
+    //        totalChance += w.dropChance;
+//
+    //    float r = Random.Range(0f, totalChance);
+    //    float accum = 0f;
+//
+    //    foreach (var w in weaponList)
+    //    {
+    //        accum += w.dropChance;
+    //        if (r <= accum)
+    //            return w;
+    //    }
+//
+    //    return weaponList[weaponList.Count - 1];
+    //}
 
     public void Skip()
     {
