@@ -37,9 +37,15 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
 
         foreach (var player in data)
         {
+            player.GetComponent<Player>().RpcShowSlotMachine();
+
+
+
+
             var getPlayer = player.GetComponent<Player>();
             if (getPlayer == null)
                 continue;
+            
             normalPlayers.Add(getPlayer);
             _players.Add(player.owner.Value);
             playerCount++;
