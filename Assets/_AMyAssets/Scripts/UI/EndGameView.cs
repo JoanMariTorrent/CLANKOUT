@@ -15,7 +15,7 @@ public class EndGameView : View
 
     private void OnDestroy()
     {
-        InstanceHandler.UnregisterInstance<EndGameView>();
+        //InstanceHandler.UnregisterInstance<EndGameView>();
     }
 
     public void SetWinner(PlayerID winner)

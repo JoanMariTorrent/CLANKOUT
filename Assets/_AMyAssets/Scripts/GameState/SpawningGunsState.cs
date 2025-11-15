@@ -25,8 +25,10 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
     [SerializeField] private int playerEndedSpinCount;
     [SerializeField] private List<WeaponScripteableObject> weapons;
     [SerializeField] private List<WeaponScripteableObject> filteredWeapons = new List<WeaponScripteableObject>();
+    [SerializeField] private WeaponDatabase weaponDataBase;
     [SerializeField] private WeaponScripteableObject selectedWeapon;
     [SerializeField] private randomType randomType;
+    private List<PlayerHealth> _playersDataCache = new List<PlayerHealth>();
     private List<PlayerID> _players = new();
     
 
@@ -46,6 +48,20 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             return;
 
 
+
+        // Reset de variables
+        normalPlayers.Clear();
+        PlayersSlotMachines.Clear();
+        filteredWeapons.Clear();
+        _players.Clear();
+        _playersDataCache.Clear();
+
+        playerCount = 0;
+        playerEndedSpinCount = 0;
+
+        _playersDataCache = data;
+
+
         foreach (var player in data)
         {
             var getPlayer = player.GetComponent<Player>();
@@ -56,8 +72,6 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             _players.Add(player.owner.Value);
             playerCount++;
         }
-        filteredWeapons = filteredWeaponsList();
-        selectedWeapon = ChooseWeaponByChance(filteredWeapons);
 
         ServerShowSlot();
         TryGoNextState(data);
@@ -69,8 +83,22 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
     {
         foreach (var player in normalPlayers)
         {
-            player.TargetStartSpin(player.owner.Value, selectedWeapon, filteredWeapons);
+            var filtered = filteredWeaponsList();
+            var selected = ChooseWeaponByChance(filtered);
+
+            int[] filteredIDs = filtered.ConvertAll(w => weaponDataBase.GetIdOfWeapon(w)).ToArray();
+
+            int IDSelectedWeapon = weaponDataBase.GetIdOfWeapon(selected);
+            player.TargetStartSpin(player.owner.Value, IDSelectedWeapon, filteredIDs);
         }
+    }
+
+    [ServerRpc(requireOwnership: false)]
+    public void OnPlayerFinishedSpin(PlayerID playerID)
+    {
+        playerEndedSpinCount ++;
+        Debug.Log($"<color=green> Player {playerID} finished his spin ({playerEndedSpinCount} / {playerCount})");
+        TryGoNextState(_playersDataCache);
     }
 
     private void TryGoNextState(List<PlayerHealth> data)

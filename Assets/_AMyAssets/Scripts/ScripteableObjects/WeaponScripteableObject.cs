@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewWeapon", menuName = "Game/Weapon")]
@@ -11,6 +10,8 @@ public class WeaponScripteableObject : ScriptableObject
     public GameObject gunPrefab;
 
 }
+
+
 
 public enum WeaponScripteableType
 {

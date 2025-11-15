@@ -40,7 +40,7 @@ public class SlotMachine : View
 
     private void OnDestroy()
     {
-        InstanceHandler.UnregisterInstance<SlotMachine>();
+        //InstanceHandler.UnregisterInstance<SlotMachine>();
     }
 
 

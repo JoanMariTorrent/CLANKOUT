@@ -22,7 +22,7 @@ public class ScoreboardView : View
 
     private void OnDestroy()
     {
-        InstanceHandler.UnregisterInstance<ScoreboardView>();
+        //InstanceHandler.UnregisterInstance<ScoreboardView>();
     }
 
     public void SetData(Dictionary<PlayerID, ScoreManager.ScoreData> data)

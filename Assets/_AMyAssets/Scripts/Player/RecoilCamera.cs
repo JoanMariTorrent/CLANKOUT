@@ -55,6 +55,11 @@ public class RecoilCamera : NetworkBehaviour
             return;
         }
 
+        if(gunScript.equipedGun == false)
+        {
+            return;
+        }
+
         //if (playerScript != null)
         //    isAiming = playerScript._isAiming;
 

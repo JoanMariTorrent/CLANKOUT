@@ -21,6 +21,8 @@ public class PlayerSpawningState : StateNode
         DespawnPlayers();
 
         var _spawnedPlayers = SpawnPlayers();
+        foreach(var player in _spawnedPlayers)
+            Debug.Log($"<color=purple> player: {player}</color>");
         machine.Next(_spawnedPlayers);
     }
 
@@ -57,8 +59,8 @@ public class PlayerSpawningState : StateNode
             return;
         foreach (var _player in _allPlayers)
         {
-            var player = _player.GetComponent<Player>();
-            Destroy(player.canvas.gameObject); 
+            if(_player.gameObject == null)
+                continue;
             Destroy(_player.gameObject);
         }
     }

@@ -40,7 +40,7 @@ public class Canvas : NetworkBehaviour
 
     private void OnDestroy()
     {
-        InstanceHandler.UnregisterInstance<Canvas>();
+        //InstanceHandler.UnregisterInstance<Canvas>();
     }
 
     public void ShowView<T>(bool hideOthers = true) where T : View

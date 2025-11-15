@@ -419,10 +419,14 @@ public class Gun : NetworkBehaviour, ITakeGun
 
     private IEnumerator PlayRecoil()
     {
+        if(equipedGun == false)
+            yield break;
         float elapsed = 0f;
 
         while (elapsed < _recoilDuration)
         {
+            if(equipedGun == false)
+                yield break;
             elapsed += Time.deltaTime;
             float curveTime = elapsed / _recoilDuration;
 

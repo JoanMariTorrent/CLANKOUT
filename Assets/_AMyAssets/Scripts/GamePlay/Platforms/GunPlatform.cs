@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using PurrNet;
 using Random = UnityEngine.Random;
@@ -60,10 +59,9 @@ public class GunPlatform : NetworkBehaviour
 
         
     }
-
+    [ServerRpc(requireOwnership: false)]
     private void SpawnGun()
     {
-        if(!isServer) return;
         typeGun = 1; //Random.Range(1, 3);
         spawnGun = _weaponsData.GetRandomWeapons(1, typeGun);
         var gunScript = spawnGun[0].GetComponent<Gun>();
@@ -110,13 +108,23 @@ public class GunPlatform : NetworkBehaviour
         player = null;
     }
 
+    [ServerRpc(requireOwnership:false)]
     private void RestartAll()
     {
-        if(!isServer) return;
         Destroy(spawnedGun);
         gunSpawned = false;
         typeGun = 0;
         spawnGun = null;
         primaryWeapon = false;
+
+        RestartAll_ClientRpc(); // mandar actualización a clientes
+    }
+
+    [ObserversRpc]
+    private void RestartAll_ClientRpc()
+    {
+        // ocultar en los clientes
+        if (spawnedGun != null)
+            Destroy(spawnedGun);
     }
 }

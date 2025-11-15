@@ -4,6 +4,7 @@ using PurrNet;
 using Steamworks;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections;
 
 public class Player : NetworkBehaviour
 {
@@ -22,6 +23,7 @@ public class Player : NetworkBehaviour
     public bool canMove;
     public bool prueba = false;
     [SerializeField] private PruebasRPC pruebasRPC;
+    [SerializeField] private WeaponDatabase weaponDataBase;
 
     void Awake()
     {
@@ -209,7 +211,13 @@ public class Player : NetworkBehaviour
 
     // En Player.cs
     [TargetRpc(requireServer: false)]
-    public void TargetStartSpin(PlayerID target, WeaponScripteableObject selectedWeapon, List<WeaponScripteableObject> filteredWeapons)
+    public void TargetStartSpin(PlayerID target, int idWeapon, int[] filteredWeapons)
+    {
+        StartCoroutine(SpinCoroutine(target, idWeapon, filteredWeapons));
+    }
+
+
+    private IEnumerator SpinCoroutine(PlayerID target, int idWeapon, int[] filteredWeapons)
     {
         if (slotMachine == null)
         {
@@ -219,13 +227,48 @@ public class Player : NetworkBehaviour
         if (slotMachine == null)
         {
             Debug.LogError($"SlotMachine no encontrada en Player {gameObject.name}");
-            return;
+            yield break;
         }
+
+        var selectedWeapon = weaponDataBase.GetWeaponByID(idWeapon);
+        List<WeaponScripteableObject> filteredWeaponsList = new();
+        foreach (var id in filteredWeapons)
+            filteredWeaponsList.Add(weaponDataBase.GetWeaponByID(id));
+
+        
 
         isSpinning = true;
         slotMachine.GetComponent<CanvasGroup>().alpha = 1f;
         slotMachine.gameObject.SetActive(true);
-        slotMachine.startSpin(selectedWeapon, filteredWeapons);
+
+        slotMachine.startSpin(selectedWeapon, filteredWeaponsList);
+        while (slotMachine.finalWeapon == null)
+        {
+            Debug.Log("<color=red> Slot machine is running!");
+            yield return null;
+        }
+        var weaponManager = GetComponent<WeaponManager>();
+        if(selectedWeapon.weaponType == WeaponScripteableType.Primary)
+            weaponManager.NewWeapon(selectedWeapon.gunPrefab, true, false, false);
+        else if (selectedWeapon.weaponType == WeaponScripteableType.Secondary)
+            weaponManager.NewWeapon(selectedWeapon.gunPrefab, false, false, false);
+        else if (selectedWeapon.weaponType == WeaponScripteableType.Utility)
+            weaponManager.NewWeapon(selectedWeapon.gunPrefab, false, true, false);
+
+        slotMachine.GetComponent<CanvasGroup>().alpha = 0f;
+        slotMachine.gameObject.SetActive(false);
+
+        NotifySpinFinished_ServerRPC(owner.Value);
+    }
+
+
+    [ServerRpc]
+    public void NotifySpinFinished_ServerRPC(PlayerID playerID)
+    {
+        if(InstanceHandler.TryGetInstance(out SpawningGunsState spawningGunsState))
+        {
+            spawningGunsState.OnPlayerFinishedSpin(playerID);
+        }
     }
 
 

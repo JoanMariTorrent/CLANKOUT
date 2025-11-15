@@ -15,19 +15,13 @@ public class GameMainView : View
 
     private void OnDestroy()
     {
-        InstanceHandler.UnregisterInstance<GameMainView>();
+        //InstanceHandler.UnregisterInstance<GameMainView>();
     }
 
 
-    public override void OnHide()
-    {
-        
-    }
+    public override void OnHide() { }
 
-    public override void OnShow()
-    {
-       
-    }
+    public override void OnShow() { }
 
 
     public void UpdateHealth(int _health)

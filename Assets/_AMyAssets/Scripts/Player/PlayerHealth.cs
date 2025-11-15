@@ -24,8 +24,10 @@ public class PlayerHealth : NetworkBehaviour
 
         if (isOwner)
         {
-            InstanceHandler.GetInstance<GameMainView>().UpdateHealth(_health.value);
             _health.onChanged += OnHealthChanged;
+            if(!InstanceHandler.TryGetInstance(out GameMainView gameMainView)) return;
+            gameMainView.UpdateHealth(_health.value);
+            
         }
     }
 
@@ -39,7 +41,12 @@ public class PlayerHealth : NetworkBehaviour
 
     private void OnHealthChanged(int _newHealth)
     {
-        InstanceHandler.GetInstance<GameMainView>().UpdateHealth(_newHealth);
+        if(!InstanceHandler.TryGetInstance(out GameMainView gameMainView))
+        {
+            Debug.LogAssertion("No se ha encontrado gameMainView!");
+            return;
+        }
+        gameMainView.UpdateHealth(_newHealth);
     }
 
     private void SetLayerRecursive(GameObject _obj, int _layer)
@@ -69,9 +76,6 @@ public class PlayerHealth : NetworkBehaviour
                     scoreManager.AddDeath(owner.Value);
             }
             OnDeath_Server?.Invoke(owner.Value);
-            var player = GetComponent<Player>();
-            Destroy(player.canvas.gameObject);
-            Destroy(gameObject);
         }
 
 

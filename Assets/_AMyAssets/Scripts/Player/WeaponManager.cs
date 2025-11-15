@@ -422,6 +422,8 @@ public class WeaponManager : NetworkBehaviour
             return;
         }
 
+        _currentGun.equipedGun = false;
+
         GameObject droppedGun = _currentGun.gameObject;
 
         // Activar fisicas
@@ -431,7 +433,6 @@ public class WeaponManager : NetworkBehaviour
 
         // Quitar Ownership
         _currentGun.GiveOwnership(null);
-        _currentGun.equipedGun = false;
 
         // Quitarla del inventario
         int currentIndex = _ownedWeapons.IndexOf(_currentGun.gameObject);

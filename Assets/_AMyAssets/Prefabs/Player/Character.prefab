@@ -797,6 +797,7 @@ MonoBehaviour:
   canMove: 1
   prueba: 0
   pruebasRPC: {fileID: 0}
+  weaponDataBase: {fileID: 11400000, guid: 345f17e1d2874594c8099d43d12a2912, type: 2}
 --- !u!114 &8159890137296869839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1991,9 +1992,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canvasGroup: {fileID: 1282804323692631921}
-  weapons:
-  - {fileID: 11400000, guid: d51b72bfb57cea343906c734750492b9, type: 2}
-  - {fileID: 11400000, guid: daa99adb72bf97a43a90b95a167883a1, type: 2}
   slotPrefab: {fileID: 8963473387292698987, guid: 22833ccd6cfcbec4dac91d186c50e47a, type: 3}
   itemsContainer: {fileID: 440147338993033655}
   maskArea: {fileID: 8197584933415866288}
@@ -2034,7 +2032,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  randomType: 3
   finalWeapon: {fileID: 0}
 --- !u!225 &1282804323692631921
 CanvasGroup:

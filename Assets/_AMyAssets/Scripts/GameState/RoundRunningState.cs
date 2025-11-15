@@ -17,6 +17,7 @@ public class RoundRunningState : StateNode<List<PlayerHealth>>
     public override void Enter(List<PlayerHealth> data, bool asServer)
     {
         base.Enter(data, asServer);
+        Debug.Log("ASDJIBKASKBASDKBASDASHBDAJHSBDJHASBDJHASBDJHBAHJDBJHASBDJHBASJHDBJHASBD");
 
         if (!asServer)
             return;

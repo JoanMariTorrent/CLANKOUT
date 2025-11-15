@@ -16,6 +16,7 @@ public class WaitForPlayersState : StateNode
 
         if (!asServer)
             return;
+
         StartCoroutine(WaitForPlayers());
     }
 
