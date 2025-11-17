@@ -86,13 +86,6 @@ public class Player : NetworkBehaviour
             }
         }
     }
-
-
-    private void OnDisable()
-    {
-        _inputActions.Dispose();
-        PlayerRegistry.AllPlayers.Remove(this);
-    }
     void Update()
     {
         if (isOwner)
