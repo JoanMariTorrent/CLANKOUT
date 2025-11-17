@@ -2058,7 +2058,7 @@ GameObject:
   - component: {fileID: 118967175912717524}
   - component: {fileID: 8482129210503842699}
   m_Layer: 0
-  m_Name: CameraRecoil
+  m_Name: Recoil Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

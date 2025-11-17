@@ -47,24 +47,17 @@ public class RecoilCamera : NetworkBehaviour
 
         if (weaponManager._currentGun != null)
         {
+            Debug.Log("Arma encontrada en recoil Camera !!!!!");
             gunScript = weaponManager._currentGun.GetComponent<Gun>();
         }
-        else
-        {
-            gunScript = null;
-            return;
-        }
 
-        if(gunScript.equipedGun == false)
-        {
-            return;
-        }
+        if(gunScript == null) return;
+
+        if(gunScript.equipedGun == false) return;
+        
 
         //if (playerScript != null)
         //    isAiming = playerScript._isAiming;
-
-        if (gunScript == null)
-            return; 
 
         targetRotation = Vector3.Lerp(targetRotation, Vector3.zero, gunScript.returnSpeed * Time.deltaTime);
         currentRotation = Vector3.Slerp(currentRotation, targetRotation, gunScript.snappiness * Time.deltaTime);
