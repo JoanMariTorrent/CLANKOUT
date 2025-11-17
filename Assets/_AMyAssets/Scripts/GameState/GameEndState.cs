@@ -4,7 +4,7 @@ using PurrNet;
 using PurrNet.StateMachine;
 using UnityEngine;
 
-public class GameEndState : StateNode
+public class GameEndState : StateNode<List<PlayerID>>
 {
     public override void Enter(bool asServer)
     {
