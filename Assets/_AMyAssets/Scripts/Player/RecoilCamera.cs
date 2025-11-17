@@ -29,12 +29,6 @@ public class RecoilCamera : NetworkBehaviour
 
     private void Start()
     {
-        if (!isOwner)
-        {
-            enabled = false;
-            return;
-        }
-
         //playerScript = GetComponentInParent<PlayerController>();
         StartPos = transform.localPosition;
     }
