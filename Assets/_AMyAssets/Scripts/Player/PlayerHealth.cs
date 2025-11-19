@@ -71,7 +71,7 @@ public class PlayerHealth : NetworkBehaviour
                     scoreManager.AddDeath(owner.Value);
             }
             OnDeath_Server?.Invoke(owner.Value);
-            
+            Destroy(gameObject);
         }
 
 
