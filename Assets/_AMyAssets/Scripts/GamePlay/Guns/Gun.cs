@@ -179,6 +179,7 @@ public class Gun : NetworkBehaviour, ITakeGun
 
         transform.localPosition = _originalPosition;
         transform.localRotation = _originalRotation;
+        Debug.Log($"<color=blue> local position del arma: {transform.localPosition}</color>");
 
         if (isOwner && player == null)
         {

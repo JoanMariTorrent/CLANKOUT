@@ -300,8 +300,7 @@ public class WeaponManager : NetworkBehaviour
         // Asignar
         _ownedWeapons[index] = weaponInstance;
         Debug.Log($"<color=blue>✅ Instanciada '{_currentGun.name}' en slot {index} y el arma actual es {_currentGun.name} </color>");
-
-        _currentGun = null;
+        
         SwitchWeapon(index);
     }
 
@@ -334,31 +333,27 @@ public class WeaponManager : NetworkBehaviour
 
 
         _currentGun.gameObject.SetActive(true);
-        
+
         SwitchWeapon(indexWeapon);
     }
 
     [ObserversRpc(requireServer: false)]
     public void SwitchWeapon(int index) // FALTA ARREGLAR QUE AL CAMBIAR EL ARMA, SE OCULTE LA ANTERIOR Y SE ACTIVE LA NUEVA
     {
-        Debug.Log("1111111111111111111111111111111111111111");
         if (index < 0 || index >= _ownedWeapons.Count)
             return;
 
         GameObject weaponToSwitch = _ownedWeapons[index];
-        Debug.Log("222222222222222222222222222222222222222");
 
         if (weaponToSwitch == null)
             return;
 
-        Debug.Log("333333333333333333333333333333333333333");
 
         if (_currentGun != null && weaponToSwitch == _currentGun.gameObject)
         {
             Debug.Log("<color=yellow>⚠️ Ya tienes equipada esta arma, no se cambia.</color>");
             return;
         }
-        Debug.Log("444444444444444444444444444444444444444");
 
         // ocultar todas las armas
         for (int i = 0; i < _ownedWeapons.Count; i++)
@@ -368,7 +363,6 @@ public class WeaponManager : NetworkBehaviour
                 _ownedWeapons[i].SetActive(false);
             }
         }
-        Debug.Log("5555555555555555555555555555555555555555");
 
 
         // Activar el arma

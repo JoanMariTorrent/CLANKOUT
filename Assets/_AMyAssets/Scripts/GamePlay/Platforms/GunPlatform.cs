@@ -59,7 +59,7 @@ public class GunPlatform : NetworkBehaviour
 
         
     }
-    [ServerRpc(requireOwnership: false)]
+    [ServerRpc]
     private void SpawnGun()
     {
         typeGun = 1; //Random.Range(1, 3);
