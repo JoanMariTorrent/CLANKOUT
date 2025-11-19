@@ -302,6 +302,9 @@ public class WeaponManager : NetworkBehaviour
         Debug.Log($"<color=blue>✅ Instanciada '{_currentGun.name}' en slot {index} y el arma actual es {_currentGun.name} </color>");
         
         SwitchWeapon(index);
+
+        weaponInstance.transform.localPosition = Vector3.zero;
+        weaponInstance.transform.localRotation = Quaternion.identity;
     }
 
 
