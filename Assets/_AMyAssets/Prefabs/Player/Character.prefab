@@ -1014,7 +1014,7 @@ MonoBehaviour:
   _currentGun: {fileID: 0}
   lastGun: 0
   _ownedWeapons:
-    _ownerAuth: 0
+    _ownerAuth: 1
     _sendIntervalInSeconds: 0
     _list: []
   weaponInstance: {fileID: 0}
