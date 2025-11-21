@@ -18,14 +18,7 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private PlayerCharacter playerChar;
     [SerializeField] private Player player;
 
-    void Awake()
-    {
-        
-    }
-
-
-
-    protected override void OnSpawned()
+    void Start()
     {
         if(isOwner)
         {
@@ -35,6 +28,12 @@ public class WeaponManager : NetworkBehaviour
             }
 
         }
+    }
+
+
+
+    protected override void OnSpawned()
+    {
         GetPlayerScript();
     }
 
