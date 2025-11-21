@@ -20,7 +20,7 @@ public class WeaponManager : NetworkBehaviour
 
     void Start()
     {
-        if(isOwner) _ownedWeapons = new(ownerAuth: true);
+        //if(isOwner) _ownedWeapons = new(ownerAuth: true);
     }
 
 
