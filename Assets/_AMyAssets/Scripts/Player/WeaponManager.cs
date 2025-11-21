@@ -22,6 +22,10 @@ public class WeaponManager : NetworkBehaviour
         if (isOwner)
         {
             GetPlayerScript();
+            if(!_ownedWeapons.ownerAuth)
+            {
+                _ownedWeapons = new SyncList<GameObject>(ownerAuth: true);
+            }
         }
     }
 
