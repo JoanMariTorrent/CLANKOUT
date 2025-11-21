@@ -12,7 +12,7 @@ public class WeaponManager : NetworkBehaviour
 
     public Gun _currentGun;
     [SerializeField] private LastGunEquiped lastGun;
-    public SyncList<GameObject> _ownedWeapons = new SyncList<GameObject>(true);
+    public SyncList<GameObject> _ownedWeapons = new(true);
     [SerializeField] private GameObject weaponInstance = null;
     [SerializeField] private PlayerCharacter playerChar;
     [SerializeField] private Player player;
