@@ -29,18 +29,17 @@ public class Canvas : NetworkBehaviour
     private void ShowViewInternal(View _view)
     { 
         _view._canvasGroup.alpha = 1f;
-        _view.OnShow();
+        _view._canvasGroup.interactable = true;
+        _view._canvasGroup.blocksRaycasts = true;
+        _view.OnShow(); 
     }
     
     private void HideViewInternal(View _view)
     { 
         _view._canvasGroup.alpha = 0f;
+        _view._canvasGroup.interactable = false;
+        _view._canvasGroup.blocksRaycasts = false;
         _view.OnHide();
-    }
-
-    private void OnDestroy()
-    {
-        //InstanceHandler.UnregisterInstance<Canvas>();
     }
 
     public void ShowView<T>(bool hideOthers = true) where T : View
@@ -84,14 +83,6 @@ public class Canvas : NetworkBehaviour
     {
         _NetworkManager.StartClient();
         Debug.Log("Cliente iniciado");
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            SceneManager.LoadScene(0);
-        }
     }
 }
 
