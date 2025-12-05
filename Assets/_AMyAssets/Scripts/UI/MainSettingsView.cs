@@ -44,6 +44,7 @@ public class MainSettingsView : View
         if (Input.GetKeyDown(KeyCode.I) ||Input.GetKeyDown(KeyCode.Escape))
         {
             canvas.ShowView<MainSettingsView>(true);
+            canvas.HideView<GameMainView>();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
@@ -98,7 +99,7 @@ public class MainSettingsView : View
 
     public override void OnHide()
     {
-        // Opcional: Aquí podrías pausar el juego si quisieras, 
+        // Opcional: Aquï¿½ podrï¿½as pausar el juego si quisieras, 
         // o resetear algo visual.
     }
 }
