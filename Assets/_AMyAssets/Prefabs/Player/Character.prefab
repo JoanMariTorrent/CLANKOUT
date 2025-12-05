@@ -114,8 +114,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3059250062062938530}
+  m_Children: []
   m_Father: {fileID: 5478939256714205654}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &597239871861926755
@@ -534,8 +533,8 @@ MonoBehaviour:
   standheight: 2
   crouchHeight: 1
   crouchHeightResponse: 15
-  standCameraTargetHeight: 1
-  crouchCameraTargetHeight: 0.7
+  standCameraTargetHeight: 0.95
+  crouchCameraTargetHeight: 0.3
   wallRunTiltAngle: 15
   tiltSpeed: 10
   _lastGunEquiped: 0
@@ -842,6 +841,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5478939256714205654}
+  - {fileID: 3059250062062938530}
   m_Father: {fileID: 1224085259338201639}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9100655921148230799
@@ -1566,7 +1566,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 8132308467278853882}
+    m_TransformParent: {fileID: 6480273171793854776}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: defea68aa5d5a2f41bfb665a630b870f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1586,15 +1586,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: defea68aa5d5a2f41bfb665a630b870f, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: defea68aa5d5a2f41bfb665a630b870f, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: defea68aa5d5a2f41bfb665a630b870f, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: defea68aa5d5a2f41bfb665a630b870f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1611,6 +1611,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: defea68aa5d5a2f41bfb665a630b870f, type: 3}
       propertyPath: m_Name
       value: Animaciones_Lanzacigarros_export
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: defea68aa5d5a2f41bfb665a630b870f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: defea68aa5d5a2f41bfb665a630b870f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1950,6 +1958,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5929692942674824005, guid: 76b40ca19986d9f4eae18a8d7ae2a932, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6026408589032756535, guid: 76b40ca19986d9f4eae18a8d7ae2a932, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2016,6 +2028,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6503123436173989141, guid: 76b40ca19986d9f4eae18a8d7ae2a932, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6538925486288293440, guid: 76b40ca19986d9f4eae18a8d7ae2a932, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6743392383370926023, guid: 76b40ca19986d9f4eae18a8d7ae2a932, type: 3}
