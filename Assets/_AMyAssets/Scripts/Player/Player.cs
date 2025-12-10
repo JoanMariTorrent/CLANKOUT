@@ -19,7 +19,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private bool isSpinning = false;
     public Canvas canvas;
     public SlotMachine slotMachine;
-    public bool canMove;
+    public bool canMove; 
     public bool prueba = false;
     [SerializeField] private PruebasRPC pruebasRPC;
     [SerializeField] private WeaponDatabase weaponDataBase;
@@ -204,6 +204,9 @@ public class Player : NetworkBehaviour
         {
             canvas.ShowView<LoseGameView>(true);
         }
+
+        if(playerHealth == null) return;
+        playerHealth.DestroyAllComponents();
     }
 
     

@@ -89,14 +89,19 @@ public class PlayerHealth : NetworkBehaviour
             }
             PlayDeathEffects();
             OnDeath_Server?.Invoke(owner.Value);
-            Destroy(colliderToDisable);
-            foreach(var obj in destroyObjectsList)
-                Destroy(obj.gameObject);
-            foreach(var script in scriptsToDisable)
-                script.enabled = false;
+            DestroyAllComponents();
         }
 
 
+    }
+
+    public void DestroyAllComponents()
+    {
+        Destroy(colliderToDisable);
+        foreach(var obj in destroyObjectsList)
+            Destroy(obj.gameObject);
+        foreach(var script in scriptsToDisable)
+            script.enabled = false;
     }
     
     [ObserversRpc(runLocally: true)]
