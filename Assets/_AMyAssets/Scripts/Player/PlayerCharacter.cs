@@ -116,7 +116,7 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     [Header("Camera Effects")]
     [SerializeField] private float wallRunTiltAngle = 15f; 
     [SerializeField] private float tiltSpeed = 10f;
-    [Header("Audio")]
+    [Header("Audios")]
     [SerializeField] private AudioClip dontShoot;
     private bool cantEmote = false;
 
@@ -885,8 +885,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
             motor.SetPosition(transform.position + (move.normalized * speed * Time.deltaTime));
         }
     }
-
-
     
 }
 

@@ -4,7 +4,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using Interfaces;
 using System.Linq;
-using Unity.VisualScripting;
 
 public enum WeaponID
 {
@@ -573,6 +572,8 @@ public class Gun : NetworkBehaviour, ITakeGun
             Debug.LogAssertionFormat("Trying to take some gun, but the weaponManager is null!");
             return;
         }
+
+        
 
         if (weaponType == WeaponType.Primary)
         {

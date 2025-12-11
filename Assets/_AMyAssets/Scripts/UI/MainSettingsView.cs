@@ -80,7 +80,7 @@ public class MainSettingsView : View
     }
 
     public void ExitGame()
-    {
+    { 
         SceneManager.LoadScene(0);
     }
 
@@ -105,5 +105,10 @@ public class MainSettingsView : View
     {
         // Opcional: Aqu� podr�as pausar el juego si quisieras, 
         // o resetear algo visual.
+    }
+
+    public void PlaySound(AudioClip audio)
+    {
+        PlaySound(audio);
     }
 }

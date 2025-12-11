@@ -11,6 +11,11 @@ public class CrosshairController : MonoBehaviour
     [Header("Datos")]
     public SettingsData settings;
 
+    private void OnEnable()
+    {
+        UpdateCrosshair();
+    }
+
     private void OnValidate()
     {
         UpdateCrosshair();
@@ -38,19 +43,19 @@ public class CrosshairController : MonoBehaviour
 
         centerDot.color = dotFinalColor;
 
-        // Línea Superior (Top)
+        // Lï¿½nea Superior (Top)
         innerLines[0].sizeDelta = new Vector2(settings.innerThickness, settings.innerLenght);
         innerLines[0].anchoredPosition = new Vector2(0, settings.innerOffset + (settings.innerLenght / 2));
 
-        // Línea Inferior (Bottom)
+        // Lï¿½nea Inferior (Bottom)
         innerLines[1].sizeDelta = new Vector2(settings.innerThickness, settings.innerLenght);
         innerLines[1].anchoredPosition = new Vector2(0, -settings.innerOffset - (settings.innerLenght / 2));
 
-        // Línea Izquierda (Left)
+        // Lï¿½nea Izquierda (Left)
         innerLines[2].sizeDelta = new Vector2(settings.innerLenght, settings.innerThickness);
         innerLines[2].anchoredPosition = new Vector2(-settings.innerOffset - (settings.innerLenght / 2), 0);
 
-        // Línea Derecha (Right)
+        // Lï¿½nea Derecha (Right)
         innerLines[3].sizeDelta = new Vector2(settings.innerLenght, settings.innerThickness);
         innerLines[3].anchoredPosition = new Vector2(settings.innerOffset + (settings.innerLenght / 2), 0);
     }

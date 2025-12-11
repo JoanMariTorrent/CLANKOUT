@@ -17,6 +17,8 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private GameObject weaponInstance = null;
     [SerializeField] private PlayerCharacter playerChar;
     [SerializeField] private Player player;
+    [Space][Header("Audios")]
+    [SerializeField] private AudioClip[] takeGunSound;
 
     void Start()
     {
@@ -212,6 +214,9 @@ public class WeaponManager : NetworkBehaviour
             else EquipWeapon(weaponPrefab, false, primary, false);
         }
 
+
+        AudioClip clipToPlay = takeGunSound[Random.Range(0, takeGunSound.Length)];
+        AudioManager.Instance.PlaySound(clipToPlay, transform.position, pitch: Random.Range(0.98f, 1.02f));
     }
 
     private bool HasWeaponOfType(WeaponID id)
