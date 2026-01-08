@@ -9,6 +9,7 @@ public class RoundRunningStateDM : StateNode<List<PlayerHealth>>
     [SerializeField] private float matchDuration;
     [SerializeField] private float timer;
     private List<PlayerID> _players = new();
+    bool gameEnded = false;
 
     public override void Enter(List<PlayerHealth> data, bool asServer)
     {
@@ -30,13 +31,25 @@ public class RoundRunningStateDM : StateNode<List<PlayerHealth>>
     {
         base.StateUpdate(asServer);
         if(!asServer) return;
-
-        timer -= Time.deltaTime;
-
+        
         if (timer <= 0) 
         {
-            Debug.Log("asdasdasdasd FINISHED aihsdbiahbdihad");
+            if(!gameEnded)
+            {
+                gameEnded = true;
+                Debug.Log("asdasdasdasd FINISHED aihsdbiahbdihad");
+            }
         }
+
+        else if (timer > 0)
+        {
+            Timer();
+        }
+    }
+
+    private void Timer()
+    {
+        timer -= Time.deltaTime;
     }
 
     private void OnPlayerDeath(PlayerID _deadPlayer)
