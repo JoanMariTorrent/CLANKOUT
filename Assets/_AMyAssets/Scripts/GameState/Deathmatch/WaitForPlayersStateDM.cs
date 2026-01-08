@@ -20,7 +20,10 @@ public class WaitForPlayersStateDM : StateNode
 
         Debug.Log($"Cantidad de jugadores guardado en memoria: <color=green> {MatchData.PlayerCount} </color>");
 
-        _minPlayers = MatchData.PlayerCount;
+        if (MatchData.PlayerCount != 0)
+            _minPlayers = MatchData.PlayerCount;
+        else
+            _minPlayers = 1;
         StartCoroutine(WaitForPlayers());
     }
 
@@ -28,7 +31,7 @@ public class WaitForPlayersStateDM : StateNode
     {
         while (networkManager.players.Count < _minPlayers)
             yield return null;
-        //machine.Next();
+        machine.Next();
 
     }
 }
