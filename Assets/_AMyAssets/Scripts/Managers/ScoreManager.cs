@@ -30,15 +30,24 @@ public class ScoreManager : NetworkBehaviour
         }
     }
 
+    // -----------------------------------------------
+    // --------------- ZONA DE RPCs ------------------
+    // -----------------------------------------------
+
+    // 1. Para añadir kills a un jugador
+    [ServerRpc(requireOwnership: false)]
     public void Addkills(PlayerID _playerID)
     {
         CheckForDictionaryEntry(_playerID);
+        Debug.Log($"<color=blue> Añadiendo kills al jugador: {_playerID} </color>");
 
         var _scoreData = _scores[_playerID];
         _scoreData._kills++;
         _scores[_playerID] = _scoreData;
     }
 
+    // 2. Para añadir muertes  a un jugador
+    [ServerRpc(requireOwnership: false)]
     public void AddDeath(PlayerID _playerID)
     {
         CheckForDictionaryEntry(_playerID);
@@ -48,9 +57,21 @@ public class ScoreManager : NetworkBehaviour
         _scores[_playerID] = _scoreData;
     }
 
+    // 3. Para añadir daño  a un jugador
+    [ServerRpc(requireOwnership: false)]
+    public void AddDamageServerRpc(PlayerID victimID, PlayerID attackerID, int amount)
+    {
+        CheckForDictionaryEntry(attackerID);
+        //var attackerID = info.sender; 
 
+        var attackerScore = _scores[attackerID];
+        attackerScore._damage += amount;
+        _scores[attackerID] = attackerScore;
 
+        CheckForDictionaryEntry(victimID);
+    }
 
+    // 4. Para añadir victorias a un jugador
     [ServerRpc]
     public void AddWins(PlayerID playerID, int wins)
     {
@@ -69,18 +90,7 @@ public class ScoreManager : NetworkBehaviour
 
 
 
-    [ServerRpc]
-    public void AddDamageServerRpc(PlayerID victimID, int amount, RPCInfo info = default)
-    {
-        var attackerID = info.sender; 
-
-        CheckForDictionaryEntry(attackerID);
-        var attackerScore = _scores[attackerID];
-        attackerScore._damage += amount;
-        _scores[attackerID] = attackerScore;
-
-        CheckForDictionaryEntry(victimID);
-    }
+    
 
 
     public PlayerID GetWinner()

@@ -23,6 +23,14 @@ public class ScoreboardView : View
     private void OnDestroy()
     {
         //InstanceHandler.UnregisterInstance<ScoreboardView>();
+
+        if (InstanceHandler.TryGetInstance(out ScoreboardView registeredView))
+        {
+            if (registeredView == this)
+            {
+                InstanceHandler.UnregisterInstance<ScoreboardView>();
+            }
+        }
     }
 
     public void SetData(Dictionary<PlayerID, ScoreManager.ScoreData> data)

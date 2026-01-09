@@ -374,10 +374,10 @@ public class Gun : NetworkBehaviour, ITakeGun
     private void ApplyDamageServerRpc(PlayerHealth victim, int gunDamage)
     {
         Debug.Log("ApplyDamageServerRpc");
-        victim.ChangeHealth(-gunDamage);
+        victim.ChangeHealth(-gunDamage, owner.Value);
         if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
         {
-            scoreManager.AddDamageServerRpc(victim.PlayerID, gunDamage);
+            scoreManager.AddDamageServerRpc(victim.PlayerID, owner.Value , gunDamage);
         }
 
     }

@@ -64,7 +64,7 @@ public class PlayerHealth : NetworkBehaviour
 
 
     [ServerRpc(requireOwnership:false)]
-    public void ChangeHealth(int _amount, RPCInfo _info = default)
+    public void ChangeHealth(int _amount, PlayerID? attackerID = null)
     {
         if (playerCharacter.GodMode) return;
         _health.value += _amount;
@@ -83,7 +83,7 @@ public class PlayerHealth : NetworkBehaviour
 
             if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
             {
-                scoreManager.Addkills(_info.sender);
+                if(attackerID != null || attackerID.HasValue) scoreManager.Addkills(attackerID.Value);
                 if(owner.HasValue)
                     scoreManager.AddDeath(owner.Value);
             }

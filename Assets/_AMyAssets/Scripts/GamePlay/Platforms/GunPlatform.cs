@@ -58,7 +58,6 @@ public class GunPlatform : NetworkBehaviour
             timer = 0;
             SpawnGun();
         }
-
         
     }
 
