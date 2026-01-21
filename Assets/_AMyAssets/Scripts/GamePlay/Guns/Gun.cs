@@ -24,6 +24,11 @@ public class Gun : NetworkBehaviour, ITakeGun
     [SerializeField] protected float timeToReload = 3f;
     [SerializeField] protected int _gunDamage = 10;
 
+    [Header("Aiming system")]
+    public bool canAim = true;
+    public float aimingFOV = 50f;
+    public float gunAimingFOV = 100f;
+
     [Header("Visuals & Audio")]
     [SerializeField] protected Transform _cameraTransform;
     [SerializeField] protected Transform shootTransform; 
