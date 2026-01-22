@@ -9,6 +9,8 @@ public class SettingsSystem : MonoBehaviour
 
     [Header("General")]
     public Slider sensitivitySlider;
+    public Slider AimingsensitivitySlider;
+    public Slider SnipersensitivitySlider;
 
     [Space(5)][Header("Crosshair")]
 
@@ -71,6 +73,10 @@ public class SettingsSystem : MonoBehaviour
 
         if(sensitivitySlider != null)
             sensitivitySlider.value = settings.sensitivity;
+        if(AimingsensitivitySlider != null)
+            AimingsensitivitySlider.value = settings.aimingSensitivity;
+        if(SnipersensitivitySlider != null)
+            SnipersensitivitySlider.value = settings.sniperSensitivity;
     }
 
     public void OnUseDotChanged(bool newValue)
@@ -137,11 +143,27 @@ public class SettingsSystem : MonoBehaviour
         foreach (var c in crosshairControllers) c.UpdateCrosshair();
     }
 
-    public void OnSensibilityChange(float newValue)
+    public void OnNormalSensibilityChange(float newValue)
     {
-        float realValue = Mathf.Lerp(0.05f, 2.5f, newValue);
+        float realValue = Mathf.Lerp(0.05f, 5f, newValue);
 
         settings.sensitivity = realValue;
+        settings.OnSensitivityChanged?.Invoke();
+    }
+
+    public void OnAimingSensibilityChange(float newValue)
+    {
+        float realValue = Mathf.Lerp(0.05f, 5f, newValue);
+
+        settings.aimingSensitivity = realValue;
+        settings.OnSensitivityChanged?.Invoke();
+    }
+
+    public void OnSniperSensibilityChange(float newValue)
+    {
+        float realValue = Mathf.Lerp(0.05f, 5f, newValue);
+
+        settings.sniperSensitivity = realValue;
         settings.OnSensitivityChanged?.Invoke();
     }
 }

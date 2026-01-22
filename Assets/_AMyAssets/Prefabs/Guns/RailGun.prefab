@@ -113,23 +113,50 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   weaponID: 6
   weaponType: 1
+  aimType: 2
   displayName: Rail gun
   _ammo:
     _value: 1
     _ownerAuth: 0
     _sendIntervalInSeconds: 0
   _reloadsAmmo:
-    _value: 6
+    _value: 5
     _ownerAuth: 0
     _sendIntervalInSeconds: 0
   maxAmmo: 1
   _automatic: 0
   _fireRate: 0.5
-  timeToReload: 6
-  _gunDamage: 100
+  timeToReload: 4
+  _gunDamage: 70
   canAim: 1
+  aimCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 3.3703701
+      outSlope: 3.3703701
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.034615386
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  timeToAim: 0.4
   aimingFOV: 17
   gunAimingFOV: 45
+  isAiming: 0
   _cameraTransform: {fileID: 0}
   shootTransform: {fileID: 5879765491123102707}
   _muzzleFlash: {fileID: 3652645340984398433}

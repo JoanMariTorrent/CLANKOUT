@@ -2,7 +2,7 @@ using PurrNet;
 using PurrNet.StateMachine;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections; // Necesario para Corrutinas
+using System.Collections;
 
 public class PlayerSpawningState : StateNode
 {
@@ -17,53 +17,54 @@ public class PlayerSpawningState : StateNode
             return;
 
         DespawnPlayers();
-
-        // Iniciamos el proceso de spawn (ahora lo hacemos como corrutina para asegurar tiempos)
         StartCoroutine(SpawnPlayersRoutine());
     }
 
     private IEnumerator SpawnPlayersRoutine()
     {
         var _spawnedPlayers = new List<PlayerHealth>();
-        int _currentSpawnIndex = 0;
+
+        List<Transform> _availablePoints = new List<Transform>(_spawnPoints);
 
         foreach (var _player in networkManager.players)
         {
-            var _spawnPoint = _spawnPoints[_currentSpawnIndex];
-
-            // 1. Instanciamos
-            var _newPlayer = Instantiate(_playerPrefab, _spawnPoint.position, _spawnPoint.rotation);
             
-            // 2. Damos propiedad
+            // 1. Añadir a la lista provisional los spawnpoints
+            if (_availablePoints.Count == 0)
+            {
+                _availablePoints = new List<Transform>(_spawnPoints);
+                Debug.LogWarning("Hay más jugadores que SpawnPoints, se empezarán a repetir posiciones.");
+            }
+
+            // 2. Elegimos un índice aleatorio de la lista provisional
+            int _randomIndex = Random.Range(0, _availablePoints.Count);
+            
+            // 3. Obtenemos ese punto
+            Transform _spawnPoint = _availablePoints[_randomIndex];
+
+            // 4. Lo borramos de la lista provisional para que nadie más lo use
+            _availablePoints.RemoveAt(_randomIndex);
+
+            // 5. Instanciar el jugador 
+            var _newPlayer = Instantiate(_playerPrefab, _spawnPoint.position, _spawnPoint.rotation);
             _newPlayer.GiveOwnership(_player);
 
-            // 3. Forzamos la posición usando el sistema KCC para evitar el bug del (0,0,0)
-            // Buscamos el componente de movimiento
             var character = _newPlayer.GetComponent<PlayerCharacter>();
             if (character != null)
             {
-                // Esperamos un frame para que el motor se inicialice si es necesario
                 yield return new WaitForEndOfFrame();
                 
-                // Forzamos la posición en el Servidor (el KCC server-side)
                 character.TeleportTo(_spawnPoint.position, _spawnPoint.rotation);
                 
-                // IMPORTANTE: Avisamos al Cliente dueño de que se teletransporte ahí también
-                // Usamos el ReviveObserversRpc que ya creaste, ya que hace exactamente eso: Teleportar KCC + Resetear vida
                 _newPlayer.ReviveObserversRpc(_spawnPoint.position, _spawnPoint.rotation, false);
             }
             else
             {
-                // Fallback si no tiene KCC
                 _newPlayer.transform.position = _spawnPoint.position;
                 _newPlayer.transform.rotation = _spawnPoint.rotation;
             }
 
             _spawnedPlayers.Add(_newPlayer);
-            _currentSpawnIndex++;
-
-            if (_currentSpawnIndex >= _spawnPoints.Count)
-                _currentSpawnIndex = 0;
         }
 
         foreach(var player in _spawnedPlayers)

@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerHealth : NetworkBehaviour
 {
     [SerializeField] private SyncVar<int> _health = new(100);
+    public SyncVar<bool> _canTakeDamage = new(true);
     [SerializeField] private int _maxHealth = 100;
     [SerializeField] private int _selfLayer, _otherLayer;
     [SerializeField] private PlayerCharacter playerCharacter;
@@ -87,6 +88,7 @@ public class PlayerHealth : NetworkBehaviour
     public void ChangeHealth(int _amount, PlayerID? attackerID = null)
     {
         if (IsDead) return;
+        if(!_canTakeDamage.value) return;
         if (playerCharacter.GodMode) return;
 
         _health.value += _amount;
@@ -192,4 +194,14 @@ public class PlayerHealth : NetworkBehaviour
 
         player.TargetStartSpin(owner.Value, selectedID, candidatesIDs);
     }
+
+
+    [ServerRpc]
+    public void SetImmunityRpc(bool inmune)
+    {
+        _canTakeDamage.value = !inmune;
+    }
+
+
+    
 }

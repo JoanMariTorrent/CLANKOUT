@@ -1,12 +1,9 @@
 using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.ProBuilder;
 
 public class AimSystem : MonoBehaviour
 {
     [Header("Variables")]
-    public float timeToAim;
-    public AnimationCurve aimCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     [Space]
     public float normalFOV = 70f;
@@ -17,6 +14,7 @@ public class AimSystem : MonoBehaviour
     public Camera cameraGun;
     [Space]
     public PlayerCharacter playerCharacter;
+    public PlayerCamera playerCamera;
     public WeaponManager weaponManager;
 
     float currentAimProgress = 0f;
@@ -24,16 +22,31 @@ public class AimSystem : MonoBehaviour
 
     void Update()
     {
-        if(weaponManager == null || weaponManager._currentGun == null || !weaponManager._currentGun.canAim) return;
+        if(weaponManager == null || weaponManager._currentGun == null || !weaponManager._currentGun.canAim) 
+        {
+             if(playerCamera != null) playerCamera.SetSensitivityMode(AimType.Normal);
+             return;
+        }
 
+
+        bool isAimingRequest = playerCharacter._requestedAim;
+
+
+        // --- CAMBIO DE SENSIBILIDAD ---
+        if (playerCamera != null)
+        {
+            if (isAimingRequest) playerCamera.SetSensitivityMode(weaponManager._currentGun.aimType);
+            else playerCamera.SetSensitivityMode(AimType.Normal);
+        }
         
         float targetProgress = playerCharacter._requestedAim ? 1 : 0;
+        weaponManager._currentGun.isAiming = playerCharacter._requestedAim ? true : false;
 
-        float step = Time.deltaTime / timeToAim;
+        float step = Time.deltaTime / weaponManager._currentGun.timeToAim;
 
         currentAimProgress = Mathf.MoveTowards(currentAimProgress, targetProgress, step);
 
-        float curveValue = aimCurve.Evaluate(currentAimProgress);
+        float curveValue = weaponManager._currentGun.aimCurve.Evaluate(currentAimProgress);
 
         if(cameraPlayer != null)
         {

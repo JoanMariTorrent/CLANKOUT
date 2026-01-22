@@ -137,6 +137,7 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   weaponID: 2
   weaponType: 1
+  aimType: 1
   displayName: RifleMalporro
   _ammo:
     _value: 30
@@ -152,8 +153,34 @@ MonoBehaviour:
   timeToReload: 1
   _gunDamage: 8
   canAim: 1
+  aimCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.0019226074
+      value: 0
+      inSlope: 3.384072
+      outSlope: 3.384072
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.028902192
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  timeToAim: 0.15
   aimingFOV: 45
   gunAimingFOV: 40
+  isAiming: 0
   _cameraTransform: {fileID: 0}
   shootTransform: {fileID: 8772015516634861983}
   _muzzleFlash: {fileID: 7154568906003232138}

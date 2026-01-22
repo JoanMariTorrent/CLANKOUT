@@ -7,6 +7,8 @@ public class SettingsData : ScriptableObject
 
     [Header("General Settings")]
     public float sensitivity = 0.1f;
+    public float aimingSensitivity = 0.05f;
+    public float sniperSensitivity = 0.2f;
     public Action OnSensitivityChanged;
 
     [Space][Header("Crosshair Settings")]

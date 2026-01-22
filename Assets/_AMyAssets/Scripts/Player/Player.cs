@@ -233,6 +233,8 @@ public class Player : NetworkBehaviour
             Debug.LogError($"SlotMachine no encontrada en Player {gameObject.name}");
             yield break;
         }
+        canMove = false;
+        playerHealth.SetImmunityRpc(true);
 
         var selectedWeapon = weaponDataBase.GetWeaponByID(idWeapon);
         List<WeaponScripteableObject> filteredWeaponsList = new();
@@ -256,6 +258,9 @@ public class Player : NetworkBehaviour
         slotMachine.gameObject.SetActive(false);
 
         NotifySpinFinished_ServerRPC(owner.Value, idWeapon);
+
+        playerHealth.SetImmunityRpc(false);
+        canMove = true;
     }
 
 

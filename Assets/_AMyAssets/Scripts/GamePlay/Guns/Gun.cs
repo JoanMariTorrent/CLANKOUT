@@ -6,12 +6,14 @@ using UnityEngine;
 
 public enum WeaponID { None, PistolaSimple, RifleMalPorro, Ojo, LanzaCigarros, FlameThrower, Railgun }
 public enum WeaponType { None, Primary, Secundary } 
+public enum AimType {Normal, Aiming, Sniper}
 
 public class Gun : NetworkBehaviour, ITakeGun
 {
     [Header("Base Info")]
     public WeaponID weaponID;
     public WeaponType weaponType;
+    public AimType aimType;
     public string displayName;
 
     [Header("Stats")]
@@ -26,8 +28,12 @@ public class Gun : NetworkBehaviour, ITakeGun
 
     [Header("Aiming system")]
     public bool canAim = true;
+    public AnimationCurve aimCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    public float timeToAim = 0.15f;
+    
     public float aimingFOV = 50f;
-    public float gunAimingFOV = 100f;
+    public float gunAimingFOV = 50f;
+    public bool isAiming;
 
     [Header("Visuals & Audio")]
     [SerializeField] protected Transform _cameraTransform;
@@ -169,7 +175,7 @@ public class Gun : NetworkBehaviour, ITakeGun
 
     // --- RED Y DISPARO ---
 
-    [ServerRpc] // AQUI DEBERIA DE IR EL ServerRPC PERO SI LO PONGO EL JUGADOR 2 NO LE PUEDE DISPARAR AL JUGADOR 1, ASI QUE DE MOMENTO LO QUITO PERO SE TIENE QUE ARREGLAR.
+    [ServerRpc(requireOwnership: false)] // AQUI DEBERIA DE IR EL ServerRPC PERO SI LO PONGO EL JUGADOR 2 NO LE PUEDE DISPARAR AL JUGADOR 1, ASI QUE DE MOMENTO LO QUITO PERO SE TIENE QUE ARREGLAR.
     private void RequestShootServerRpc(Vector3 pos, Vector3 dir)
     {
         if (_ammo.value <= 0) return;

@@ -13,7 +13,7 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private LastGunEquiped lastGun;
     
     public SyncList <GameObject> _ownedWeapons = new(ownerAuth: false); 
-    public SyncList <GameObject> mySync = new(ownerAuth: true);
+    //public SyncList <GameObject> mySync = new(ownerAuth: true);
     [SerializeField] private GameObject weaponInstance = null;
     [SerializeField] private PlayerCharacter playerChar;
     [SerializeField] private Player player;
@@ -121,6 +121,8 @@ public class WeaponManager : NetworkBehaviour
             InstantiateGun(weaponPrefab);
             finalWeaponObject = weaponInstance;
         }
+
+        
 
         if (targetIndex >= 0)
         {
