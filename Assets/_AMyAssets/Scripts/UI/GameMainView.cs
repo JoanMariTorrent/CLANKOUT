@@ -4,8 +4,8 @@ using PurrNet;
 
 public class GameMainView : View
 {
-    [SerializeField] private TMP_Text _healthText;
-    [SerializeField] private TMP_Text _ammoText;
+    [SerializeField] private TMP_Text _healthText, bckHealthText;
+    [SerializeField] private TMP_Text _ammoText, bckAmmoText;
     [SerializeField] private TMP_Text _timerText, _bckgTimerText;
 
 
@@ -32,6 +32,7 @@ public class GameMainView : View
             _health = 0;
         }
         _healthText.text = _health.ToString();
+        bckHealthText.text = _health.ToString();
     }
 
     public void UpdateAmmo(int _ammo, int _reloadsAmmo)
@@ -39,11 +40,15 @@ public class GameMainView : View
         if (_ammo >= 0)
         {
             _ammoText.enabled = true;
+            bckAmmoText.enabled = true;
             _ammoText.text = _ammo.ToString() + " / " + _reloadsAmmo.ToString();
+            bckAmmoText.text = _ammo.ToString() + " / " + _reloadsAmmo.ToString();
         }
         else
+        {
             _ammoText.enabled = false;
-            
+            bckAmmoText.enabled = false;
+        }   
     }
 
     void Update()

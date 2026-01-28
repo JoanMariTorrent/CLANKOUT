@@ -43,7 +43,7 @@ public class MainSettingsView : View
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I) ||Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             canvas.ShowView<MainSettingsView>(true);
             canvas.HideView<GameMainView>();
