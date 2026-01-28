@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3171580703173459794}
   - component: {fileID: 2093454223082287894}
-  - component: {fileID: 7379558517843126385}
+  - component: {fileID: 347261795358621892}
   - component: {fileID: 3286491480943104373}
   - component: {fileID: 7938305045029285516}
   m_Layer: 10
@@ -90,7 +90,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2674755, y: 0.76874936, z: 3.9555807}
   m_Center: {x: 0.9296296, y: -0.33127266, z: 0.96251917}
---- !u!114 &7379558517843126385
+--- !u!114 &347261795358621892
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1949050301496936796}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 995604447e5d0734ead657a2eae08bb7, type: 3}
+  m_Script: {fileID: 11500000, guid: 24e6fcee09a44c743813243c999bbaae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _isSetup: 0
@@ -114,7 +114,7 @@ MonoBehaviour:
   weaponID: 6
   weaponType: 1
   aimType: 2
-  displayName: Rail gun
+  displayName: railgun
   _ammo:
     _value: 1
     _ownerAuth: 0
@@ -249,12 +249,10 @@ MonoBehaviour:
   returnSpeed: 4
   rb: {fileID: 3286491480943104373}
   equipedGun: 0
-  range: 200
-  _hitLayer:
+  projectilePrefab: {fileID: 2807782622727951233, guid: e0c81ca6472a24a4c80959a7930d179b, type: 3}
+  aimLayerMask:
     serializedVersion: 2
-    m_Bits: 7509
-  _enviormentHit: {fileID: 2542180830717017700, guid: c23edada67e2ef946b2764574583bfaa, type: 3}
-  _playerHitEffect: {fileID: 2446692518619174518, guid: bc337677c0f15bc45832afc868cb0229, type: 3}
+    m_Bits: 4294967295
 --- !u!54 &3286491480943104373
 Rigidbody:
   m_ObjectHideFlags: 0
