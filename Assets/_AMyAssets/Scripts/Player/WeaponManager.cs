@@ -8,6 +8,7 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private CinemachineCamera _playerCamera;
     [SerializeField] private LayerMask _hitLayer;
     [SerializeField] private RecoilCamera recoil;
+    [SerializeField] private PlayerAnimationHandler animHandler;
 
     public Gun _currentGun;
     [SerializeField] private LastGunEquiped lastGun;
@@ -172,7 +173,7 @@ public class WeaponManager : NetworkBehaviour
 
         if(player == null) GetPlayerScript();
         
-        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this);
+        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
 
         Debug.Log($"Cambio de arma a {_currentGun.name} en el slot {index}");
     }
@@ -192,7 +193,7 @@ public class WeaponManager : NetworkBehaviour
         if (newGun == null) return;
         newGun.GiveOwnership(owner.Value);
         if (player == null) GetPlayerScript();
-        newGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this);
+        newGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
     }
 
     public void AddGunFromGround(GameObject weaponObject)
@@ -212,10 +213,10 @@ public class WeaponManager : NetworkBehaviour
 
         gunScript.GiveOwnership(owner.Value);
         if(player == null) GetPlayerScript();
-        gunScript.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this);
+        gunScript.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
         gunScript.gameObject.SetActive(true);
     }
-
+ 
     [ObserversRpc(runLocally: true)]
     private void DropWeaponAtIndex(int index)
     {

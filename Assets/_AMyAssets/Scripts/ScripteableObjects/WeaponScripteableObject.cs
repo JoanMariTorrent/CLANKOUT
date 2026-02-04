@@ -9,6 +9,7 @@ public class WeaponScripteableObject : ScriptableObject
     [Range(0f, 1f)] public float dropChance;
     public WeaponScripteableType weaponType;
     public GameObject gunPrefab;
+    public AnimatorOverrideController animatorOverride;
 
 }
 

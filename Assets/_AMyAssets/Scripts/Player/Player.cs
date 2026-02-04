@@ -11,6 +11,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private PlayerCharacter playerCharacter;
     [SerializeField] private PlayerCamera playerCamera;
     [SerializeField] private PlayerHealth playerHealth;
+    [SerializeField] private PlayerAnimationHandler animHandler;
     [Space]
     [SerializeField] private CameraSpring cameraSpring;
     [SerializeField] private CameraLean cameraLean;
@@ -100,30 +101,44 @@ public class Player : NetworkBehaviour
     {
         if (isOwner)
         {
-            HandleInputs();
+            HandleInputs(); 
+
+            if (animHandler != null && playerCharacter != null)
+            {
+                Vector3 currentVelocity = playerCharacter._state.Velocity;
+                
+                bool isCrouching = playerCharacter._state.Stance == Stance.Crouch;
+
+                animHandler.UpdateMovementValues(currentVelocity, isCrouching);
+            }
+
+            var cameraInput = new CameraInput { Look = _inputActions.GamePlay.Look.ReadValue<Vector2>() };
+            if(cameraActive && !cameraBlocked) 
+                playerCamera.UpdateRotation(cameraInput);
+
+            playerCharacter.UpdateBody(Time.deltaTime);
         }
-        
-        var deltaTime = Time.deltaTime;
-        var cameraTarget = playerCharacter.GetCameraTarget();
-        var state = playerCharacter.GetState();
-        
-        playerCharacter.UpdateBody(deltaTime);
+    }
 
-        playerCamera.UpdatePosition(cameraTarget);
-        cameraSpring.UpdateSpring(deltaTime, cameraTarget.up);
-        cameraLean.UpdateLean
-        (
-            deltaTime,
-            state.Stance is Stance.Slide,
-            state.Acceleration,
-            cameraTarget.up
-        );
-        
-
-        if (Input.GetKeyDown(KeyCode.H))
+    void LateUpdate()
+    {
+        if (isOwner)
         {
-            playerHealth.ChangeHealth(-10);
-            Debug.Log($"Nueva vida del jugador: {playerHealth.health}");
+            var cameraTarget = playerCharacter.GetCameraTarget();
+            playerCamera.UpdatePosition(cameraTarget);
+
+
+            // Weapon Sway / Spring
+            cameraSpring.UpdateSpring(Time.deltaTime, cameraTarget.up);
+
+            // Weapon Lean
+            var state = playerCharacter.GetState();
+            cameraLean.UpdateLean(
+                Time.deltaTime,
+                state.Stance is Stance.Slide,
+                state.Acceleration,
+                cameraTarget.up
+            );
         }
     }
 
@@ -274,6 +289,8 @@ public class Player : NetworkBehaviour
     public void NotifySpinFinished_ServerRPC(PlayerID playerID, int idWeapon)
     {
         GiveGuns(idWeapon);
+
+        TargetSetArmsAnimations(playerID, idWeapon);
         
         if(InstanceHandler.TryGetInstance(out SpawningGunsState spawningGunsState))
         {
@@ -289,12 +306,30 @@ public class Player : NetworkBehaviour
     {
         var selectedWeapon = weaponDataBase.GetWeaponByID(idWeapon);
         var weaponManager = GetComponent<WeaponManager>();
+
         if(selectedWeapon.weaponType == WeaponScripteableType.Primary)
             weaponManager.NewWeapon(selectedWeapon.gunPrefab, true, false, false);
         else if (selectedWeapon.weaponType == WeaponScripteableType.Secondary)
             weaponManager.NewWeapon(selectedWeapon.gunPrefab, false, false, false);
         else if (selectedWeapon.weaponType == WeaponScripteableType.Utility)
             weaponManager.NewWeapon(selectedWeapon.gunPrefab, false, true, false);
+    }
+
+
+    [TargetRpc]
+    private void TargetSetArmsAnimations(PlayerID target, int idWeapon)
+    {       
+        var selectedWeapon = weaponDataBase.GetWeaponByID(idWeapon);
+        var animHandler = GetComponentInChildren<PlayerAnimationHandler>();
+
+        if (animHandler != null && selectedWeapon.animatorOverride != null)
+        {
+            animHandler.SetWeaponAnimator(selectedWeapon.animatorOverride);
+            Debug.Log("<color=blue>AISJDBIAJSOBDBIJASDIBJASIDJBASIJBDIJASBDIJABNSDIJNBIAJSDNIJANSIJDNIAJSDNIJ</color>");
+        }
+
+
+        
     }
 
 

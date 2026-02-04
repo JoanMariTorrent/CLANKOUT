@@ -39,6 +39,7 @@ public class Gun : NetworkBehaviour, ITakeGun
     [SerializeField] protected Transform _cameraTransform;
     [SerializeField] protected Transform shootTransform; 
     [SerializeField] protected ParticleSystem _muzzleFlash;
+    [SerializeField] protected BulletTracer tracerPrefab;
     [SerializeField] protected AudioClip shootSound;
     [SerializeField] protected float minPitch = 0.8f, maxPitch = 1.2f;
     [SerializeField] protected GameObject[] childMeshes;
@@ -77,11 +78,17 @@ public class Gun : NetworkBehaviour, ITakeGun
     public float snappiness = 10f;
     public float returnSpeed = 20f;
 
+    [Header("World settings")]
+    [SerializeField] private Vector3 equippedScale = Vector3.one; 
+    [SerializeField] private Vector3 droppedScale = new Vector3(1, 1, 1);
+
     
 
     // Estado Interno
     public PlayerCharacter playerCharacter;
     protected Player player;
+    protected PlayerAnimationHandler animHandler;
+    public Animator gunAnimHandler;
     protected WeaponManager weaponManager;
     protected GameMainView gameMainView;
     public Rigidbody rb;
@@ -118,8 +125,10 @@ public class Gun : NetworkBehaviour, ITakeGun
         }
     }
 
-    public virtual void Setup(Transform cam, LayerMask mask, RecoilCamera rec, PlayerCharacter pc, Player p, WeaponManager wm)
+    public virtual void Setup(Transform cam, LayerMask mask, RecoilCamera rec, PlayerCharacter pc, Player p, WeaponManager wm, PlayerAnimationHandler _animHandler)
     {
+        transform.localScale = equippedScale;
+
         this.enabled = true;
         this.equipedGun = true;
         this._cameraTransform = cam;
@@ -128,6 +137,10 @@ public class Gun : NetworkBehaviour, ITakeGun
         this.player = p;
         this.weaponManager = wm;
         this.reloading = false;
+        this.animHandler = _animHandler;
+        if(gunAnimHandler != null) animHandler.RegisterWeaponAnimator(gunAnimHandler);
+        if(gunAnimHandler != null) gunAnimHandler.enabled = true;
+        
 
         // Reset de posición
         transform.localPosition = Vector3.zero;
@@ -156,10 +169,14 @@ public class Gun : NetworkBehaviour, ITakeGun
 
     public void SetDown()
     {
+        transform.localScale = droppedScale;
         equipedGun = false;
         reloading = false;
 
         gameMainView = null;
+
+        if(gunAnimHandler != null) gunAnimHandler.enabled = false;
+        if(gunAnimHandler != null) animHandler.UnRegisterWeaponAnimator();
 
         transform.SetParent(null);
         var col = GetComponent<Collider>();
@@ -174,6 +191,9 @@ public class Gun : NetworkBehaviour, ITakeGun
     {
         if (!isOwner || !equipedGun || reloading) return;
         HandleInput();
+
+        if(Input.GetKeyDown(KeyCode.J))
+            _ammo.value += 20;
     }
 
     /// <summary>
@@ -242,6 +262,11 @@ public class Gun : NetworkBehaviour, ITakeGun
         }
 
         _lastFireTime = Time.unscaledTime;
+
+        if (animHandler != null && gunAnimHandler != null)
+        {
+            animHandler.TriggerShoot();
+        }
 
         // Rollback collider
         double tick = InstanceHandler.NetworkManager.tickModule.rollbackTick;
@@ -378,5 +403,18 @@ public class Gun : NetworkBehaviour, ITakeGun
     [ServerRpc] public void GetAmmo(int ammo)
     {
         _ammo.value += ammo;
+    }
+
+
+    /// <summary>
+    /// Genera la bala visual desde el cañón hasta el punto objetivo.
+    /// Úsala en tus scripts hijos (Hitscan, Sniper) dentro de un ObserverRpc.
+    /// </summary>
+    protected void SpawnTracer(Vector3 hitPosition)
+    {
+        if (tracerPrefab == null || shootTransform == null) return;
+
+        var tracerObj = Instantiate(tracerPrefab, shootTransform.position, Quaternion.identity);
+        tracerObj.Init(shootTransform.position, hitPosition);
     }
 }

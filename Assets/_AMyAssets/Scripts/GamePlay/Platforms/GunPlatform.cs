@@ -106,7 +106,7 @@ public class GunPlatform : NetworkBehaviour
         }
         
         spawnedGunVisual.gameObject.SetActive(true);
-        spawnedGunVisual.transform.localScale = Vector3.one;
+        //spawnedGunVisual.transform.localScale = Vector3.one;
         
         gunSpawned = true;
     }

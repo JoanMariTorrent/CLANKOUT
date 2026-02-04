@@ -17,3 +17,4 @@ MonoBehaviour:
   dropChance: 0
   weaponType: 0
   gunPrefab: {fileID: 4273789306412173260, guid: a7b472f496b4e3d468abe55a416b5ce8, type: 3}
+  animatorOverride: {fileID: 0}

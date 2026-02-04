@@ -279,6 +279,7 @@ MonoBehaviour:
   _visitiblityRules: {fileID: 0}
   weaponID: 5
   weaponType: 1
+  aimType: 0
   displayName: FlameThrower
   _ammo:
     _value: 30
@@ -321,9 +322,11 @@ MonoBehaviour:
   timeToAim: 0
   aimingFOV: 50
   gunAimingFOV: 100
+  isAiming: 0
   _cameraTransform: {fileID: 0}
   shootTransform: {fileID: 0}
   _muzzleFlash: {fileID: 0}
+  tracerPrefab: {fileID: 0}
   shootSound: {fileID: 0}
   minPitch: 0.95
   maxPitch: 1.2
@@ -403,14 +406,25 @@ MonoBehaviour:
   _rotationAmount: 0
   ownerGunTag: 7
   otherPlayerGunTag: 8
+  spreadX: 0.05
+  spreadY: 0.05
+  movingSpreadX: 0.05
+  movingSpreadY: 0.05
   recoilX: 0
   recoilY: 0
   recoilZ: 0
+  movingRecoilX: 0
+  movingRecoilY: 0
+  movingRecoilZ: 0
   aimRecoilX: 0
   aimRecoilY: 0
   aimRecoilZ: 0
   snappiness: 0
   returnSpeed: 0
+  equippedScale: {x: 1, y: 1, z: 1}
+  droppedScale: {x: 1, y: 1, z: 1}
+  playerCharacter: {fileID: 0}
+  gunAnimHandler: {fileID: 0}
   rb: {fileID: 2496021860954093860}
   equipedGun: 0
   flameParticles: {fileID: 4277026202769937144}

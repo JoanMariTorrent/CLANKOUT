@@ -8,7 +8,6 @@ public class ProjectileGun : Gun
     [SerializeField] private LayerMask aimLayerMask;
     protected override void ExecuteShootingLogic(Vector3 cameraPosition, Vector3 cameraForward, double tick)
     {
-        // Solo el dueño dispara la bala real
         if (!isOwner) return;
 
         Vector3 targetPoint;
@@ -19,7 +18,6 @@ public class ProjectileGun : Gun
 
         Vector3 directionToTarget = (targetPoint - shootTransform.position).normalized;
 
-        // Instanciar localmente
         GameObject bulletObj = Instantiate(projectilePrefab, shootTransform.position, Quaternion.LookRotation(directionToTarget));
         
         BallisticProjectile bulletScript = bulletObj.GetComponent<BallisticProjectile>();

@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 1383448258628988601}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.55, y: -0.6, z: 0.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -184,6 +184,7 @@ MonoBehaviour:
   _cameraTransform: {fileID: 0}
   shootTransform: {fileID: 8772015516634861983}
   _muzzleFlash: {fileID: 7154568906003232138}
+  tracerPrefab: {fileID: 7971234249729382642, guid: a384930bd14f3e042b4068f11c2513fd, type: 3}
   shootSound: {fileID: 8300000, guid: b8418d17dc8d16d4ea0981ae7d861391, type: 3}
   minPitch: 0.95
   maxPitch: 1.2
@@ -281,7 +282,10 @@ MonoBehaviour:
   aimRecoilZ: 0
   snappiness: 2
   returnSpeed: 8
+  equippedScale: {x: 1, y: 1, z: 1}
+  droppedScale: {x: 1, y: 1, z: 1}
   playerCharacter: {fileID: 0}
+  gunAnimHandler: {fileID: 0}
   rb: {fileID: 6277897153711423526}
   equipedGun: 0
   range: 50
@@ -290,6 +294,7 @@ MonoBehaviour:
     m_Bits: 7509
   _enviormentHit: {fileID: 2542180830717017700, guid: c23edada67e2ef946b2764574583bfaa, type: 3}
   _playerHitEffect: {fileID: 2446692518619174518, guid: bc337677c0f15bc45832afc868cb0229, type: 3}
+  tracerPrefab: {fileID: 7971234249729382642, guid: a384930bd14f3e042b4068f11c2513fd, type: 3}
 --- !u!54 &6277897153711423526
 Rigidbody:
   m_ObjectHideFlags: 0

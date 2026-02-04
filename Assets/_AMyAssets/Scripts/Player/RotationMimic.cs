@@ -12,7 +12,7 @@ public class RotationMimic : NetworkBehaviour
         enabled = isOwner;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if(!_mimicRotation)
             return;

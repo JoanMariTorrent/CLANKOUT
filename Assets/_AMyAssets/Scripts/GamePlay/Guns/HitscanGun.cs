@@ -10,6 +10,9 @@ public class HitscanGun : Gun
     [SerializeField] private ParticleSystem _enviormentHit; 
     [SerializeField] private ParticleSystem _playerHitEffect; 
 
+    [Header("Visuals")]
+    [SerializeField] private BulletTracer tracerPrefab;
+
     protected override void ExecuteShootingLogic(Vector3 position, Vector3 direction, double tick)
     {
         Debug.DrawRay(position, direction * range, Color.green, 2f);
@@ -21,30 +24,35 @@ public class HitscanGun : Gun
     //[ServerRpc(requireOwnership: false)]
     private void VerifyHitScanServerRpc(double tick, Vector3 position, Vector3 direction)
     {
-        // Seguridad: Si no hay módulo, usamos física normal del server
-        if (rollbackModule == null)
-        {
-            if (Physics.Raycast(position, direction, out RaycastHit hitNormal, range, _hitLayer))
-                HandleHitServer(hitNormal);
-            return;
-        }
-
         Ray ray = new Ray(position, direction);
         RaycastHit hit;
+        bool hasHit = false;
 
-        // ROLLBACK: El servidor rebobina al 'tick' que envió el cliente
-        if (rollbackModule.Raycast(tick, ray, out hit, range, _hitLayer))
+        if (rollbackModule != null)
+        {
+            hasHit = rollbackModule.Raycast(tick, ray, out hit, range, _hitLayer);
+        }
+        else
+        {
+            hasHit = Physics.Raycast(position, direction, out hit, range, _hitLayer);
+        }
+
+        if (hasHit)
         {
             HandleHitServer(hit);
+        }
+
+        else
+        {
+            Vector3 endPoint = position + (direction * range);
+            SpawnHitEffectObserversRpc(false, endPoint, Vector3.zero, null, false);
         }
     }
 
     private void HandleHitServer(RaycastHit hit)
     {
-        // 1. Evitar dispararse a uno mismo
         if (playerCharacter != null && hit.collider.gameObject == playerCharacter.gameObject) return;
 
-        // A. JUGADOR
         if (hit.transform.TryGetComponent(out PlayerHealth victim))
         {
             if (victim.owner.Value == this.owner.Value) return;
@@ -54,25 +62,35 @@ public class HitscanGun : Gun
             if (InstanceHandler.TryGetInstance(out ScoreManager sm)) 
                 sm.AddDamageServerRpc(victim.PlayerID, owner.Value, _gunDamage);
 
-            SpawnHitEffectObserversRpc(true, hit.point, hit.normal, victim.transform);
+            SpawnHitEffectObserversRpc(true, hit.point, hit.normal, victim.transform, true);
         }
-        // B. OBJETO
         else if (hit.transform.TryGetComponent(out HealthObject objVictim))
         {
             objVictim.ChangeHealth(-_gunDamage, hit.point);
-            SpawnHitEffectObserversRpc(true, hit.point, hit.normal, objVictim.transform);
+            SpawnHitEffectObserversRpc(true, hit.point, hit.normal, objVictim.transform, true);
         }
-        // C. ENTORNO
         else
         {
-            SpawnHitEffectObserversRpc(false, hit.point, hit.normal, null);
+            SpawnHitEffectObserversRpc(false, hit.point, hit.normal, null, true);
         }
     }
 
     // --- EFECTOS VISUALES ---
     [ObserversRpc]
-    private void SpawnHitEffectObserversRpc(bool isPlayer, Vector3 pos, Vector3 normal, Transform parent)
+    private void SpawnHitEffectObserversRpc(bool isPlayer, Vector3 pos, Vector3 normal, Transform parent, bool hit)
     {
+
+        SpawnTracer(pos);
+
+        if(!hit) return;
+
+        if (tracerPrefab != null && shootTransform != null)
+        {
+            var tracerObj = Instantiate(tracerPrefab, shootTransform.position, Quaternion.identity);
+            
+            tracerObj.Init(shootTransform.position, pos);
+        }
+
         if (isPlayer && _playerHitEffect && parent)
         {
             var effect = Instantiate(_playerHitEffect, pos, Quaternion.LookRotation(normal));
