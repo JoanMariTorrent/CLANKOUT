@@ -35,7 +35,7 @@ public class RoundRunningState : StateNode<List<PlayerHealth>>
         }
     }
 
-    private void OnPlayerDeath(PlayerID _deadPlayer)
+    private void OnPlayerDeath(PlayerID _deadPlayer, string victimName, string killerName)
     {
         _players.Remove(_deadPlayer);
 

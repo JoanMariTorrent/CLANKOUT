@@ -31,7 +31,7 @@ public class PlayerHealth : NetworkBehaviour
     [SerializeField] private AudioClip[] damageClips;
     [SerializeField] private AudioClip[] deathClips;
 
-    public Action<PlayerID> OnDeath_Server;
+    public Action<PlayerID, string, string> OnDeath_Server;
     public PlayerID PlayerID => owner.Value;
 
     public int health => _health.value;
@@ -106,6 +106,29 @@ public class PlayerHealth : NetworkBehaviour
 
         if (IsDead)
         {
+            string victimName = player.playerName;
+            string killerName = "void";
+
+            if (attackerID.HasValue)
+            {
+                if (attackerID.Value == null)
+                {
+                    killerName = "void";
+                }
+                else
+                {
+                    var attackerPlayer = PlayerRegistry.AllPlayers.Find(p => p.owner == attackerID.Value);
+                    
+                    if (attackerPlayer != null)
+                        killerName = attackerPlayer.playerName;
+                    else
+                        killerName = "Unknown";
+                }
+            }
+
+            if(string.IsNullOrWhiteSpace(victimName)) victimName = owner.Value.ToString();
+            if(string.IsNullOrWhiteSpace(killerName)) killerName = attackerID.Value.ToString();
+
             if (InstanceHandler.TryGetInstance(out ScoreManager scoreManager))
             {
                 if(attackerID != null || attackerID.HasValue) scoreManager.Addkills(attackerID.Value);
@@ -121,7 +144,7 @@ public class PlayerHealth : NetworkBehaviour
 
             
             DieVisualsObserversRpc();
-            OnDeath_Server?.Invoke(owner.Value);
+            OnDeath_Server?.Invoke(owner.Value, victimName, killerName);
         }
 
 
@@ -218,6 +241,7 @@ public class PlayerHealth : NetworkBehaviour
     {
         _canTakeDamage.value = !inmune;
     }
+    
 
 
     

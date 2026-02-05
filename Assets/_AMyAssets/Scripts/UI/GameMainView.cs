@@ -11,6 +11,11 @@ public class GameMainView : View
     [SerializeField] private TMP_Text _ammoText, bckAmmoText;
     [SerializeField] private TMP_Text _timerText, _bckgTimerText;
 
+    [Header("Enemy deaths")]
+    [SerializeField] private GameObject PF_EnemyDown;
+    [SerializeField] private Transform enemyDowTranform;  
+    [SerializeField] private float timeToDespawn;
+
     [Header("Barras de vida")]
     [SerializeField] private Image healthBar;
     [SerializeField] private Image ghostBar;
@@ -130,5 +135,24 @@ public class GameMainView : View
         
         _timerText.text = finalStringFormat;
         _bckgTimerText.text = finalStringFormat;
+    }
+
+    public void SpawnEnemyDeathUI(string victimName, string killerName)
+    {
+        if (PF_EnemyDown == null || enemyDowTranform == null) return;
+
+        GameObject newItem = Instantiate(PF_EnemyDown, enemyDowTranform);
+
+        EnemyDown itemScript = newItem.GetComponentInChildren<EnemyDown>();
+        if (itemScript != null)
+        {
+            itemScript.Intiialize(killerName, victimName);
+        }
+        Destroy(newItem, timeToDespawn);
+
+        if (enemyDowTranform.childCount > 5)
+        {
+            Destroy(enemyDowTranform.GetChild(0).gameObject);
+        }
     }
 }

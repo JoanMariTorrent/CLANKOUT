@@ -2,6 +2,7 @@ using PurrNet;
 using PurrNet.StateMachine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RoundRunningStateDM : StateNode<List<PlayerHealth>>
@@ -69,7 +70,7 @@ public class RoundRunningStateDM : StateNode<List<PlayerHealth>>
         }
     }
 
-    private void OnPlayerDeath(PlayerID deadPlayerID)
+    private void OnPlayerDeath(PlayerID deadPlayerID, string victimName, string killerName)
     { 
         if (gameEnded) return;
 
@@ -79,6 +80,11 @@ public class RoundRunningStateDM : StateNode<List<PlayerHealth>>
         if (playerScript != null)
         {
             StartCoroutine(RespawnRoutine(playerScript));
+        }
+
+        foreach(var player in _activePlayers)
+        {
+            CallToSpawnEnemyDeathUI(victimName, killerName, player);
         }
     }
 
@@ -122,5 +128,14 @@ public class RoundRunningStateDM : StateNode<List<PlayerHealth>>
     [ObserversRpc] public void TimerToObservers(float _timer)
     {
         timerReference = _timer;
+    }
+
+
+    [ObserversRpc(runLocally: true)] public void CallToSpawnEnemyDeathUI(string victimName, string killerName, PlayerHealth player)
+    {
+        Player playerScript = player.GetComponent<Player>();
+        GameMainView GMV = playerScript.canvas._allViews.OfType<GameMainView>().FirstOrDefault();
+        GMV.SpawnEnemyDeathUI(victimName, killerName);
+        
     }
 }
