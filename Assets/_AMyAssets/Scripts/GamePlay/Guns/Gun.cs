@@ -41,6 +41,7 @@ public class Gun : NetworkBehaviour, ITakeGun
     [SerializeField] protected ParticleSystem _muzzleFlash;
     [SerializeField] protected BulletTracer tracerPrefab;
     [SerializeField] protected AudioClip shootSound;
+    [SerializeField] protected AudioClip hitMarker;
     [SerializeField] protected float minPitch = 0.8f, maxPitch = 1.2f;
     [SerializeField] protected GameObject[] childMeshes;
 

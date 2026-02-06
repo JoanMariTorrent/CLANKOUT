@@ -186,6 +186,7 @@ MonoBehaviour:
   _muzzleFlash: {fileID: 7154568906003232138}
   tracerPrefab: {fileID: 7971234249729382642, guid: a384930bd14f3e042b4068f11c2513fd, type: 3}
   shootSound: {fileID: 8300000, guid: b8418d17dc8d16d4ea0981ae7d861391, type: 3}
+  hitMarker: {fileID: 8300000, guid: 63dcc20fc888bd742af40f63f3dc393a, type: 3}
   minPitch: 0.95
   maxPitch: 1.2
   childMeshes:

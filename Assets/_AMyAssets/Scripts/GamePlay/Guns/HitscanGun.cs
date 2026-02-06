@@ -62,12 +62,18 @@ public class HitscanGun : Gun
             if (InstanceHandler.TryGetInstance(out ScoreManager sm)) 
                 sm.AddDamageServerRpc(victim.PlayerID, owner.Value, _gunDamage);
 
+            if(hitMarker != null)
+                AudioManager.Instance.PlaySound2D(hitMarker, AudioType.SFX, 0.22f, Random.Range(minPitch, maxPitch));
+
             SpawnHitEffectObserversRpc(true, hit.point, hit.normal, victim.transform, true);
         }
         else if (hit.transform.TryGetComponent(out HealthObject objVictim))
         {
             objVictim.ChangeHealth(-_gunDamage, hit.point);
             SpawnHitEffectObserversRpc(true, hit.point, hit.normal, objVictim.transform, true);
+
+            if(hitMarker != null)
+                AudioManager.Instance.PlaySound2D(hitMarker, AudioType.SFX, 0.22f, Random.Range(minPitch, maxPitch));
         }
         else
         {
