@@ -8,7 +8,7 @@ public enum WeaponID { None, PistolaSimple, RifleMalPorro, Ojo, LanzaCigarros, F
 public enum WeaponType { None, Primary, Secundary } 
 public enum AimType {Normal, Aiming, Sniper}
 
-public class Gun : NetworkBehaviour, ITakeGun
+public class Gun : EquippableItem, ITakeGun
 {
     [Header("Base Info")]
     public WeaponID weaponID;
@@ -431,5 +431,8 @@ public class Gun : NetworkBehaviour, ITakeGun
     {
         if(player == null) return;
         player.canvas.gameMainView.HitMarker(lastHit);
+
+        if(lastHit)
+            player.canvas.gameMainView.RequestKillAnimation();
     }
 }

@@ -139,7 +139,7 @@ public class PlayerHealth : NetworkBehaviour
             if (weaponManager != null)
             {
                 weaponManager.DropAllWeaponsOnDeath();
-                if(isOwner) weaponManager._currentGun = null;
+                if(isOwner) weaponManager._currentItem = null;
             }
 
             

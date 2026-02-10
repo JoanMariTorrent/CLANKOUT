@@ -132,7 +132,7 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
-  speed: 500
+  speed: 800
   gravityScale: 1.25
   maxLifetime: 5
   hitLayers:
@@ -262,7 +262,7 @@ TrailRenderer:
       ctime6: 0
       ctime7: 0
       atime0: 15420
-      atime1: 65535
+      atime1: 35659
       atime2: 0
       atime3: 0
       atime4: 0

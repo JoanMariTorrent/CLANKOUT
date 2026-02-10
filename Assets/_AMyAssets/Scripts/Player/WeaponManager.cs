@@ -12,11 +12,20 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private RecoilCamera recoil;
     [SerializeField] private PlayerAnimationHandler animHandler;
 
-    public Gun _currentGun;
+    // --- CAMBIO PRINCIPAL: Usamos la clase padre ---
+    // public Gun _currentGun; // (Viejo)
+    public EquippableItem _currentItem;
+    public Gun _currentGun 
+{
+    get 
+    {
+        return _currentItem as Gun;
+    }
+}
+
     [SerializeField] private LastGunEquiped lastGun;
     
     public SyncList <GameObject> _ownedWeapons = new(ownerAuth: false); 
-    //public SyncList <GameObject> mySync = new(ownerAuth: true);
     [SerializeField] private GameObject weaponInstance = null;
     [SerializeField] private PlayerCharacter playerChar;
     [SerializeField] private Player player;
@@ -27,12 +36,20 @@ public class WeaponManager : NetworkBehaviour
     {
         GetPlayerScript();
         if(isServer) EnsureWeaponSlots();
-        
     }
 
     void Update()
     {
         lastGun = playerChar._lastGunEquiped;
+
+        if (isOwner && _currentItem != null)
+        {
+            bool down = Input.GetButtonDown("Fire1");
+            bool held = Input.GetButton("Fire1");
+            bool up = Input.GetButtonUp("Fire1");
+
+            _currentItem.UseItem(down, held, up);
+        }
     }
 
     // --- RPCs y LOGICA SERVER ---
@@ -48,7 +65,9 @@ public class WeaponManager : NetworkBehaviour
         if (!isServer) return;
 
         EnsureWeaponSlots();
+        
         Gun gunScript = weaponPrefab.GetComponent<Gun>();
+        
         if(gunScript == null) return;
 
         WeaponID newWeaponID = gunScript.weaponID;
@@ -89,17 +108,19 @@ public class WeaponManager : NetworkBehaviour
 
             if (targetIndex == -1)
             {
+                Gun currentGunScript = _currentItem as Gun;
+
                 if (primaryWeapon)
                 {
-                    targetIndex = (_currentGun != null && _currentGun.weaponType == WeaponType.Primary) 
-                                     ? IndexHasWeaponOfType(_currentGun.weaponID) 
+                    targetIndex = (currentGunScript != null && currentGunScript.weaponType == WeaponType.Primary) 
+                                     ? IndexHasWeaponOfType(currentGunScript.weaponID) 
                                      : 0;
                     if (targetIndex == -1) targetIndex = 0;
                 }
                 else
                 {
-                    targetIndex = (_currentGun != null && _currentGun.weaponType == WeaponType.Secundary) 
-                                     ? IndexHasWeaponOfType(_currentGun.weaponID) 
+                    targetIndex = (currentGunScript != null && currentGunScript.weaponType == WeaponType.Secundary) 
+                                     ? IndexHasWeaponOfType(currentGunScript.weaponID) 
                                      : 2;
                     if (targetIndex == -1) targetIndex = 2;
                 }
@@ -126,8 +147,6 @@ public class WeaponManager : NetworkBehaviour
             finalWeaponObject = weaponInstance;
         }
 
-        
-
         if (targetIndex >= 0)
         {
             while (_ownedWeapons.Count <= targetIndex) _ownedWeapons.Add(null);
@@ -136,7 +155,7 @@ public class WeaponManager : NetworkBehaviour
         }
     }
 
-    // --- SWITCH WEAPON ---
+    // --- SWITCH WEAPON (POLIMÓRFICO) ---
 
     [ObserversRpc(requireServer: false)]
     public void SwitchWeapon(int index, GameObject forcedWeapon = null) 
@@ -150,7 +169,7 @@ public class WeaponManager : NetworkBehaviour
         }
 
         if (weaponToSwitch == null) return;
-        if (_currentGun != null && weaponToSwitch == _currentGun.gameObject) return;
+        if (_currentItem != null && weaponToSwitch == _currentItem.gameObject) return;
 
         for (int i = 0; i < _ownedWeapons.Count; i++)
         {
@@ -158,28 +177,41 @@ public class WeaponManager : NetworkBehaviour
         }
 
         weaponToSwitch.SetActive(true);
-        _currentGun = weaponToSwitch.GetComponent<Gun>();
         
-        if (_currentGun.rb != null)
+        _currentItem = weaponToSwitch.GetComponent<EquippableItem>();
+        
+        Rigidbody rb = weaponToSwitch.GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            _currentGun.rb.isKinematic = true;
-            _currentGun.rb.useGravity = false;
+            rb.isKinematic = true;
+            rb.useGravity = false;
         }
-        Collider col = _currentGun.GetComponent<Collider>();
+        Collider col = weaponToSwitch.GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
-        _currentGun.GiveOwnership(owner.Value);
+        if (_currentItem != null) _currentItem.GiveOwnership(owner.Value);
         
-        if(_currentGun.gunAnimHandler != null) weaponToSwitch.transform.SetParent(_handTransform);
-        else weaponToSwitch.transform.SetParent(_handTransformWithoutAnim);
+        if (_currentItem is Gun gunScript)
+        {
+            if(gunScript.gunAnimHandler != null) weaponToSwitch.transform.SetParent(_handTransform);
+            else weaponToSwitch.transform.SetParent(_handTransformWithoutAnim);
+            
+            // Setup de Arma
+            if(player == null) GetPlayerScript();
+            gunScript.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
+        }
+        else
+        {
+            weaponToSwitch.transform.SetParent(_handTransformWithoutAnim);
+        }
+
         weaponToSwitch.transform.localPosition = Vector3.zero;
         weaponToSwitch.transform.localRotation = Quaternion.identity;
 
-        if(player == null) GetPlayerScript();
-        
-        _currentGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
+        // Llamamos al OnEquip del padre
+        if (_currentItem != null) _currentItem.OnEquip();
 
-        Debug.Log($"Cambio de arma a {_currentGun.name} en el slot {index}");
+        Debug.Log($"Cambio de item a {(_currentItem != null ? _currentItem.itemName : "Desconocido")} en el slot {index}");
     }
 
     public void SwitchWeapon(int index) { SwitchWeapon(index, null); }
@@ -188,46 +220,62 @@ public class WeaponManager : NetworkBehaviour
 
     private void InstantiateGun(GameObject weaponPrefab)
     {
-        if (_currentGun != null) _currentGun.gameObject.SetActive(false);
+        if (_currentItem != null) _currentItem.gameObject.SetActive(false);
 
-        Gun gun = weaponPrefab.GetComponent<Gun>();
-
-        if(gun != null && gun.gunAnimHandler != null) weaponInstance = Instantiate(weaponPrefab, _handTransform);
+        // Instanciamos
+        Gun gunCheck = weaponPrefab.GetComponent<Gun>(); 
+        if(gunCheck != null && gunCheck.gunAnimHandler != null) weaponInstance = Instantiate(weaponPrefab, _handTransform);
         else weaponInstance = Instantiate(weaponPrefab, _handTransformWithoutAnim);
-
         
         weaponInstance.SetActive(true);
         weaponInstance.transform.localPosition = Vector3.zero;
         weaponInstance.transform.localRotation = Quaternion.identity;
-        Gun newGun = weaponInstance.GetComponent<Gun>();
-        if (newGun == null) return;
-        newGun.GiveOwnership(owner.Value);
-        if (player == null) GetPlayerScript();
-        newGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
+
+        // Obtenemos el item
+        EquippableItem newItem = weaponInstance.GetComponent<EquippableItem>();
+        if (newItem == null) return;
+        
+        newItem.GiveOwnership(owner.Value);
+        
+        // Si es arma, setup
+        if (newItem is Gun newGun)
+        {
+             if (player == null) GetPlayerScript();
+             newGun.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
+        }
     }
 
     public void AddGunFromGround(GameObject weaponObject)
     {
-        Gun gunScript = weaponObject.GetComponent<Gun>();
-        if (gunScript == null) return;
+        EquippableItem itemScript = weaponObject.GetComponent<EquippableItem>();
+        if (itemScript == null) return;
         
-        if(gunScript.gunAnimHandler != null) gunScript.transform.SetParent(_handTransform);
-        else gunScript.transform.SetParent(_handTransformWithoutAnim);
+        // Parent logic
+        if (itemScript is Gun g && g.gunAnimHandler != null) itemScript.transform.SetParent(_handTransform);
+        else itemScript.transform.SetParent(_handTransformWithoutAnim);
         
+        itemScript.transform.localPosition = Vector3.zero;
+        itemScript.transform.localRotation = Quaternion.identity;
         
-        gunScript.transform.localPosition = Vector3.zero;
-        gunScript.transform.localRotation = Quaternion.identity;
+        Rigidbody rb = itemScript.GetComponent<Rigidbody>();
+        if (rb) 
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
         
-        gunScript.rb.isKinematic = true;
-        gunScript.rb.useGravity = false;
-        
-        Collider col = gunScript.GetComponent<Collider>();
+        Collider col = itemScript.GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
-        gunScript.GiveOwnership(owner.Value);
-        if(player == null) GetPlayerScript();
-        gunScript.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
-        gunScript.gameObject.SetActive(true);
+        itemScript.GiveOwnership(owner.Value);
+        
+        if (itemScript is Gun gunScript)
+        {
+            if(player == null) GetPlayerScript();
+            gunScript.Setup(_playerCamera.transform, _hitLayer, recoil, playerChar, player, this, animHandler);
+        }
+        
+        itemScript.gameObject.SetActive(true);
     }
  
     [ObserversRpc(runLocally: true)]
@@ -237,44 +285,62 @@ public class WeaponManager : NetworkBehaviour
         GameObject weaponObj = _ownedWeapons[index];
         if (weaponObj == null) return;
 
-        Gun gunScript = weaponObj.GetComponent<Gun>();
-        if (gunScript == null) return;
+        EquippableItem itemScript = weaponObj.GetComponent<EquippableItem>();
+        if (itemScript == null) return;
 
-        gunScript.SetDown();
+        // Desequipar genérico
+        itemScript.OnUnequip();
+        
+        // Desequipar específico de arma
+        if (itemScript is Gun g) g.SetDown();
+
         weaponObj.transform.SetParent(null);
         weaponObj.SetActive(true);
         
-        gunScript.rb.isKinematic = false;
-        gunScript.rb.useGravity = true;
-        gunScript.rb.AddForce((transform.forward + Vector3.up).normalized * 3f, ForceMode.Impulse);
+        Rigidbody rb = weaponObj.GetComponent<Rigidbody>();
+        if(rb)
+        {
+            rb.isKinematic = false;
+            rb.useGravity = true;
+            rb.AddForce((transform.forward + Vector3.up).normalized * 3f, ForceMode.Impulse);
+        }
 
-        gunScript.GiveOwnership(null);
+        itemScript.GiveOwnership(null);
 
         if(isServer) _ownedWeapons[index] = null;
-        if (_currentGun == gunScript) _currentGun = null;
+        if (_currentItem == itemScript) _currentItem = null;
     }
 
     private void EquipUtility(GameObject utilityPrefab) 
     { 
         InstantiateGun(utilityPrefab); 
-        if(isServer) _ownedWeapons[4] = weaponInstance; SwitchWeapon(4, weaponInstance); 
+        if(isServer) _ownedWeapons[4] = weaponInstance; 
+        SwitchWeapon(4, weaponInstance); 
     }
+
     private bool HasWeaponOfType(WeaponID id) 
     { 
         foreach (var w in _ownedWeapons) 
         { 
-            if (w && w.GetComponent<Gun>().weaponID == id) return true; 
+            if (w == null) continue;
+            // Solo chequeamos Guns
+            Gun g = w.GetComponent<Gun>();
+            if (g && g.weaponID == id) return true; 
         }
         return false; 
     }
+
     private int IndexHasWeaponOfType(WeaponID id) 
     { 
         for (int i = 0; i < _ownedWeapons.Count; i++) 
         { 
-            if (_ownedWeapons[i] && _ownedWeapons[i].GetComponent<Gun>().weaponID == id) return i; 
+             if (_ownedWeapons[i] == null) continue;
+             Gun g = _ownedWeapons[i].GetComponent<Gun>();
+             if (g && g.weaponID == id) return i; 
         } 
         return -1; 
     }
+
     private int GetWeaponIndex(bool primaryWeapon) 
     { 
         int start = primaryWeapon ? 0 : 2; 
@@ -287,11 +353,13 @@ public class WeaponManager : NetworkBehaviour
         } 
         return -1; 
     }
+
     private void EnsureWeaponSlots() 
     { 
         while (_ownedWeapons.Count < 5) 
             _ownedWeapons.Add(null); 
     }
+
     public void UtilityThrowed() 
     { 
         if(isServer) 
@@ -301,6 +369,7 @@ public class WeaponManager : NetworkBehaviour
         } 
         SwitchWeapon(0); 
     }
+
     public void DropGun() 
     { 
         if(isServer) 
@@ -308,26 +377,38 @@ public class WeaponManager : NetworkBehaviour
         else 
             RequestDropGunServerRpc(); 
     }
+
     [ServerRpc(requireOwnership: true)] private void RequestDropGunServerRpc() { DoDropGunLogic(); }
+
     [ObserversRpc(runLocally: true)] private void DoDropGunLogic() 
     { 
-        if (_currentGun == null) 
-            return;
-        _currentGun.equipedGun = false; 
-        GameObject dropped = _currentGun.gameObject; 
-        _currentGun.SetDown(); 
+        if (_currentItem == null) return; // Antes _currentGun
+
+        _currentItem.isEquipped = false; 
+        GameObject dropped = _currentItem.gameObject; 
+
+        if (_currentItem is Gun g) g.SetDown(); // Específico
+
         dropped.transform.SetParent(null); 
-        _currentGun.rb.isKinematic = false; 
-        _currentGun.rb.useGravity = true; 
-        _currentGun.rb.AddForce(_handTransform.transform.forward * 5f, ForceMode.Impulse); 
-        _currentGun.GiveOwnership(null); 
+        
+        Rigidbody rb = dropped.GetComponent<Rigidbody>();
+        if(rb)
+        {
+            rb.isKinematic = false; 
+            rb.useGravity = true; 
+            rb.AddForce(_handTransform.transform.forward * 5f, ForceMode.Impulse); 
+        }
+
+        _currentItem.GiveOwnership(null); 
+        
         if (isServer) 
         { 
-            int idx = _ownedWeapons.IndexOf(_currentGun.gameObject); 
-            if (idx >= 0) 
-                _ownedWeapons[idx] = null; 
+            int idx = _ownedWeapons.IndexOf(dropped); 
+            if (idx >= 0) _ownedWeapons[idx] = null; 
         } 
-        _currentGun = null; 
+        
+        _currentItem = null; 
+        
         int next = -1; 
         if (_ownedWeapons[0]) next = 0; 
         else if (_ownedWeapons[1]) next = 1; 
@@ -335,38 +416,47 @@ public class WeaponManager : NetworkBehaviour
         else if (_ownedWeapons[3]) next = 3; 
         if (next != -1) SwitchWeapon(next); 
     }
+
     [ObserversRpc(runLocally: true)] private void PlayEquipSoundObserversRpc() 
     { 
         if (takeGunSound.Length <= 0) return; 
         
-        
         if(isOwner)
-            AudioManager.Instance.PlaySound2D(takeGunSound[Random.Range(0, takeGunSound.Length)], pitch: Random.Range(0.98f, 1.02f));
-
+            AudioManager.Instance.PlaySound2D(takeGunSound[Random.Range(0, takeGunSound.Length)], type: AudioType.SFX, volume: 0.3f ,pitch: Random.Range(0.98f, 1.02f));
         else
-            AudioManager.Instance.PlaySound(takeGunSound[Random.Range(0, takeGunSound.Length)], transform.position , pitch: Random.Range(0.98f, 1.02f));
+            AudioManager.Instance.PlaySound(takeGunSound[Random.Range(0, takeGunSound.Length)], transform.position , type: AudioType.SFX, volume: 0.3f, pitch: Random.Range(0.98f, 1.02f));
     }
+
     [ObserversRpc(runLocally: true)] public void DropAllWeaponsOnDeath() 
     { 
         foreach (var w in _ownedWeapons) 
         {  
-            if (!w) 
-                continue; 
-            Gun g = w.GetComponent<Gun>(); 
-            if (!g) 
-                continue; 
-            g.SetDown(); 
+            if (!w) continue; 
+            
+            // Usamos item genérico
+            EquippableItem item = w.GetComponent<EquippableItem>();
+            if (!item) continue; 
+            
+            if (item is Gun g) g.SetDown();
+            else item.OnUnequip();
+
             w.transform.SetParent(null); 
             w.SetActive(true); 
-            g.rb.isKinematic = false; 
-            g.rb.useGravity = true; 
-            g.rb.AddForce((Random.insideUnitSphere + Vector3.up).normalized * 4f, ForceMode.Impulse); 
-            g.GiveOwnership(null); 
+            
+            Rigidbody rb = w.GetComponent<Rigidbody>();
+            if(rb)
+            {
+                rb.isKinematic = false; 
+                rb.useGravity = true; 
+                rb.AddForce((Random.insideUnitSphere + Vector3.up).normalized * 4f, ForceMode.Impulse); 
+            }
+            item.GiveOwnership(null); 
         } 
-        _currentGun = null; 
+        _currentItem = null; 
         if (isServer) 
         for (int i = 0; i < _ownedWeapons.Count; i++) 
             _ownedWeapons[i] = null; 
     }
+
     private void GetPlayerScript() { player = GetComponent<Player>(); }
 }

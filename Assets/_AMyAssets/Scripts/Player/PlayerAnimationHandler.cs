@@ -92,7 +92,7 @@ public class PlayerAnimationHandler : NetworkBehaviour
         velocity.y = 0; 
         float speed = velocity.magnitude;
         
-        float maxRunSpeed = 17.5f; 
+        float maxRunSpeed = 14f; 
         float normalizedSpeed = Mathf.Clamp01(speed / maxRunSpeed);
 
         // 2. Enviamos al Animator

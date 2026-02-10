@@ -48,11 +48,17 @@ public class ProjectileGun : Gun
         
         if (InstanceHandler.TryGetInstance(out ScoreManager sm)) 
             sm.AddDamageServerRpc(victim.PlayerID, owner.Value, dmg);
+
+        bool lastHit = victim.health <= 0 ? true : false;
+        HitMarker(lastHit);
     }
 
     [ServerRpc]
     private void ApplyDamageObjectServerRpc(HealthObject obj, int dmg, Vector3 point)
     {
         obj.ChangeHealth(-dmg, point);
+
+        bool lastHit = obj.healthRef <= 0 ? true : false;
+        HitMarker(lastHit);
     }
 }

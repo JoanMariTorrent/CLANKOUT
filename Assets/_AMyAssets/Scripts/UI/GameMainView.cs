@@ -3,6 +3,7 @@ using TMPro;
 using PurrNet;
 using UnityEngine.UI;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class GameMainView : View
 {
@@ -30,6 +31,10 @@ public class GameMainView : View
     [SerializeField] private float ghostSpeed = 5f; 
     [SerializeField] private float ghostDelay = 0.3f;
     private Coroutine healthCoroutine, ghostCoroutine, hitMarkerCoroutine;
+    
+    [Header("Kill animation")]
+    [SerializeField] private GameObject killAnimationContainer;
+    private Coroutine KillAnimation;
 
 
     private void Awake()
@@ -190,5 +195,25 @@ public class GameMainView : View
         c.a = 0f;
         hitMarkerImage.color = c;
         
+    }
+
+
+    public void RequestKillAnimation()
+    {
+        if(KillAnimation != null) StopCoroutine(KillAnimation);
+        
+        KillAnimation = StartCoroutine(PlayKillAnimation());
+    }
+
+    private IEnumerator PlayKillAnimation()
+    {
+        if (killAnimationContainer == null)
+            yield break;
+        
+        killAnimationContainer.SetActive(true);
+
+        yield return new WaitForSeconds(2);
+
+        killAnimationContainer.SetActive(false);
     }
 }

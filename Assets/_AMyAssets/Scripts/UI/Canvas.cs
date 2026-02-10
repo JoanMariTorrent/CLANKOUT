@@ -55,7 +55,6 @@ public class Canvas : NetworkBehaviour
                 {
                     HideViewInternal(view);
                 }
-                
             }
         }
     }

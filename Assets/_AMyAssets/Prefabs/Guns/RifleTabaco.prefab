@@ -135,6 +135,8 @@ MonoBehaviour:
   _directChildren: []
   _networkRules: {fileID: 0}
   _visitiblityRules: {fileID: 0}
+  itemName: 
+  isEquipped: 0
   weaponID: 2
   weaponType: 1
   aimType: 1
@@ -179,13 +181,13 @@ MonoBehaviour:
     m_RotationOrder: 4
   timeToAim: 0.15
   aimingFOV: 55
-  gunAimingFOV: 50
+  gunAimingFOV: 45
   isAiming: 0
   _cameraTransform: {fileID: 0}
   shootTransform: {fileID: 8772015516634861983}
   _muzzleFlash: {fileID: 7154568906003232138}
   tracerPrefab: {fileID: 7971234249729382642, guid: a384930bd14f3e042b4068f11c2513fd, type: 3}
-  shootSound: {fileID: 8300000, guid: b8418d17dc8d16d4ea0981ae7d861391, type: 3}
+  shootSound: {fileID: 8300000, guid: a585c314a0b3d8c4c9365218fda1f306, type: 3}
   hitMarker: {fileID: 8300000, guid: 63dcc20fc888bd742af40f63f3dc393a, type: 3}
   minPitch: 0.95
   maxPitch: 1.2
