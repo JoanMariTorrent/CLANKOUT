@@ -57,24 +57,43 @@ public class HitscanGun : Gun
         {
             if (victim.owner.Value == this.owner.Value) return;
 
+            float currentHealth = victim.health;
+
             victim.ChangeHealth(-_gunDamage, owner.Value);
             
+            float predictedHealth = currentHealth - _gunDamage;
+
+            bool playerdeath = predictedHealth <= 0;
+
+            SpawnHitEffectObserversRpc(true, hit.point, hit.normal, victim.transform, true, playerdeath);
+
+            HitMarker(playerdeath);
+
             if (InstanceHandler.TryGetInstance(out ScoreManager sm)) 
                 sm.AddDamageServerRpc(victim.PlayerID, owner.Value, _gunDamage);
 
             if(hitMarker != null)
                 AudioManager.Instance.PlaySound2D(hitMarker, AudioType.SFX, 0.22f, Random.Range(minPitch, maxPitch));
-
-
-            bool playerdeath = victim.health <= 0 ? true : false;
-            SpawnHitEffectObserversRpc(true, hit.point, hit.normal, victim.transform, true, playerdeath);
         }
+
+
+        
         else if (hit.transform.TryGetComponent(out HealthObject objVictim))
         {
+            float currentHealth = objVictim.health.value;
+
             objVictim.ChangeHealth(-_gunDamage, hit.point);
 
-            bool objDeath = objVictim.healthRef <= 0 ? true : false;
+            float predictedHealth = currentHealth - _gunDamage;
+
+            bool objDeath = predictedHealth <= 0;
+            
+            
             SpawnHitEffectObserversRpc(true, hit.point, hit.normal, objVictim.transform, true, objDeath);
+            
+            Debug.Log($"<color=green> Objeto muerto: {objDeath} referencia de la vida del objeto: {objVictim.healthRef} vida predecida: {predictedHealth}</color>");
+            
+            HitMarker(objDeath);
 
             if(hitMarker != null)
                 AudioManager.Instance.PlaySound2D(hitMarker, AudioType.SFX, 0.22f, Random.Range(minPitch, maxPitch));
