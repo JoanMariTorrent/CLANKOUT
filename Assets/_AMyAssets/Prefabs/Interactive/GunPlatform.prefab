@@ -67,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: b0f50dad91f30d54d8f07d016ab48915, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -135,12 +135,9 @@ MonoBehaviour:
   timeNextGun: 5
   spawnGunPos: {fileID: 9119915950472962771}
   gunSpawned: 0
-  typeGun: 0
-  spawnGun: []
-  spawnedGun: {fileID: 0}
+  currentSpawnedID: 0
+  spawnedGunVisual: {fileID: 0}
   primaryWeapon: 0
-  player: {fileID: 0}
-  playerInCollision: 0
 --- !u!1 &9119915950472962771
 GameObject:
   m_ObjectHideFlags: 0

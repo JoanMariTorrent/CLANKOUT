@@ -32,6 +32,8 @@ public class WaitForPlayersStateDM : StateNode
     {
         while (networkManager.players.Count < _minPlayers)
             yield return null;
+
+        yield return new WaitForSeconds(1.5f);
         machine.Next();
 
     }

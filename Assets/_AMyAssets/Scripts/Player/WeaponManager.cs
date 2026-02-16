@@ -233,6 +233,8 @@ public class WeaponManager : NetworkBehaviour
             if (_ownedWeapons[i] != null) _ownedWeapons[i].SetActive(false);
         }
 
+        ToggleNetworkTransform(weaponToSwitch, false);
+
         weaponToSwitch.SetActive(true);
         
         _currentItem = weaponToSwitch.GetComponent<EquippableItem>();
@@ -481,7 +483,8 @@ public class WeaponManager : NetworkBehaviour
         else if (_currentItem is Utility u) u.SetDown();
 
         dropped.transform.SetParent(null); 
-        
+        ToggleNetworkTransform(dropped, false);
+
         Rigidbody rb = dropped.GetComponent<Rigidbody>();
         if(rb)
         {
@@ -574,4 +577,11 @@ public class WeaponManager : NetworkBehaviour
     }
 
     private void GetPlayerScript() { player = GetComponent<Player>(); }
+
+
+    private void ToggleNetworkTransform(GameObject target, bool enabled)
+    {
+        var nt = target.GetComponent<NetworkTransform>();
+        if (nt != null) nt.enabled = enabled;
+    }
 }

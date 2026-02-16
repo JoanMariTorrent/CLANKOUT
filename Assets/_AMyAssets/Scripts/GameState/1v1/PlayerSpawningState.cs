@@ -69,7 +69,7 @@ public class PlayerSpawningState : StateNode
 
         foreach(var player in _spawnedPlayers)
             Debug.Log($"<color=purple> player spawned: {player.owner}</color>");
-            
+        
         machine.Next(_spawnedPlayers);
     }
 
