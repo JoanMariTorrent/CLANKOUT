@@ -80,12 +80,22 @@ namespace PurrLobby
         
         public void OnRoomLeft()
         {
-            ShowView<MainMenuView>();
+            ShowView<PlayView>();
         }
 
         public void OnBrowseClicked()
         {
             ShowView<BrowseView>();
+        }
+
+        public void OnPlayViewClicked()
+        {
+            ShowView<PlayView>();
+        }
+
+        public void OnSelectModeView()
+        {
+            ShowView<SelectModeView>();
         }
         
         public void OnRoomCreateClicked()
@@ -99,6 +109,11 @@ namespace PurrLobby
         }
 
         public void OnLeaveBrowseClicked()
+        {
+            ShowView<PlayView>();
+        }
+
+        public void OnGoMenuView()
         {
             ShowView<MainMenuView>();
         }
