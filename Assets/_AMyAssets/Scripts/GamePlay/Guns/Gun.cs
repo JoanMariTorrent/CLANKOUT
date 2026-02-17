@@ -105,6 +105,7 @@ public class Gun : EquippableItem, ITakeGun
     protected Vector3 _originalPosition;
     protected Quaternion _originalRotation;
     protected Coroutine _recoilCoroutine;
+    protected Coroutine _reloadCoroutine;
 
     // --- SETUP ---
 
@@ -355,7 +356,7 @@ public class Gun : EquippableItem, ITakeGun
         if (_reloadsAmmo.value > 0 && _ammo.value < maxAmmo)
         {
             reloading = true;
-            StartCoroutine(ReloadCoroutine());
+            if(_reloadCoroutine == null) _reloadCoroutine = StartCoroutine(ReloadCoroutine());
         }
     }
 
@@ -363,6 +364,7 @@ public class Gun : EquippableItem, ITakeGun
     {
         yield return new WaitForSeconds(timeToReload);
         FinishReloadServerRpc();
+        _reloadCoroutine = null;
     }
 
     [ServerRpc]

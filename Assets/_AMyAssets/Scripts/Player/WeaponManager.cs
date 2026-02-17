@@ -66,49 +66,82 @@ public class WeaponManager : NetworkBehaviour
     public void PickupItem(GameObject itemObject)
     {
         if (!isServer || itemObject == null) return;
-
+    
         EquippableItem item = itemObject.GetComponent<EquippableItem>();
         if (item == null) return;
-
-        // Determinar el Slot dependiendo en el tipo de item
+    
         int targetIndex = -1;
         bool shouldDeleteOld = false;
-
+    
         if (item is Gun gun)
         {
-            // Lógica de slots para armas (0-3)
             bool isPrimary = gun.weaponType == WeaponType.Primary;
-            targetIndex = GetWeaponIndex(isPrimary);
-            
-            // Si no hay hueco, reemplazamos el actual del mismo tipo
-            if (targetIndex == -1)
+            WeaponID newWeaponID = gun.weaponID;
+    
+            // 1. ¿YA TENGO ESTA ARMA (Mismo ID)? 
+            // Si tengo un Sniper y pillo otro Sniper, suelto el viejo esté donde esté.
+            int duplicateIndex = IndexHasWeaponOfType(newWeaponID);
+    
+            if (duplicateIndex != -1)
             {
-                // Lógica simple: Si es primaria, pisa el slot 0 (o el que estés usando
-                targetIndex = isPrimary ? 0 : 2; 
+                targetIndex = duplicateIndex;
                 shouldDeleteOld = true;
+            }
+            else
+            {
+                // 2. ¿HAY HUECO LIBRE?
+                int emptySlot = GetWeaponIndex(isPrimary);
+    
+                if (emptySlot != -1)
+                {
+                    targetIndex = emptySlot;
+                    shouldDeleteOld = false;
+                }
+                else
+                {
+                    // 3. TODO LLENO: INTERCAMBIO FORZADO
+                    // Miramos qué tenemos en la mano
+                    int heldIndex = _ownedWeapons.IndexOf(_currentItem?.gameObject);
+                    
+                    // Si lo que tengo en la mano es del mismo tipo (ej: Rifle pilla Sniper)
+                    if (_currentItem is Gun heldGun && heldGun.weaponType == gun.weaponType)
+                    {
+                        targetIndex = heldIndex;
+                    }
+                    else
+                    {
+                        // Si tengo en la mano algo de otro tipo (ej: Pistola pilla Sniper)
+                        // tiramos la primera arma de la categoría correspondiente (Slot 0 o 2)
+                        targetIndex = isPrimary ? 0 : 2;
+                    }
+                    shouldDeleteOld = true;
+                }
             }
         }
         else if (item is Utility utility)
         {
-            // Las utilidades siempre van al Slot 4
             targetIndex = 4;
             if (_ownedWeapons.Count > 4 && _ownedWeapons[4] != null) shouldDeleteOld = true;
         }
-
-        // 2. Tirar el objeto viejo si es necesario
-        if (shouldDeleteOld && _ownedWeapons[targetIndex] != null)
+    
+        // --- EJECUCIÓN ---
+    
+        // Tirar el arma vieja si el slot está ocupado o si era un duplicado
+        if (shouldDeleteOld && _ownedWeapons.Count > targetIndex && _ownedWeapons[targetIndex] != null)
         {
             DropWeaponAtIndex(targetIndex);
         }
-
-        // 3. Asegurar que la lista tiene tamaño suficiente
+    
+        // Asegurar tamaño y asignar
         while (_ownedWeapons.Count <= targetIndex) _ownedWeapons.Add(null);
-
-        // 4. Asignar y Equipar
         _ownedWeapons[targetIndex] = itemObject;
+    
+        // Setup físico y de red
         EquipItemFromGround(item); 
         
+        // CAMBIO DE ARMA: Siempre cambiamos al arma recién recogida
         SwitchWeapon(targetIndex, itemObject);
+    
         PlayEquipSoundObserversRpc();
     }
 
@@ -437,13 +470,13 @@ public class WeaponManager : NetworkBehaviour
     { 
         int start = primaryWeapon ? 0 : 2; 
         int end = primaryWeapon ? 2 : 4; 
+
         for (int i = start; i < end; i++) 
         { 
-            while (_ownedWeapons.Count <= i) 
-                _ownedWeapons.Add(null); 
-            if (_ownedWeapons[i] == null) return i; 
+            // Si el slot no existe o está vacío
+            if (i >= _ownedWeapons.Count || _ownedWeapons[i] == null) return i; 
         } 
-        return -1; 
+        return -1; // Lleno
     }
 
     private void EnsureWeaponSlots() 
