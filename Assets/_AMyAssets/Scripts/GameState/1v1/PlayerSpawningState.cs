@@ -33,7 +33,6 @@ public class PlayerSpawningState : StateNode
             if (_availablePoints.Count == 0)
             {
                 _availablePoints = new List<Transform>(_spawnPoints);
-                Debug.LogWarning("Hay más jugadores que SpawnPoints, se empezarán a repetir posiciones.");
             }
 
             // 2. Elegimos un índice aleatorio de la lista provisional
@@ -68,7 +67,6 @@ public class PlayerSpawningState : StateNode
         }
 
         foreach(var player in _spawnedPlayers)
-            Debug.Log($"<color=purple> player spawned: {player.owner}</color>");
         
         machine.Next(_spawnedPlayers);
     }

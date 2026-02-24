@@ -12,11 +12,9 @@ public class Platform : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!isServer) return;
-        Debug.Log(other.gameObject.name);
         var _player = other.GetComponent<PlayerHealth>();
         if (_player == null) return;
 
-        Debug.Log("Has entrado en colision con una plataforma!");
         if (_player.isOwner)
             RequestPowerMessageServerRPC(_player.PlayerID, _player);
     }

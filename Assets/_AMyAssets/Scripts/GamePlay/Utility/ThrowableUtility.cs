@@ -14,7 +14,6 @@ public class ThrowableUtility : Utility
     {
         if (projectilePrefab == null) 
         {
-            Debug.LogError("Falta asignar el ProjectilePrefab en la granada");
             return;
         }
 

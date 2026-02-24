@@ -46,7 +46,6 @@ public class LobbyCameraBridge : MonoBehaviour
         if (lobbyCam != null)
             lobbyCam.Priority = 20; 
             
-        Debug.Log("<color=cyan>Cámara: Entrando en Lobby.</color>");
     }
 
     // NUEVO: Se ejecuta al salir de la lobby
@@ -60,7 +59,6 @@ public class LobbyCameraBridge : MonoBehaviour
         // 2. REINICIAR EL TIMELINE: Volvemos a arrancar la cinemática del menú.
         StartCoroutine(returnCinematic());
 
-        Debug.Log("<color=orange>Cámara: Volviendo al Menú Principal.</color>");
     }
 
     private IEnumerator returnCinematic()

@@ -18,6 +18,7 @@ public class GrapplingHook : Utility
     public override void UseItem(bool inputDown, bool inputHeld, bool inputUp)
     {
         if (isInCooldown) return;
+        if(!isInfinite && currentCharges.value <= 0) {DepleteRoutine(); return;}
 
         if (inputDown && !isGrappling)
         {
@@ -76,8 +77,9 @@ public class GrapplingHook : Utility
         currentGrappleTimer = 0f; 
         
         playerCharacter.StopGrapple();
-
         RequestGrappleServerRpc(Vector3.zero, false);
+
+        SpendChargesServerRpc();
         
         StartCoroutine(CooldownRoutine());
     }
@@ -88,11 +90,11 @@ public class GrapplingHook : Utility
     {
         if (active)
         {
-             playerCharacter.StartGrapple(point);
+            playerCharacter.StartGrapple(point);
         }
         else
         {
-             playerCharacter.StopGrapple();
+            playerCharacter.StopGrapple();
         }
         SyncVisualsObserversRpc(point, active);
     }

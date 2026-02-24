@@ -91,7 +91,6 @@ public class HitscanGun : Gun
             
             SpawnHitEffectObserversRpc(true, hit.point, hit.normal, objVictim.transform, true, objDeath);
             
-            Debug.Log($"<color=green> Objeto muerto: {objDeath} referencia de la vida del objeto: {objVictim.healthRef} vida predecida: {predictedHealth}</color>");
             
             HitMarker(objDeath);
 

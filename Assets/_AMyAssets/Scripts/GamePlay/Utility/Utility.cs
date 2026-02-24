@@ -157,6 +157,7 @@ public abstract class Utility : EquippableItem, ITakeGun
         if (inputUp && isCharging)
         {
             ReleaseAndThrow();
+            Debug.Log("DELETE UTILITY");
         }
     }
 
@@ -170,7 +171,7 @@ public abstract class Utility : EquippableItem, ITakeGun
         RequestUseServerRpc(cameraTransform.position, cameraTransform.forward);
     }
 
-    [ServerRpc]
+    [ServerRpc(requireOwnership: false)]
     protected void RequestUseServerRpc(Vector3 position, Vector3 direction)
     {
         // Ammo
@@ -187,10 +188,7 @@ public abstract class Utility : EquippableItem, ITakeGun
         // Visuales
         PlayUsageEffectsObserverRpc();
 
-        if(!isInfinite && currentCharges.value <= 0)
-        {
-           DepleteRoutine();
-        }
+        SpendChargesServerRpc();
 
     }
 
@@ -218,6 +216,8 @@ public abstract class Utility : EquippableItem, ITakeGun
 
     protected void DepleteRoutine()
     {
+        if(!isServer) return;
+
         if (weaponManager != null)
         {
             Debug.Log("<color=red> DESTRUYENDO UTILIDAD</color>");
@@ -272,6 +272,17 @@ public abstract class Utility : EquippableItem, ITakeGun
         var wm = pc.GetComponent<WeaponManager>();
         if (isServer) wm.PickupItem(gameObject);
         else if (isOwner) wm.RequestPickupItemServerRpc(gameObject);
+    }
+
+    [ServerRpc]
+    public void SpendChargesServerRpc()
+    {
+        if(isInfinite) return;
+
+        currentCharges.value --;
+
+        if(currentCharges.value <= 0)
+            DepleteRoutine();
     }
 
 

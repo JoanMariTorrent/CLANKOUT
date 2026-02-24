@@ -75,7 +75,6 @@ public class RoundRunningStateDM : StateNode<List<PlayerHealth>>
         if (gameEnded) return;
 
         var playerScript = _activePlayers.Find(p => p.owner == deadPlayerID);
-        Debug.Log("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         
         if (playerScript != null)
         {
@@ -107,10 +106,6 @@ public class RoundRunningStateDM : StateNode<List<PlayerHealth>>
                 targetPos = selected.position;
                 targetRot = selected.rotation;
             }
-        }
-        else 
-        {
-            Debug.LogError($"[RoundRunningStateDM] ¡No hay spawnpoints asignados en {gameObject.name}!");
         }
     
         player.ReviveObserversRpc(targetPos, targetRot);

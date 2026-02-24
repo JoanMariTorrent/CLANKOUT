@@ -214,12 +214,6 @@ public class Player : NetworkBehaviour
     }
 
 
-    public void DeleteGround()
-    {
-        Debug.Log("<color=blue> Player test </color>");
-    }
-
-
 
     [TargetRpc(requireServer: false)]
     public void TargetShowFinalScreen(PlayerID target, bool win)
@@ -258,7 +252,6 @@ public class Player : NetworkBehaviour
 
         if (slotMachine == null)
         {
-            Debug.LogError($"SlotMachine no encontrada en Player {gameObject.name}");
             yield break;
         }
         canMove = false;
@@ -354,7 +347,6 @@ public class Player : NetworkBehaviour
         if (animHandler != null && selectedWeapon.animatorOverride != null)
         {
             //animHandler.SetWeaponAnimator(selectedWeapon.animatorOverride);
-            Debug.Log("<color=blue>AISJDBIAJSOBDBIJASDIBJASIDJBASIJBDIJASBDIJABNSDIJNBIAJSDNIJANSIJDNIAJSDNIJ</color>");
         }
 
 
@@ -368,8 +360,6 @@ public class Player : NetworkBehaviour
         if(_inputActions == null) return;
         
         _inputActions.asset.LoadBindingOverridesFromJson(rebindsJson);
-
-        Debug.Log("<color=green>¡Inputs actualizados en tiempo real!</color>");
     }
 
     private void LoadInputOverrides()
@@ -380,7 +370,6 @@ public class Player : NetworkBehaviour
             {
                 string jsonFile = System.IO.File.ReadAllText(RebindFilePath);
                 _inputActions.asset.LoadBindingOverridesFromJson(jsonFile);
-                Debug.Log("<color=cyan>Jugador: Controles cargados desde archivo rebinds.json</color>");
             }
             catch (System.Exception e)
             {

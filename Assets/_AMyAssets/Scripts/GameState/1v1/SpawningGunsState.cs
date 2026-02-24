@@ -85,8 +85,6 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
             _players.Add(player.owner.Value);
         }
 
-        Debug.Log($"[Enter] Players count: {normalPlayers.Count}");
-
         ServerShowSlot();
         TryGoNextState(data);
 
@@ -124,11 +122,8 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
     public void OnPlayerFinishedSpin(PlayerID playerID)
     {
 
-        Debug.Log(normalPlayers.Count);
-
         playerEndedSpinCount ++;
         
-        Debug.Log($"<color=green> Player {playerID} finished his spin ({playerEndedSpinCount} / {totalPlayers})");
         TryGoNextState(_playersDataCache);
     }
 
@@ -139,12 +134,7 @@ public class SpawningGunsState : StateNode<List<PlayerHealth>>
 
         if (playerEndedSpinCount == normalPlayers.Count)
         {
-            Debug.Log($"<color=purple> All players have finished their spin!</color>");
             machine.Next(data);
-        }
-        else if (playerEndedSpinCount != normalPlayers.Count)
-        {
-            Debug.Log("<color=orange> Wait for other playes to finish his spins!</color>");
         }
     }
 

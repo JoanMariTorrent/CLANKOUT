@@ -642,6 +642,7 @@ public class WeaponManager : NetworkBehaviour
         if (index != -1)
         {
             _ownedWeapons[index] = null;
+            Destroy(utilityObj);
 
             int next = -1; 
             if (_ownedWeapons[0]) next = 0; 

@@ -156,8 +156,6 @@ public class GunPlatform : NetworkBehaviour
                 return prefab;
             }
         }
-        
-        Debug.LogError($"No se encontró el prefab con ID {id} en el manager!");
         return null;
     }
 

@@ -17,7 +17,6 @@ public class RoundRunningState : StateNode<List<PlayerHealth>>
     public override void Enter(List<PlayerHealth> data, bool asServer)
     {
         base.Enter(data, asServer);
-        Debug.Log("ASDJIBKASKBASDKBASDASHBDAJHSBDJHASBDJHASBDJHBAHJDBJHASBDJHBASJHDBJHASBD");
 
         if (!asServer)
             return;
@@ -45,7 +44,6 @@ public class RoundRunningState : StateNode<List<PlayerHealth>>
         }
         else if (_players.Count <= 0)
         {
-            Debug.LogWarning("Han muerto todos los jugadores a la vez");
             machine.SetState(_spawningState);
         }
     }

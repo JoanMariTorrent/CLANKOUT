@@ -17,8 +17,8 @@ MonoBehaviour:
   description: asdasd
   utilityType: 0
   utilityPrefab: {fileID: 1884191687319604300, guid: bfe831e609236e746bb248905bb65add, type: 3}
-  cooldown: 10
-  maxCharges: 1
+  cooldown: 3
+  maxCharges: 2
   isInfinite: 0
   dropChance: 1
   chargeTime: 0

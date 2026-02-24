@@ -41,7 +41,6 @@ public class ScoreManager : NetworkBehaviour
     public void Addkills(PlayerID _playerID)
     {
         CheckForDictionaryEntry(_playerID);
-        Debug.Log($"<color=blue> Añadiendo kills al jugador: {_playerID} </color>");
 
         var _scoreData = _scores[_playerID];
         _scoreData._kills++;
@@ -85,8 +84,6 @@ public class ScoreManager : NetworkBehaviour
         {
             _playersWins[playerID] += wins;
         }
-
-        Debug.Log($"{playerID} won this round, now he have {_playersWins[playerID]} wins!");
     }
 
 

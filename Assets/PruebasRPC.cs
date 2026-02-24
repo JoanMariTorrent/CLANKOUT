@@ -24,9 +24,6 @@ public class PruebasRPC : NetworkBehaviour
     [ServerRpc]
     private void ChangeColor(Color color, RPCInfo info = default)
     {
-        Debug.Log("ServerInput");
-        //ObserversColor(color);
-        Debug.Log($"<color=green> ID del sender: {info.sender} </color>");
     
         foreach(var player in players)
         {

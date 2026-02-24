@@ -22,7 +22,6 @@ public class RoundEndState : StateNode<List<PlayerID>>
 
         if (winner == null)
         {
-            Debug.Log("winner null");
             machine.Next();
         }
 

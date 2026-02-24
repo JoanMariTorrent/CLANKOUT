@@ -337,7 +337,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
                         _lastGunEquiped = LastGunEquiped.Primary;
                     }
                     gunToSwitchIndex = primaryIndex ? 0 : 1;
-                    Debug.LogWarning(gunToSwitchIndex);
                     weaponManager.SwitchWeapon(gunToSwitchIndex);
                 }
                 else if (weaponManager._ownedWeapons[0] != null && weaponManager._ownedWeapons[1] == null)
@@ -350,11 +349,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
                     weaponManager.SwitchWeapon(1);
                     _lastGunEquiped = LastGunEquiped.Primary;
                 }
-                else
-                {
-                    Debug.Log("No tienes ninguna arma principal");
-                }
-                Debug.LogWarning($" Arma Principal: {_lastGunEquiped}");
                 break;
             case 2:
                 if (weaponManager._ownedWeapons[2] != null && weaponManager._ownedWeapons[3] != null)
@@ -381,11 +375,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
                     weaponManager.SwitchWeapon(3);
                     _lastGunEquiped = LastGunEquiped.Secondary;
                 }
-                else
-                {
-                    Debug.Log("No tienes ninguna arma secundaria");
-                }
-                Debug.LogWarning($" Arma Secundaria: {_lastGunEquiped}");
                 break;
             case 3:
                 weaponManager.SwitchWeapon(4);
@@ -587,8 +576,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
                 float factorRecuperacion = Mathf.Lerp(targetSlowdown, 1f, t);
                 
                 globalSlowdown *= factorRecuperacion;
-        
-                Debug.Log($"Intensidad: {playerHealth.lastHitIntensity} | Freno: {targetSlowdown}");
             }
         }
         
@@ -1040,7 +1027,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
             gravity = 0;
             airAcceleration = 0;
             jumps = 0;
-            Debug.Log("<color=yellow>GODMODE ACTIVADO </color>");
         }
         else
         {
@@ -1049,7 +1035,6 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
             rb.useGravity = true;
             gravity = initGravity;
             airAcceleration = initAirAcceleration;
-            Debug.Log("<color=orange>GODMODE DESACTIVADO </color>");
         }
     }
 
