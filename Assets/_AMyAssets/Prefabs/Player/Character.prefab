@@ -508,7 +508,7 @@ MonoBehaviour:
   airSpeed: 9.5
   airAcceleration: 70
   jumps: 1
-  jumpSpeed: 29
+  jumpSpeed: 29.5
   coyoteTime: 0.1
   jumpSustainGravity: 1
   gravity: -92.7
@@ -1235,7 +1235,7 @@ MonoBehaviour:
   _weaponHolder: {fileID: 5478939256714205654}
   tiltAngle: 2
   tiltSpeed: 6
-  landDipAmount: 0.4
+  landDipAmount: 0
   landRecoverSpeed: 4
   landThreshold: -4
 --- !u!1 &3160826534990206551
