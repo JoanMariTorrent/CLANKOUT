@@ -44,8 +44,8 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   near: 0
-  far: 500
-  distanceFogIntensity: 0.5
+  far: 150
+  distanceFogIntensity: 0.4
   useHeight: 1
   heightGradient:
     serializedVersion: 2
@@ -78,7 +78,7 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   low: 0
-  high: 277.1
+  high: 150
   heightFogIntensity: 0.282
   cameraRelativePosition: 0
   distanceHeightBlend: 0.5
@@ -132,11 +132,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DistanceFogIntensity: 0.5
+    - _DistanceFogIntensity: 0.4
     - _DistanceHeightBlend: 0.5
-    - _Far: 500
+    - _Far: 150
     - _HeightFogIntensity: 0.282
-    - _HighWorldY: 277.1
+    - _HighWorldY: 150
     - _LowWorldY: 0
     - _Near: 0
     m_Colors: []
