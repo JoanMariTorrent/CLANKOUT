@@ -29,9 +29,10 @@ public struct CharacterInput
 
 public enum LastGunEquiped { None, Primary, Secondary, Utility }
 public enum CrouchInput { None, Toggle }
-public enum Stance { Stand, Crouch, Slide, Wall, Climb, Grapple }
+[System.Serializable] public enum Stance { Stand, Crouch, Slide, Wall, Climb, Grapple }
 public enum WallSide { Left, Right, None }
 
+[System.Serializable]
 public struct CharacterState
 {
     public bool Grounded;
@@ -211,6 +212,10 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     public bool canSlideTutorial = true;
     public bool canWallRunTutorial = true;
     public bool canClimbTutorial = true;
+
+
+    // multijugador
+    public SyncVar<CharacterState> syncedState = new();
 
     protected override void OnSpawned()
     {
@@ -505,6 +510,24 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
         _state.Grounded = motor.GroundingStatus.IsStableOnGround;
         _state.Velocity = motor.Velocity;
         _lastState = _tempState;
+
+
+        if (isOwner)
+        {
+            if (!StatesAreEqual(_state, syncedState.value))
+            {
+                RequestUpdateStateServerRpc(_state);
+            }
+        }
+        
+    }
+
+    [ServerRpc]
+    private void RequestUpdateStateServerRpc(CharacterState newState)
+    {
+        // El servidor recibe el estado del cliente y lo guarda en la SyncVar
+        // Al cambiar el valor de la SyncVar aquí, PurrNet lo envía a TODOS los demás
+        syncedState.value = newState;
     }
 
     public void BeforeCharacterUpdate(float deltaTime)
@@ -1135,6 +1158,14 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
             _externalImpulse += force;
             motor.ForceUnground();
         }
+    }
+
+
+    private bool StatesAreEqual(CharacterState a, CharacterState b)
+    {
+        return a.Stance == b.Stance && 
+               a.Grounded == b.Grounded && 
+               Vector3.Distance(a.Velocity, b.Velocity) < 0.1f;
     }
     
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: OutlineSettings
   m_EditorClassIdentifier: 
   edgeColor: {r: 0, g: 0, b: 0, a: 1}
-  thickness: 3
+  thickness: 2
   resolutionInvariant: 0
   fadeWithDistance: 0
   fadeRangeStart: 0
@@ -78,7 +78,7 @@ Material:
     - _FadeRangeStart: 0
     - _NormalThresholdMax: 0.6
     - _NormalThresholdMin: 0
-    - _Thickness: 3
+    - _Thickness: 2
     m_Colors:
     - _EdgeColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
