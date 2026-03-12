@@ -47,6 +47,8 @@ public class Gun : EquippableItem, ITakeGun
     [SerializeField] protected AudioClip hitMarker;
     [SerializeField] protected float minPitch = 0.8f, maxPitch = 1.2f;
     [SerializeField] protected GameObject[] childMeshes;
+    public GameObject visualPrefab3D;
+    public Vector3 visualPrefab3DSpawnPosition;
 
     [Header("Recoil System")]
     [SerializeField] protected RecoilCamera recoilCamera;
@@ -206,14 +208,14 @@ public class Gun : EquippableItem, ITakeGun
         if (!equipedGun) return;
     
         // 1. LÓGICA PARA TODOS (Dueño y Observadores)
-        if (_recoilCoroutine == null)
-        {
-            transform.localPosition = _originalPosition;
-            transform.localRotation = _originalRotation;
-
-            if(transform.localScale != equippedScale)
-                transform.localScale = equippedScale;
-        }
+        //if (_recoilCoroutine == null)
+        //{
+        //    transform.localPosition = _originalPosition;
+        //    transform.localRotation = _originalRotation;
+//
+        //    if(transform.localScale != equippedScale)
+        //        transform.localScale = equippedScale;
+        //}
     
         // 2. LÓGICA SOLO PARA EL DUEÑO
         if (isOwner && !reloading)

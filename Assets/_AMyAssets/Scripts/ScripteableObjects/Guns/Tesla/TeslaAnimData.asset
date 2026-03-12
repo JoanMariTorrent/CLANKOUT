@@ -12,21 +12,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907e8953b6aa6ca4f92a1a46c5019b2e, type: 3}
   m_Name: TeslaAnimData
   m_EditorClassIdentifier: 
-  idleAmount: 0.02
   idleSpeed: 1
-  walkBobAmount: 0.02
-  walkBobSpeed: 10
-  runningTilt: {x: 15, y: -45, z: 0}
-  runBobMultiplier: 5
+  walkBobSpeed: 5
   runTransitionSpeed: 6
+  tiltSpeed: 5
+  fp_idleAmount: 0.02
+  tp_idleAmount: 0.002
+  fp_walkBobAmount: 0.02
+  tp_walkBobAmount: 0.003
+  fp_runningTilt: {x: 15, y: -45, z: 0}
+  tp_runningTilt: {x: 15, y: -45, z: 0}
+  fp_runBobMultiplier: 1.7
+  tp_runBobMultiplier: 0.09
   slideDropAmount: -0.3
   slideKickRotation: -23
   slideRecoverySpeed: 8
-  strafeTiltAmount: 4
-  forwardTiltAmount: 3
-  tiltSpeed: 5
-  swayAmount: 0.02
-  maxSway: 0.06
-  swaySmooth: 4
-  aimPosition: {x: -0.266, y: 0.03, z: 0}
-  aimSpeed: 12.5
+  fp_strafeTiltAmount: 4
+  tp_strafeTiltAmount: 25
+  fp_forwardTiltAmount: 3
+  tp_forwardTiltAmount: 5
+  fp_swayAmount: 0.005
+  fp_maxSway: 0.06
+  fp_hipPosition: {x: 0, y: 0, z: 0}
+  fp_aimPosition: {x: -0.266, y: 0.03, z: 0}
+  fp_aimSpeed: 12.5
+  tp_hipPosition: {x: 0, y: 0, z: -0.003}
+  tp_aimPosition: {x: -0.006, y: 0.008, z: -0.005}
+  tp_runningOffset: {x: 0.01, y: 0, z: -0.007}
+  tp_crouchOffset: {x: 0.01, y: 0, z: -0.007}
+  tp_aimSpeed: 12.5
+  tp_bobMultiplier: 0.4

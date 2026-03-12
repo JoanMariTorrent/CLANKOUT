@@ -35,6 +35,14 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private AudioClip[] takeGunSound;
     [SerializeField] private IKFollower leftIKFollower;
     [SerializeField] private IKFollower rightIKFollower;
+    [SerializeField] private IKFollower leftIKFollower3P;
+    [SerializeField] private IKFollower rightIKFollower3P;
+
+    
+
+    [Header("3rd Person Visuals")]
+    [SerializeField] private Transform weaponHolder3P;
+    private GameObject _currentWeapon3P;
 
 
     private Coroutine utilityCoroutine;
@@ -326,6 +334,48 @@ public class WeaponManager : NetworkBehaviour
 
         // Llamamos al OnEquip del padre
         if (_currentItem != null) _currentItem.OnEquip();
+
+
+        // logica del arma de 3P
+
+        // Limpiar la mesh actual
+        if(_currentWeapon3P != null) Destroy(_currentWeapon3P);
+
+        // Instanciar la nueva
+        GameObject visualPrefab = null;
+        Vector3 spawnPosition = Vector3.zero;
+
+        if(_currentItem is Gun g) {visualPrefab = g.visualPrefab3D; spawnPosition = g.visualPrefab3DSpawnPosition;}
+        else if (_currentItem is Utility u) visualPrefab = u.visualPrefab3D;
+
+        if(visualPrefab == null || weaponHolder3P == null) return;
+        
+        _currentWeapon3P = Instantiate(visualPrefab, weaponHolder3P);
+        _currentWeapon3P.transform.localPosition = spawnPosition;
+        _currentWeapon3P.transform.localRotation = Quaternion.identity;
+
+        if(_currentItem is Gun) 
+        {
+            FakeGun fakeGun = _currentWeapon3P.GetComponent<FakeGun>();
+            if(fakeGun != null && leftIKFollower3P != null)
+            {
+                leftIKFollower3P.SetTarget(fakeGun.leftGrip);
+            }
+
+            if(fakeGun != null && rightIKFollower3P != null)
+            {
+                rightIKFollower3P.SetTarget(fakeGun.rightGrip);
+            }
+            
+        }
+
+        if(isOwner)
+        {
+            foreach(var renderer in _currentWeapon3P.GetComponentsInChildren<Renderer>())
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+        }
+
+
     }
 
     [ObserversRpc(requireServer: false)]
@@ -573,6 +623,12 @@ public class WeaponManager : NetworkBehaviour
             int idx = _ownedWeapons.IndexOf(dropped); 
             if (idx >= 0) _ownedWeapons[idx] = null; 
         } 
+
+        if (_currentWeapon3P != null) 
+        {
+            Destroy(_currentWeapon3P);
+            _currentWeapon3P = null;
+        }
         
         _currentItem = null; 
         
@@ -582,6 +638,9 @@ public class WeaponManager : NetworkBehaviour
         else if (_ownedWeapons[2]) next = 2; 
         else if (_ownedWeapons[3]) next = 3; 
         if (next != -1) SwitchWeapon(next); 
+
+
+
     }
 
     [ObserversRpc(runLocally: true)] private void PlayEquipSoundObserversRpc() 

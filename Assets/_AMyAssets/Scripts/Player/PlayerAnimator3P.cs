@@ -7,6 +7,11 @@ public class PlayerAnimator3P : NetworkBehaviour
     [Header("Referencias")]
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerCharacter playerCharacter;
+    
+    [Header("Aim IK")]
+    [SerializeField] private Transform aimTarget;
+    [SerializeField] private Transform playerCamera;
+    [SerializeField] private float targetDistance = 100f;
 
     [Header("Ajustes de suavizado")]
     [SerializeField] private float dampTime = 0.1f;
@@ -36,6 +41,14 @@ public class PlayerAnimator3P : NetworkBehaviour
 
         UpdateLocomotion();
         UpdateStances();
+    }
+
+    void LateUpdate()
+    {
+        if(aimTarget != null && playerCamera != null)
+        {
+            aimTarget.position = playerCamera.position + (playerCamera.forward * targetDistance);
+        }
     }
 
     private void UpdateLocomotion()

@@ -40,6 +40,7 @@ public struct CharacterState
     public Vector3 Velocity;
     public Vector3 Acceleration;
     public Vector3 WallNormal; 
+    public bool IsAiming;
 }
 
 public class PlayerCharacter : NetworkBehaviour, ICharacterController
@@ -277,6 +278,8 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
                 weaponManager._currentGun.canAim;
 
         isAiming = _requestedAim && canGunAim;
+        _state.IsAiming = _requestedAim && canGunAim;
+        
 
         if (_requestedInteract)
         {
@@ -451,6 +454,8 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
                 transform.position = Vector3.Lerp(transform.position, latestReceivedPosition, Time.deltaTime * 10f);
                 transform.rotation = Quaternion.Slerp(transform.rotation, latestReceivedRotation, Time.deltaTime * 10f);
             }
+
+            isAiming = syncedState.value.IsAiming;
         }
     }
 
@@ -1165,6 +1170,7 @@ public class PlayerCharacter : NetworkBehaviour, ICharacterController
     {
         return a.Stance == b.Stance && 
                a.Grounded == b.Grounded && 
+               a.IsAiming == b.IsAiming &&
                Vector3.Distance(a.Velocity, b.Velocity) < 0.1f;
     }
     

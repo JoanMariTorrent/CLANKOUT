@@ -4,6 +4,7 @@ using UnityEngine;
 public class IKFollower : MonoBehaviour
 {
     public Transform targetToFollow;
+    [SerializeField] private Transform transformAPose;
 
     void LateUpdate() 
     {
@@ -11,6 +12,11 @@ public class IKFollower : MonoBehaviour
         {
             transform.position = targetToFollow.position;
             transform.rotation = targetToFollow.rotation;
+        }
+        else
+        {
+            transform.position = transformAPose.position;
+            transform.rotation = transformAPose.rotation;
         }
     }
 

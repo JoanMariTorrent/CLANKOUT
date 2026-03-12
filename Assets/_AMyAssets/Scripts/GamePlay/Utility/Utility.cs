@@ -27,6 +27,7 @@ public abstract class Utility : EquippableItem, ITakeGun
     [Header("Visuals and audios")]
     [SerializeField] protected GameObject[] childMeshes;
     [SerializeField] protected AudioClip useSound;
+    public GameObject visualPrefab3D;
     
     [Header("Layers")]
     [SerializeField] protected int ownerLayer = 7;
