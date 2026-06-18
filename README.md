@@ -1,4 +1,4 @@
-<img width="140" height="189" alt="library_capsule" src="https://github.com/user-attachments/assets/97480fad-8ee6-470e-9ae0-2f903ed73310" />
+<img width="652" height="756" alt="library_capsule" src="https://github.com/user-attachments/assets/97480fad-8ee6-470e-9ae0-2f903ed73310" />
 # Clankout - Multiplayer Shooter (Scripts Showcase)
 
 Este repositorio contiene los scripts principales de **Clankout**, un shooter 3D multijugador competitivo hecho en Unity. Está enfocado en código limpio, modular y optimizado para redes.
